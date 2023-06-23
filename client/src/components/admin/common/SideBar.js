@@ -8,7 +8,7 @@ const SideBar = () => {
       <div>
         <div className="logo">
           <Link to={'/admin'}>
-            <img src="/images/Signet-logo.png" alt='logo'/>
+            <img src="/images/Signet-logo.png" alt="logo" />
           </Link>
         </div>
         <ul>
@@ -18,9 +18,15 @@ const SideBar = () => {
           <Link to={'/admin/forms'}>
             <li>Forms</li>
           </Link>
+          <Link to={'/admin/contact-us-forms'}>
+            <li>Contact Us Form</li>
+          </Link>
         </ul>
       </div>
       <div>
+        <Link to={'/admin/profile'}>
+          <li>Admin</li>
+        </Link>
         <Logout />
       </div>
     </div>

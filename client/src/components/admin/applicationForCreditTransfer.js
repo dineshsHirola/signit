@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import SideBar from './common/SideBar';
+import Container from 'react-bootstrap/Container';
+import { Table } from '@nextui-org/react';
+import { IconButton } from './common/IconButton';
+import { EyeIcon } from './common/EyeIcon';
 
 const ApplicationForCreditTransferData = () => {
   const navigate = useNavigate();
@@ -8,6 +13,8 @@ const ApplicationForCreditTransferData = () => {
   const [auth, setAuth] = useState(false);
   const [showData, setShowData] = useState(false);
   const [userData, setUserData] = useState();
+  const [rowperPage, setRowPerPage] = useState(5);
+  const [search, setSearch] = useState('');
 
   axios.defaults.withCredentials = true;
 
@@ -63,20 +70,93 @@ const ApplicationForCreditTransferData = () => {
       {auth && (
         <>
           {showData ? (
-            <div>
-              <h1>Ctf</h1>
-              {userData.map((val) => {
-                return (
-                  <>
-                    <p>{val.email}</p>
-                    <Link
-                      to={`/admin/applicationForCreditTransferData/${val._id}`}
+            <div className="flex-div">
+              <SideBar />
+              <div className="main-div">
+                <Container>
+                  <div className="headflex">
+                    <h1 className="heading">Application For Credit Transfer Data</h1>
+                    <input
+                      type="search"
+                      placeholder="Search by ID Number"
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <Table
+                    aria-label="Example table with static content"
+                    css={{
+                      height: 'auto',
+                      minWidth: '100%',
+                    }}
+                    selectionMode="single"
+                  >
+                    <Table.Header>
+                      <Table.Column>SL.NO</Table.Column>
+                      <Table.Column>FIRST NAME</Table.Column>
+                      <Table.Column>ID TYPE</Table.Column>
+                      <Table.Column>ID NUMBER</Table.Column>
+                      <Table.Column>VIEW MORE</Table.Column>
+                    </Table.Header>
+                    <Table.Body>
+                      {userData
+                        .filter((val) => {
+                          const email = String(val.idNumber);
+                          if (search === '') {
+                            return val;
+                          } else if (
+                            email
+                              .toLocaleLowerCase()
+                              .includes(search.toLocaleLowerCase())
+                          ) {
+                            return val;
+                          }
+                        })
+                        .map((val) => {
+                          return (
+                            <Table.Row>
+                              <Table.Cell>01</Table.Cell>
+                              <Table.Cell>{val.name.firstName}</Table.Cell>
+                              <Table.Cell>{val.typeOfId}</Table.Cell>
+                              <Table.Cell>{val.idNumber}</Table.Cell>
+                              <Table.Cell>
+                                <Link
+                                  to={`/admin/applicationForCreditTransferData/${val._id}`}
+                                >
+                                  <IconButton>
+                                    <EyeIcon size={20} fill="#979797" />
+                                  </IconButton>
+                                </Link>
+                              </Table.Cell>
+                            </Table.Row>
+                          );
+                        })}
+                    </Table.Body>
+                    <Table.Pagination
+                      shadow
+                      noMargin
+                      align="center"
+                      rowsPerPage={rowperPage}
+                    />
+                  </Table>
+                  <div className="row-select-flex">
+                    <p>ROWS PER PAGE</p>
+                    <select
+                      onChange={(e) => {
+                        setRowPerPage(e.target.value);
+                      }}
                     >
-                      showmore
-                    </Link>
-                  </>
-                );
-              })}
+                      <option value={5} selected>
+                        5
+                      </option>
+                      <option value={15}>15</option>
+                      <option value={15}>10</option>
+                      <option value={20}>20</option>
+                    </select>
+                  </div>
+                </Container>
+              </div>
             </div>
           ) : (
             <p>Loading...</p>

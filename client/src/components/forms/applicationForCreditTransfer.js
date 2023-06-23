@@ -266,39 +266,41 @@ const ApplicationForCreditTransfer = () => {
               >
                 <Form.Label>Telephone:</Form.Label>
                 <br />
-                <Form.Select
-                  aria-label="Default select example"
-                  className="flag-select"
-                  onChange={handleChange}
-                  name="telCode"
-                >
-                  <option>Select</option>
-                  {JsonData.map((value) => {
-                    return (
-                      <option value={value.dial_code}>
-                        <span>
-                          <span>{value.flag} &nbsp;</span>
-                          <span>{value.name} &nbsp;</span>
-                          <span>{value.dial_code}</span>
-                        </span>
-                      </option>
-                    );
-                  })}
-                </Form.Select>
-                <Form.Control
-                  type="tel"
-                  onChange={handleChange}
-                  name="telephone"
-                  minLength={10}
-                />
-                {contryCodeNull ? (
-                  <p style={{ color: 'red' }}>
-                    Please select country dail code
-                  </p>
-                ) : null}
-                {TelError ? (
-                  <p style={{ color: 'red' }}>Enter valid tel number</p>
-                ) : null}
+                <div className="mobile-flex-div-child">
+                  <Form.Select
+                    aria-label="Default select example"
+                    className="flag-select"
+                    onChange={handleChange}
+                    name="telCode"
+                  >
+                    <option>Select</option>
+                    {JsonData.map((value) => {
+                      return (
+                        <option value={value.dial_code}>
+                          <span>
+                            <span>{value.flag} &nbsp;</span>
+                            <span>{value.name} &nbsp;</span>
+                            <span>{value.dial_code}</span>
+                          </span>
+                        </option>
+                      );
+                    })}
+                  </Form.Select>
+                  <Form.Control
+                    type="tel"
+                    onChange={handleChange}
+                    name="telephone"
+                    minLength={10}
+                  />
+                  {contryCodeNull ? (
+                    <p style={{ color: 'red' }}>
+                      Please select country dail code
+                    </p>
+                  ) : null}
+                  {TelError ? (
+                    <p style={{ color: 'red' }}>Enter valid tel number</p>
+                  ) : null}
+                </div>
               </Form.Group>
               <Form.Group
                 className="mb-3"
@@ -306,41 +308,43 @@ const ApplicationForCreditTransfer = () => {
               >
                 <Form.Label>Mobile:</Form.Label>
                 <br />
-                <Form.Select
-                  aria-label="Default select example"
-                  className="flag-select"
-                  onChange={handleChange}
-                  name="mobCode"
-                >
-                  <option>Select</option>
-                  {JsonData.map((value) => {
-                    return (
-                      <option value={value.dial_code}>
-                        <span>
-                          <span>{value.flag} &nbsp;</span>
-                          <span>{value.name} &nbsp;</span>
-                          <span>{value.dial_code}</span>
-                        </span>
-                      </option>
-                    );
-                  })}
-                </Form.Select>
-                <Form.Control
-                  type="tel"
-                  onChange={handleChange}
-                  name="mobile"
-                />
-                {mobileContryCodeNull ? (
-                  <p style={{ color: 'red' }}>
-                    Please select country dail code
-                  </p>
-                ) : null}
-                {mobileError ? (
-                  <p style={{ color: 'red' }}>Enter valid mobile number</p>
-                ) : null}
-                {mobileNull ? (
-                  <p style={{ color: 'red' }}>Enter your mobile number</p>
-                ) : null}
+                <div className="mobile-flex-div-child">
+                  <Form.Select
+                    aria-label="Default select example"
+                    className="flag-select"
+                    onChange={handleChange}
+                    name="mobCode"
+                  >
+                    <option>Select</option>
+                    {JsonData.map((value) => {
+                      return (
+                        <option value={value.dial_code}>
+                          <span>
+                            <span>{value.flag} &nbsp;</span>
+                            <span>{value.name} &nbsp;</span>
+                            <span>{value.dial_code}</span>
+                          </span>
+                        </option>
+                      );
+                    })}
+                  </Form.Select>
+                  <Form.Control
+                    type="tel"
+                    onChange={handleChange}
+                    name="mobile"
+                  />
+                  {mobileContryCodeNull ? (
+                    <p style={{ color: 'red' }}>
+                      Please select country dail code
+                    </p>
+                  ) : null}
+                  {mobileError ? (
+                    <p style={{ color: 'red' }}>Enter valid mobile number</p>
+                  ) : null}
+                  {mobileNull ? (
+                    <p style={{ color: 'red' }}>Enter your mobile number</p>
+                  ) : null}
+                </div>
               </Form.Group>
             </div>
             <div className="input-flex">
@@ -467,7 +471,7 @@ const ApplicationForCreditTransfer = () => {
                       onChange={handleChange}
                       name="postCode"
                     />
-                    <p className='input-p'>Postcode</p>
+                    <p className="input-p">Postcode</p>
                   </div>
                   <div>
                     <Form.Select
@@ -484,7 +488,7 @@ const ApplicationForCreditTransfer = () => {
                         );
                       })}
                     </Form.Select>
-                    <p className='input-p'>Country</p>
+                    <p className="input-p">Country</p>
                   </div>
                 </div>
                 {addressNull ? (

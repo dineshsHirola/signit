@@ -179,8 +179,8 @@ const StudentRequestForm = () => {
     <div className="outer-div">
       <Container>
         <h1 className="form-h1">STUDENT REQUEST FORM</h1>
-        <div className="form-parent reqForm-parent">
-          <Form>
+        <div className="form-parent">
+          <Form className='form-div'>
             <p className="form-p">STUDENT DETAILS</p>
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">

@@ -25,6 +25,9 @@ import ChangeSM from './components/admin/showmore/changeSM';
 import RefundSM from './components/admin/showmore/refundSM';
 import StudentReqSM from './components/admin/showmore/studentReqSM';
 import AdminSelectForm from './components/admin/adminSelectForm';
+import AdminProfile from './components/admin/AdminProfile';
+import ContactUsForm from './components/forms/contactUs/ContactUsForm';
+import ContactUSData from './components/admin/contactus/ContactUSData';
 
 function App() {
   return (
@@ -32,6 +35,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" exact element={<SelectForm />} />
+          <Route path="/contact-us" exact element={<ContactUsForm />} />
           <Route
             path="/form/refundRequestForm"
             exact
@@ -65,6 +69,8 @@ function App() {
           <Route path="/admin/login" exact element={<Login />} />
 
           <Route path="/admin" exact element={<Dashboard />} />
+          <Route path="/admin/profile" exact element={<AdminProfile />} />
+          <Route path="/admin/contact-us-forms" exact element={<ContactUSData />} />
           <Route path='/admin/forms' exact element={<AdminSelectForm />} />
           <Route path="/admin/gteFormData" exact element={<GteFormData />} />
           <Route

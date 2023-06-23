@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import SideBar from './common/SideBar';
 import Container from 'react-bootstrap/Container';
 import { Table } from '@nextui-org/react';
+import { IconButton } from './common/IconButton';
+import { EyeIcon } from './common/EyeIcon';
 
 const RefundRequestFormData = () => {
   const navigate = useNavigate();
@@ -11,6 +13,8 @@ const RefundRequestFormData = () => {
   const [auth, setAuth] = useState(false);
   const [showData, setShowData] = useState(false);
   const [userData, setUserData] = useState();
+  const [rowperPage ,setRowPerPage] = useState(5);
+  const [search, setSearch] = useState('');
 
   axios.defaults.withCredentials = true;
 
@@ -70,38 +74,55 @@ const RefundRequestFormData = () => {
               <SideBar />
               <div className="main-div">
                 <Container>
-                  <h1>Refund Request Form</h1>
-                  {userData.map((val) => {
-                    return (
-                      <>
-                        <p>{val.email}</p>
-                        <Link to={`/admin/refundRequestFormData/${val._id}`}>
-                          showmore
-                        </Link>
-                      </>
-                    );
-                  })}
+                  <div className="headflex">
+                    <h1 className="heading">Refund Request Form</h1>
+                    <input type="search" placeholder="Search by ID Number" onChange={(e)=>{setSearch(e.target.value)}}/>
+                  </div>
                   <Table
                     aria-label="Example table with static content"
                     css={{
                       height: 'auto',
                       minWidth: '100%',
                     }}
+                    selectionMode="single"
                   >
                     <Table.Header>
                       <Table.Column>SL.NO</Table.Column>
                       <Table.Column>FIRST NAME</Table.Column>
                       <Table.Column>COURSE NAME</Table.Column>
                       <Table.Column>ID NUMBER</Table.Column>
+                      <Table.Column>VIEW MORE</Table.Column>
                     </Table.Header>
                     <Table.Body>
-                      {userData.map((val) => {
+                      {userData
+                        .filter((val) => {
+                            const email = String(val.idNumber);
+                            if (search === '') {
+                              return val;
+                            } else if (
+                              email
+                                .toLocaleLowerCase()
+                                .includes(search.toLocaleLowerCase())
+                            ) {
+                              return val;
+                            }
+                          })
+                      .map((val) => {
                         return (
                           <Table.Row>
                             <Table.Cell>01</Table.Cell>
                             <Table.Cell>{val.name.firstName}</Table.Cell>
                             <Table.Cell>{val.courseName}</Table.Cell>
                             <Table.Cell>{val.idNumber}</Table.Cell>
+                            <Table.Cell>
+                              <Link
+                                to={`/admin/refundRequestFormData/${val._id}`}
+                              >
+                                <IconButton>
+                                  <EyeIcon size={20} fill="#979797" />
+                                </IconButton>
+                              </Link>
+                            </Table.Cell>
                           </Table.Row>
                         );
                       })}
@@ -110,9 +131,18 @@ const RefundRequestFormData = () => {
                       shadow
                       noMargin
                       align="center"
-                      rowsPerPage={2}
+                      rowsPerPage={rowperPage}
                     />
                   </Table>
+                  <div className="row-select-flex">
+                    <p>ROWS PER PAGE</p>
+                    <select onChange={(e)=>{setRowPerPage(e.target.value)}}>
+                      <option value={5} selected>5</option>
+                      <option value={15}>15</option>
+                      <option value={15}>10</option>
+                      <option value={20}>20</option>
+                    </select>
+                  </div>
                 </Container>
               </div>
             </div>

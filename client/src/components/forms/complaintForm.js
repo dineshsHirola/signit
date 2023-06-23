@@ -142,7 +142,6 @@ const ComplaintForm = () => {
       formData.receivedBy,
       setReceivedError
     );
-    console.log(formData.ProcessedBy);
     const processedVer = handleProcessedNameError(
       formData.ProcessedBy,
       setProcessedError
@@ -189,7 +188,7 @@ const ComplaintForm = () => {
           this complaint form with all relevant evidence.
         </p>
         <div className="form-parent">
-          <Form>
+          <Form className="form-div">
             <p className="form-p">STUDENT DETAILS</p>
             <div className="input-flex mobile-flex-div complaint-input">
               <Form.Group
@@ -216,41 +215,44 @@ const ComplaintForm = () => {
               >
                 <Form.Label>Mobile:</Form.Label>
                 <br />
-                <Form.Select
-                  aria-label="Default select example"
-                  className="flag-select"
-                  onChange={handleChange}
-                  name="mobileCode"
-                >
-                  <option>Select</option>
-                  {JsonData.map((value) => {
-                    return (
-                      <option value={value.dial_code}>
-                        <span>
-                          <span>{value.flag} &nbsp;</span>
-                          <span>{value.name} &nbsp;</span>
-                          <span>{value.dial_code}</span>
-                        </span>
-                      </option>
-                    );
-                  })}
-                </Form.Select>
-                <Form.Control
-                  type="tel"
-                  onChange={handleChange}
-                  name="mobile"
-                />
-                {mobileContryCodeNull ? (
-                  <p style={{ color: 'red' }}>
-                    Please select country dail code
-                  </p>
-                ) : null}
-                {mobileError ? (
-                  <p style={{ color: 'red' }}>Enter valid mobile number</p>
-                ) : null}
-                {mobileNull ? (
-                  <p style={{ color: 'red' }}>Enter your mobile number</p>
-                ) : null}
+                <div className="mobile-flex-div-child">
+                  <Form.Select
+                    aria-label="Default select example"
+                    className="flag-select"
+                    onChange={handleChange}
+                    name="mobileCode"
+                  >
+                    <option>Select</option>
+                    {JsonData.map((value) => {
+                      return (
+                        <option value={value.dial_code}>
+                          <span>
+                            <span>{value.flag} &nbsp;</span>
+                            <span>{value.name} &nbsp;</span>
+                            <span>{value.dial_code}</span>
+                          </span>
+                        </option>
+                      );
+                    })}
+                  </Form.Select>
+                  <Form.Control
+                    type="tel"
+                    onChange={handleChange}
+                    name="mobile"
+                    className="mobile-input"
+                  />
+                  {mobileContryCodeNull ? (
+                    <p style={{ color: 'red' }}>
+                      Please select country dail code
+                    </p>
+                  ) : null}
+                  {mobileError ? (
+                    <p style={{ color: 'red' }}>Enter valid mobile number</p>
+                  ) : null}
+                  {mobileNull ? (
+                    <p style={{ color: 'red' }}>Enter your mobile number</p>
+                  ) : null}
+                </div>
               </Form.Group>
             </div>
             <div className="name-div complaint-input">
@@ -300,10 +302,10 @@ const ComplaintForm = () => {
                 <br />
                 <Form.Control
                   type="email"
-                  placeholder="example@example.com"
                   onChange={handleChange}
                   name="email"
                 />
+                <p className="input-p">example@example.com</p>
                 {emailError ? (
                   <p style={{ color: 'red' }}>Enter valid email</p>
                 ) : null}
@@ -482,7 +484,9 @@ const ComplaintForm = () => {
                   className="mb-3"
                   controlId="exampleForm.ControlInput1"
                 >
-                  <Form.Label className="office-use">Processed Date:</Form.Label>
+                  <Form.Label className="office-use">
+                    Processed Date:
+                  </Form.Label>
                   <br />
                   <Form.Control
                     type="date"

@@ -53,7 +53,7 @@ body {
   font-size: 20px;
   text-align: left;
   color: aliceblue;
-  margin-left: 115px;
+  padding-left: 23px;
   letter-spacing: 0.6px;
 }
 
@@ -61,7 +61,7 @@ body {
   text-align: left;
   color: aliceblue;
   font-size: 55px;
-  margin-left: 115px;
+  padding-left: 23px;
   letter-spacing: 0.6px;
 }
 
@@ -75,9 +75,9 @@ body {
 
 .selectForm-flex a {
   border: 2px solid #fff;
-  padding: 10px 30px;
-  width: 22%;
-  height: 35px;
+  padding: 10px 20px;
+  width: 31%;
+  height: 63px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -89,6 +89,7 @@ body {
   font-size: 18px;
   font-weight: 500;
   transition: all 0.2s ease-in-out;
+  text-align: center;
 }
 
 .selectForm-flex a:hover {
@@ -102,7 +103,7 @@ body {
 
 .form-parent {
   border: 2px solid aliceblue;
-  width: 80%;
+  /* width: 80%; */
   margin-inline: auto;
   /* margin-block: 100px; */
   border-radius: 30px;
@@ -148,7 +149,7 @@ body {
 }
 
 input#exampleForm\.ControlInput1 {
-  height: 35px;
+  height: 48px;
   border: 2px solid aliceblue;
   background-color: transparent;
   border-radius: 10px;
@@ -157,6 +158,10 @@ input#exampleForm\.ControlInput1 {
   width: 300px;
   color: aliceblue;
   font-size: 16px;
+}
+
+.mobile-flex-div-child {
+  display: flex;
 }
 
 .form-parent label {
@@ -192,7 +197,7 @@ select#exampleForm\.ControlInput1 {
 }
 
 .input-flex select#exampleForm\.ControlInput1 {
-  width: 317px;
+  width: 300px;
 }
 
 .mobile-flex-div select#exampleForm\.ControlInput1 {
@@ -357,7 +362,7 @@ label.office-use.form-label {
 }
 
 .select-country {
-  width: 324px !important;
+  width: 300px !important;
 }
 
 .flex-width {
@@ -416,27 +421,38 @@ label.office-use.form-label {
 }
 
 .login-parent form {
-  border: 2px solid;
-  border-radius: 10px;
+  border: 2px solid transparent;
+  border-radius: 23px;
   width: 500px;
   height: 300px;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 12px 20px 6px rgb(104 112 118 / 0.08);
 }
 
 .login-parent form input {
-  width: 250px;
-  height: 30px;
+  width: 300px;
+  height: 45px;
   border-radius: 10px;
   padding: 5px 10px;
   margin-bottom: 15px;
+  border: 1px solid var(--gold-color);
 }
 
 .login-parent form button {
-  width: 272px;
+  width: 300px;
   border-radius: 10px;
   height: 45px;
+  background-color: transparent;
+  color: var(--gold-color);
+  border: 1px solid var(--gold-color);
+  transition: 0.2s;
+}
+
+.login-parent form button:hover {
+  background-color: var(--gold-color);
+  color: #fff;
 }
 
 .flex-div {
@@ -523,6 +539,7 @@ label.office-use.form-label {
   align-items: center;
   height: 40px;
   transition: 0.3s;
+  color: var(--gold-color);
 }
 
 .sideBar-parent li:hover {
@@ -547,20 +564,27 @@ li.active {
 
 .sideBar-parent ul {
   margin-top: 20px;
+  padding-left: 0;
 }
 
 .passwordInput {
   display: flex;
   align-items: center;
-  border: 2px solid #000;
+  border: 1px solid var(--gold-color);
   border-radius: 10px;
-  width: 264px;
+  width: 300px;
   padding-right: 5px;
 }
 .passwordInput input {
-  border: none;
+  border: none !important;
   height: 100%;
   margin-bottom: 0 !important;
+}
+
+i.fa-solid.fa-eye-slash,
+i.fa-solid.fa-eye {
+  color: var(--gold-color);
+  padding-right: 10px;
 }
 
 .main-inside-div h1 {
@@ -582,7 +606,7 @@ li.active {
 
 .admin-select-flex a {
   border: 1px solid var(--gold-color);
-  width: 309px;
+  width: 303px;
   height: 50px;
   display: flex;
   justify-content: center;
@@ -603,4 +627,275 @@ li.active {
 
 .main-div h1 {
   padding-left: 10px;
+  font-weight: 600;
+  color: var(--gold-color);
+}
+
+.login-parent h1 {
+  color: #d1aa61;
+}
+
+.nextui-c-kNgzEX {
+  background: var(--gold-color);
+  color: #fff;
+}
+
+.nextui-c-cAbbLF {
+  background: var(--gold-color);
+}
+
+.nextui-c-cAbbLF-gZGrDk-shadow-true {
+  box-shadow: 0 4px 14px 0 var(--gold-color);
+}
+
+.heading {
+  font-size: 36px;
+  margin-bottom: 20px;
+  /* padding-top: 53px; */
+}
+
+.headflex input {
+  height: 40px;
+  border: 2px solid var(--gold-color);
+  border-radius: 10px;
+  width: 300px;
+  padding-inline: 10px;
+}
+
+.headflex {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 53px;
+}
+
+.row-select-flex {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+.row-select-flex select {
+  width: 50px;
+  margin-left: 8px;
+  border: 1px solid var(--gold-color);
+  border-radius: 5px;
+  padding-inline: 5px;
+  height: 23px;
+}
+
+.row-select-flex p {
+  color: var(--gold-color);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+}
+
+td#react-aria6121942069-1-\.1\.15-\.0\.0,
+td#react-aria6121942069-1-\.1\.2-\.0\.0 {
+  color: var(--gold-color) !important;
+}
+
+tr.nextui-c-bUbfzy.nextui-c-gulvcB.nextui-table-row.sub-title {
+  background-color: #f1f3f5;
+  color: #7e868c;
+}
+
+.changeCred-btn {
+  height: 40px;
+  width: 220px;
+  margin-block: 20px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  color: red;
+  box-shadow: 0 12px 20px 6px rgba(104, 112, 118, 0.08);
+  background-color: #ffece6;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  margin-inline: auto;
+}
+
+.changeCred-div {
+  margin-inline: auto;
+  width: 400px;
+  padding: 20px 43px;
+  border: 1px solid #f5f5f5;
+  border-radius: 30px;
+  box-shadow: 0 12px 20px 6px rgba(104, 112, 118, 0.08);
+  opacity: 0;
+  animation: fadeIn 0.2s ease-in-out both;
+  animation-delay: 0s;
+}
+
+.changeCred-div-fade-out {
+  margin-inline: auto;
+  width: 400px;
+  padding: 20px 43px;
+  border: 1px solid #f5f5f5;
+  border-radius: 30px;
+  box-shadow: 0 12px 20px 6px rgba(104, 112, 118, 0.08);
+  opacity: 0;
+  animation: fadeOut 0.2s ease-in both;
+  animation-delay: 0s;
+}
+
+.changeCred-div form input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  border: 2px solid #f5f5f5;
+  border-radius: 10px;
+}
+
+.changeCred-div form button {
+  width: 100%;
+  border: 1px solid var(--gold-color);
+  color: var(--gold-color);
+  height: 40px;
+  border-radius: 10px;
+  margin-inline: auto;
+  letter-spacing: 0.6px;
+  font-weight: 600;
+  background-color: transparent;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -20%, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -20%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.mobile-flex-div-child .mobile-input {
+  width: 199px !important;
+}
+
+.form-check-inline {
+  display: flex;
+  padding-bottom: 7px;
+}
+
+.form-check-input[type='checkbox'] {
+  border-radius: 5px !important;
+}
+
+.check input#exampleForm\.ControlInput1 {
+  height: 22px !important;
+}
+
+form.form-div {
+  width: 80%;
+}
+
+.form-check-input[type='radio'] {
+  border-radius: 500% !important;
+  height: 23px !important;
+}
+
+.cancel-enrollment-form-div {
+  width: 90%;
+}
+
+.contact-us-form {
+  border: 2px solid #fff;
+  border-radius: 20px;
+  width: 60%;
+  padding: 20px 40px;
+}
+
+.contact-us-form label {
+  color: #fff;
+}
+
+.contact-us-form input {
+  width: 100% !important;
+}
+
+.contact-us-form button {
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  border: 2px solid #fff;
+  background-color: transparent;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.contact-us-form button:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+.contact-us-form textarea {
+  width: 100% !important;
+}
+
+.form-control:focus {
+  box-shadow: none !important;
+}
+.form-check-input:focus {
+  box-shadow: none;
+}
+
+.contact-us-checkbox {
+  display: flex;
+  align-items: flex-end;
+}
+
+.contact-us-checkbox input[type='checkbox'] {
+  width: 10px !important;
+  height: 23px !important;
+  margin-right: 5px;
+}
+
+.contact-us-checkbox-outer-div-flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.mandate {
+  color: red;
+}
+
+.success {
+  color: green;
+  padding-block: 10px;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.failed {
+  color: red;
+  padding-block: 10px;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.btn-close:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.form-select:focus {
+  outline: none;
+  box-shadow: none;
 }

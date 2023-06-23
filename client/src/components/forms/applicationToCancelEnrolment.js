@@ -23,10 +23,30 @@ import {
 } from '../errors/errorFun';
 
 const ApplicationToCancelEnrolment = () => {
-  const fileTypes = ['JPG', 'PNG', 'GIF'];
+  const [signatureFile, setSignatureFile] = useState('');
+  const [signatureImage, setSignatureImage] = useState('');
+  const [signatureError, setSignatureError] = useState(false);
+
+  const fileTypes = ['JPG', 'PNG', 'PDF'];
   const [file, setFile] = useState(null);
   const handleFileChange = (file) => {
+    const size = (file.size / (1024 * 1024)).toFixed(2);
+    if (size > 2) {
+      setSignatureError(true);
+    } else {
+      setSignatureError(false);
+      setSignatureFile(file);
+      previewSignatureFiles(file);
+    }
     setFile(file);
+  };
+
+  const previewSignatureFiles = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setSignatureImage(reader.result);
+    };
   };
 
   const [formData, setFormData] = useState({
@@ -184,6 +204,7 @@ const ApplicationToCancelEnrolment = () => {
       await axios
         .post('http://localhost:8000/forms/cef', {
           formData,
+          signatureImage
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
@@ -212,7 +233,7 @@ const ApplicationToCancelEnrolment = () => {
           considered.
         </p>
         <div className="form-parent">
-          <Form>
+          <Form className="cancel-enrollment-form-div">
             <p className="form-p">STUDENT DETAILS</p>
             <div className="name-div">
               <Form.Group
@@ -311,30 +332,32 @@ const ApplicationToCancelEnrolment = () => {
                 >
                   <Form.Label>Mobile:</Form.Label>
                   <br />
-                  <Form.Select
-                    aria-label="Default select example"
-                    className="flag-select"
-                    onChange={handleChange}
-                    name="mobCode"
-                  >
-                    <option>Select</option>
-                    {JsonData.map((value) => {
-                      return (
-                        <option value={value.dial_code}>
-                          <span>
-                            <span>{value.flag} &nbsp;</span>
-                            <span>{value.name} &nbsp;</span>
-                            <span>{value.dial_code}</span>
-                          </span>
-                        </option>
-                      );
-                    })}
-                  </Form.Select>
-                  <Form.Control
-                    type="tel"
-                    onChange={handleChange}
-                    name="mobile"
-                  />
+                  <div className="mobile-flex-div-child">
+                    <Form.Select
+                      aria-label="Default select example"
+                      className="flag-select"
+                      onChange={handleChange}
+                      name="mobCode"
+                    >
+                      <option>Select</option>
+                      {JsonData.map((value) => {
+                        return (
+                          <option value={value.dial_code}>
+                            <span>
+                              <span>{value.flag} &nbsp;</span>
+                              <span>{value.name} &nbsp;</span>
+                              <span>{value.dial_code}</span>
+                            </span>
+                          </option>
+                        );
+                      })}
+                    </Form.Select>
+                    <Form.Control
+                      type="tel"
+                      onChange={handleChange}
+                      name="mobile"
+                    />
+                  </div>
                   {mobileContryCodeNull ? (
                     <p style={{ color: 'red' }}>
                       Please select country dail code
@@ -359,10 +382,10 @@ const ApplicationToCancelEnrolment = () => {
                   <br />
                   <Form.Control
                     type="email"
-                    placeholder="example@example.com"
                     onChange={handleChange}
                     name="email"
                   />
+                  <p className="input-p">example@example.com</p>
                   {emailError ? (
                     <p style={{ color: 'red' }}>Enter valid email</p>
                   ) : null}
@@ -378,10 +401,10 @@ const ApplicationToCancelEnrolment = () => {
                   <br />
                   <Form.Control
                     type="email"
-                    placeholder="example@example.com"
                     onChange={handleChange}
                     name="altEmail"
                   />
+                  <p className="input-p">example@example.com</p>
                   {altEmailError ? (
                     <p style={{ color: 'red' }}>Enter valid alt email</p>
                   ) : null}
@@ -614,41 +637,57 @@ const ApplicationToCancelEnrolment = () => {
                     handleChange={handleFileChange}
                     name="file"
                     types={fileTypes}
+                    accept="image/png, image/jpeg, image/jpg, application/pdf"
                   />
+                  <p>
+                    <i>Image should be less than 2MB</i>
+                  </p>
+                  {signatureError ? (
+                    <p style={{ color: 'red' }}>
+                      Image Size should be less than 2MB
+                    </p>
+                  ) : null}
                   {fileNull ? (
-                    <p style={{ color: 'red' }}>Reason is required</p>
+                    <p style={{ color: 'red' }}>
+                      Supporting Document is required
+                    </p>
                   ) : null}
                 </Form.Group>
               </div>
             </div>
 
             <div className="flex-width ">
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Are you an International student?</Form.Label>
-              <Form.Check
-                inline
-                label="Yes"
-                name="intStudent" className='radio-input'
-                value="Yes"
-                type="radio"
-                onChange={handleChange}
-              />
-              <Form.Check
-                inline
-                label="No"
-                name="intStudent" className='radio-input'
-                value="No"
-                type="radio"
-                onChange={handleChange}
-              />
-              {radioNull ? (
-                <p style={{ color: 'red' }}>Reason is required</p>
-              ) : null}
-            </Form.Group>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
+                <Form.Label>Are you an International student?</Form.Label>
+                <Form.Check
+                  inline
+                  label="Yes"
+                  name="intStudent"
+                  className="radio-input"
+                  value="Yes"
+                  type="radio"
+                  onChange={handleChange}
+                />
+                <Form.Check
+                  inline
+                  label="No"
+                  name="intStudent"
+                  className="radio-input"
+                  value="No"
+                  type="radio"
+                  onChange={handleChange}
+                />
+                {radioNull ? (
+                  <p style={{ color: 'red' }}>Reason is required</p>
+                ) : null}
+              </Form.Group>
             </div>
 
             <div className="flex-width btn-mar-top">
-            <button onClick={handleSubmit}>Submit</button>
+              <button onClick={handleSubmit}>Submit</button>
             </div>
           </Form>
         </div>

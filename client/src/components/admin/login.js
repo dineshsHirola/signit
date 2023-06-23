@@ -26,6 +26,7 @@ const Login = () => {
         }
       )
       .then((res) => {
+        console.log(res)
         if (res.data.Status === 'Success') {
           navigate('/admin');
         } else {

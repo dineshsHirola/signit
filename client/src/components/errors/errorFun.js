@@ -143,6 +143,18 @@ export const telValidation = (
   }
 };
 
+export const contactUsMobileValidation = (num, setMobileError) => {
+  const exp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+  // const exp =/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+  if (!exp.test(num)) {
+    setMobileError(true);
+    return false;
+  } else {
+    setMobileError(false);
+    return true;
+  }
+};
+
 export const mobileValidation = (
   code,
   num,

@@ -12,39 +12,39 @@ module.exports = async (req, res) => {
   admin_collection
     .findOne({ username: username })
     .then((result) => {
-      if (result.password === password) {
-        const token = jwt.sign(
-          { admin_id: result._id },
-          'our-signet-admin-jsonwebtoken-secret-key',
-          {
-            expiresIn: '1d',
+      // if (result.password === password) {
+      //   const token = jwt.sign(
+      //     { admin_id: result._id },
+      //     'our-signet-admin-jsonwebtoken-secret-key',
+      //     {
+      //       expiresIn: '1d',
+      //     }
+      //   );
+      //   res.cookie('signetAdmintoken', token, { httpOnly: true });
+      //   return res.send({ Status: 'Success' });
+      // } else {
+      //   return res.send({ Status: 'Password is wrong' });
+      // }
+      bcrypt
+        .compare(password, result.password)
+        .then((hashPassord) => {
+          if (hashPassord === true) {
+            const token = jwt.sign(
+              { admin_id: result._id },
+              'our-signet-admin-jsonwebtoken-secret-key',
+              {
+                expiresIn: '1d',
+              }
+            );
+            res.cookie('signetAdmintoken', token, { httpOnly: true });
+            return res.send({ Status: 'Success' });
+          } else {
+            res.send({ Status: 'Password is Incorrect' });
           }
-        );
-        // res.cookie("admintoken", token, { httpOnly: true });
-        res.cookie('signetAdmintoken', token, { httpOnly: true });
-        return res.send({ Status: 'Success' });
-      } else {
-        return res.send({ Status: 'Password is wrong' });
-      }
-      //       bcrypt
-      //         .compare(password, result.password)
-      //         .then((hashPassord) => {
-      //           if (hashPassord === true) {
-      //             const token = jwt.sign(
-      //               { admin_id: result._id },
-      //               process.env.ADMIN_JWT_SECRET,
-      //               {
-      //                 expiresIn: '1d',
-      //               }
-      //             );
-      //             res.cookie(process.env.ADMIN_JWT_NAME, token, { httpOnly: true });
-      //             return res.send({ message: 'Success' });
-      //           } else {
-      //             res.send({ Status: 'Password is Incorrect' });
-      //           }
-      //         })
-      //         .catch((e) => {
-      // c        });
+        })
+        .catch((e) => {
+          res.send({ Status: 'Failed to fetch admin Please try after some time' });
+        });
     })
     .catch((e) => {
       res.send({ Status: 'Admin not found' });

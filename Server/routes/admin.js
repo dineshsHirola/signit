@@ -22,6 +22,9 @@ const gtefSM = require('../controllers/adminControlls/showmore/gtefSM');
 const rrfSM = require('../controllers/adminControlls/showmore/rrfSM');
 const srfSM = require('../controllers/adminControlls/showmore/srfSM');
 const logout = require('../controllers/adminControlls/logout');
+const adminCred = require('../controllers/auth/adminCred');
+const changeCred = require('../controllers/auth/changeCred');
+const contactUs = require('../controllers/adminControlls/contactUs');
 
 router.use(express.json());
 router.use(cookieParser());
@@ -57,6 +60,10 @@ router.get('/gtef/:id', gtefSM);
 router.get('/rrf/:id', rrfSM);
 router.get('/srf/:id', srfSM);
 router.get('/logout', logout);
+router.get('/profile', adminCred);
+router.put('/changeCred', changeCred);
+router.get('/contactUs', contactUs);
+
 
 
 

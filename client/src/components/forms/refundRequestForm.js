@@ -174,7 +174,7 @@ const RefundRequestForm = () => {
   return (
     <div className="outer-div">
       <Container>
-      <h1 className="form-h1">Refund Request Form</h1>
+        <h1 className="form-h1">Refund Request Form</h1>
         <div className="form-parent">
           <Form>
             <p className="form-p">PART A – STUDENT DETAILS</p>
@@ -328,47 +328,49 @@ const RefundRequestForm = () => {
               >
                 <Form.Label>Telephone:</Form.Label>
                 <br />
-                <Form.Select
-                  aria-label="Default select example"
-                  className="flag-select"
-                  defaultValue={formData.telCode}
-                  onChange={handleChange}
-                  name="telCode"
-                >
-                  <option>Select</option>
-                  {JsonData.map((value) => {
-                    return (
-                      <option value={value.dial_code}>
-                        <span>
-                          <span>{value.flag} &nbsp;</span>
-                          <span>{value.name} &nbsp;</span>
-                          <span>{value.dial_code}</span>
-                        </span>
-                      </option>
-                    );
-                  })}
-                </Form.Select>
-                {/* <PhoneInput
+                <div className="mobile-flex-div-child">
+                  <Form.Select
+                    aria-label="Default select example"
+                    className="flag-select"
+                    defaultValue={formData.telCode}
+                    onChange={handleChange}
+                    name="telCode"
+                  >
+                    <option>Select</option>
+                    {JsonData.map((value) => {
+                      return (
+                        <option value={value.dial_code}>
+                          <span>
+                            <span>{value.flag} &nbsp;</span>
+                            <span>{value.name} &nbsp;</span>
+                            <span>{value.dial_code}</span>
+                          </span>
+                        </option>
+                      );
+                    })}
+                  </Form.Select>
+                  {/* <PhoneInput
               country={'eg'}
               enableSearch={true}
               name="telephone"
               value={phone}
               onChange={setPhone(phone)}
             /> */}
-                <Form.Control
-                  type="tel"
-                  onChange={handleChange}
-                  name="telephone"
-                  minLength={10}
-                />
-                {contryCodeNull ? (
-                  <p style={{ color: 'red' }}>
-                    Please select country dail code
-                  </p>
-                ) : null}
-                {TelError ? (
-                  <p style={{ color: 'red' }}>Enter valid tel number</p>
-                ) : null}
+                  <Form.Control
+                    type="tel"
+                    onChange={handleChange}
+                    name="telephone"
+                    minLength={10}
+                  />
+                  {contryCodeNull ? (
+                    <p style={{ color: 'red' }}>
+                      Please select country dail code
+                    </p>
+                  ) : null}
+                  {TelError ? (
+                    <p style={{ color: 'red' }}>Enter valid tel number</p>
+                  ) : null}
+                </div>
               </Form.Group>
               <Form.Group
                 className="mb-3"
@@ -376,41 +378,43 @@ const RefundRequestForm = () => {
               >
                 <Form.Label>Mobile:</Form.Label>
                 <br />
-                <Form.Select
-                  aria-label="Default select example"
-                  className="flag-select"
-                  onChange={handleChange}
-                  name="mobCode"
-                >
-                  <option>Select</option>
-                  {JsonData.map((value) => {
-                    return (
-                      <option value={value.dial_code}>
-                        <span>
-                          <span>{value.flag} &nbsp;</span>
-                          <span>{value.name} &nbsp;</span>
-                          <span>{value.dial_code}</span>
-                        </span>
-                      </option>
-                    );
-                  })}
-                </Form.Select>
-                <Form.Control
-                  type="tel"
-                  onChange={handleChange}
-                  name="mobile"
-                />
-                {mobileContryCodeNull ? (
-                  <p style={{ color: 'red' }}>
-                    Please select country dail code
-                  </p>
-                ) : null}
-                {mobileError ? (
-                  <p style={{ color: 'red' }}>Enter valid mobile number</p>
-                ) : null}
-                {mobileNull ? (
-                  <p style={{ color: 'red' }}>Enter your mobile number</p>
-                ) : null}
+                <div className="mobile-flex-div-child">
+                  <Form.Select
+                    aria-label="Default select example"
+                    className="flag-select"
+                    onChange={handleChange}
+                    name="mobCode"
+                  >
+                    <option>Select</option>
+                    {JsonData.map((value) => {
+                      return (
+                        <option value={value.dial_code}>
+                          <span>
+                            <span>{value.flag} &nbsp;</span>
+                            <span>{value.name} &nbsp;</span>
+                            <span>{value.dial_code}</span>
+                          </span>
+                        </option>
+                      );
+                    })}
+                  </Form.Select>
+                  <Form.Control
+                    type="tel"
+                    onChange={handleChange}
+                    name="mobile"
+                  />
+                  {mobileContryCodeNull ? (
+                    <p style={{ color: 'red' }}>
+                      Please select country dail code
+                    </p>
+                  ) : null}
+                  {mobileError ? (
+                    <p style={{ color: 'red' }}>Enter valid mobile number</p>
+                  ) : null}
+                  {mobileNull ? (
+                    <p style={{ color: 'red' }}>Enter your mobile number</p>
+                  ) : null}
+                </div>
               </Form.Group>
             </div>
             <div className="input-flex">
@@ -422,10 +426,10 @@ const RefundRequestForm = () => {
                 <br />
                 <Form.Control
                   type="email"
-                  placeholder="example@example.com"
                   onChange={handleChange}
                   name="email"
                 />
+                <p className="input-p">example@example.com</p>
                 {emailError ? (
                   <p style={{ color: 'red' }}>Enter valid email</p>
                 ) : null}
@@ -441,10 +445,10 @@ const RefundRequestForm = () => {
                 <br />
                 <Form.Control
                   type="email"
-                  placeholder="example@example.com"
                   onChange={handleChange}
                   name="altEmail"
                 />
+                <p className="input-p">example@example.com</p>
                 {altEmailError ? (
                   <p style={{ color: 'red' }}>Enter valid alt email</p>
                 ) : null}

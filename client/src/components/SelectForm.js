@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 
 const SelectForm = () => {
   return (
-    <Container>
-      <div className="selectForm-parent">
+    <div className="selectForm-parent">
+      <Container>
         <div className="selectForm-child">
           <p>Click To Open</p>
           <h1>The Form</h1>
-          <div className='selectForm-flex'>
+          <div className="selectForm-flex">
             <Link to={'/form/refundRequestForm'}>Refund Request Form</Link>
             <br />
             <Link to={'/form/complaintForm'}>Complaint Form</Link>
@@ -33,8 +33,8 @@ const SelectForm = () => {
             </Link>
           </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 };
 

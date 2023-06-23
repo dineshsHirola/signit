@@ -476,30 +476,32 @@ const ChangeOfStudentDetailsForm = () => {
               >
                 <Form.Label>Mobile on File:</Form.Label>
                 <br />
-                <Form.Select
-                  aria-label="Default select example"
-                  className="flag-select"
-                  onChange={handleChange}
-                  name="mobCode"
-                >
-                  <option>Select</option>
-                  {JsonData.map((value) => {
-                    return (
-                      <option value={value.dial_code}>
-                        <span>
-                          <span>{value.flag} &nbsp;</span>
-                          <span>{value.name} &nbsp;</span>
-                          <span>{value.dial_code}</span>
-                        </span>
-                      </option>
-                    );
-                  })}
-                </Form.Select>
-                <Form.Control
-                  type="tel"
-                  onChange={handleChange}
-                  name="mobile"
-                />
+                <div className="mobile-flex-div-child">
+                  <Form.Select
+                    aria-label="Default select example"
+                    className="flag-select"
+                    onChange={handleChange}
+                    name="mobCode"
+                  >
+                    <option>Select</option>
+                    {JsonData.map((value) => {
+                      return (
+                        <option value={value.dial_code}>
+                          <span>
+                            <span>{value.flag} &nbsp;</span>
+                            <span>{value.name} &nbsp;</span>
+                            <span>{value.dial_code}</span>
+                          </span>
+                        </option>
+                      );
+                    })}
+                  </Form.Select>
+                  <Form.Control
+                    type="tel"
+                    onChange={handleChange}
+                    name="mobile"
+                  />
+                </div>
               </Form.Group>
               <Form.Group
                 className="mb-3"
@@ -507,30 +509,32 @@ const ChangeOfStudentDetailsForm = () => {
               >
                 <Form.Label>Mobile New:</Form.Label>
                 <br />
-                <Form.Select
-                  aria-label="Default select example"
-                  className="flag-select"
-                  onChange={handleChange2}
-                  name="mobCodeNew"
-                >
-                  <option>Select</option>
-                  {JsonData.map((value) => {
-                    return (
-                      <option value={value.dial_code}>
-                        <span>
-                          <span>{value.flag} &nbsp;</span>
-                          <span>{value.name} &nbsp;</span>
-                          <span>{value.dial_code}</span>
-                        </span>
-                      </option>
-                    );
-                  })}
-                </Form.Select>
-                <Form.Control
-                  type="tel"
-                  onChange={handleChange2}
-                  name="mobileNew"
-                />
+                <div className="mobile-flex-div-child">
+                  <Form.Select
+                    aria-label="Default select example"
+                    className="flag-select"
+                    onChange={handleChange2}
+                    name="mobCodeNew"
+                  >
+                    <option>Select</option>
+                    {JsonData.map((value) => {
+                      return (
+                        <option value={value.dial_code}>
+                          <span>
+                            <span>{value.flag} &nbsp;</span>
+                            <span>{value.name} &nbsp;</span>
+                            <span>{value.dial_code}</span>
+                          </span>
+                        </option>
+                      );
+                    })}
+                  </Form.Select>
+                  <Form.Control
+                    type="tel"
+                    onChange={handleChange2}
+                    name="mobileNew"
+                  />
+                </div>
               </Form.Group>
             </div>
             {mobileError ? (
@@ -551,10 +555,10 @@ const ChangeOfStudentDetailsForm = () => {
                 <br />
                 <Form.Control
                   type="email"
-                  placeholder="example@example.com"
                   onChange={handleChange}
                   name="email"
                 />
+                <p className="input-p">example@example.com</p>
               </Form.Group>
               <Form.Group
                 className="mb-3"
@@ -564,10 +568,10 @@ const ChangeOfStudentDetailsForm = () => {
                 <br />
                 <Form.Control
                   type="email"
-                  placeholder="example@example.com"
                   onChange={handleChange2}
                   name="emailNew"
                 />
+                <p className="input-p">example@example.com</p>
               </Form.Group>
             </div>
             {emailError ? (
@@ -586,10 +590,10 @@ const ChangeOfStudentDetailsForm = () => {
                 <br />
                 <Form.Control
                   type="email"
-                  placeholder="example@example.com"
                   onChange={handleChange}
                   name="altEmail"
                 />
+                <p className="input-p">example@example.com</p>
               </Form.Group>
               <Form.Group
                 className="mb-3"
@@ -599,10 +603,10 @@ const ChangeOfStudentDetailsForm = () => {
                 <br />
                 <Form.Control
                   type="email"
-                  placeholder="example@example.com"
                   onChange={handleChange2}
                   name="altEmailNew"
                 />{' '}
+                <p className="input-p">example@example.com</p>
               </Form.Group>
             </div>
             {altEmailError ? (

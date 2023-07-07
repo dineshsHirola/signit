@@ -75,6 +75,75 @@ const rrf_Schema = new mongoose.Schema({
       type: String,
     },
   },
+  invoiceNumber: {
+    type: String,
+  },
+  reason: {
+    type: String,
+  },
+  bankName: {
+    type: String,
+  },
+  accNumber: {
+    type: String,
+  },
+  accName: {
+    type: String,
+  },
+  bsb: {
+    type: String,
+  },
+  bankAddress: {
+    type: String,
+  },
+  swiftCode: {
+    type: String,
+  },
+  bankDate: {
+    type: String,
+  },
+  refundAmount: {
+    type: String,
+  },
+  comments: {
+    type: String,
+  },
+  refundMethod: {
+    type: String,
+  },
+  position: {
+    type: String,
+  },
+  printName: {
+    type: String,
+  },
+  dateProcessed: {
+    type: String,
+  },
+  refundRegister: {
+    type: String,
+  },
+  logDate: {
+    type: String,
+  },
+  loggedBy: {
+    type: String,
+  },
+  formal: {
+    type: String,
+  },
+  formalDate: {
+    type: String,
+  },
+  refundType: {
+    type: String,
+  },
+  otherRefundInput: {
+    type: String,
+  },
+  signatureImage: {
+    type: String,
+  },
 });
 
 const rrf_collection = mongoose.model('Rrf', rrf_Schema);

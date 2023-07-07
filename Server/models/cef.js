@@ -76,9 +76,30 @@ const cef_Schema = new mongoose.Schema({
   intStudent: {
     type: String,
   },
-  image:{
+  image: {
     type: String,
-  }
+  },
+  reasonsForReleaseRequest: {
+    type: String,
+  },
+  intPrefix: {
+    type: String,
+  },
+  intFirstName: {
+    type: String,
+  },
+  intMiddleName: {
+    type: String,
+  },
+  intLastName: {
+    type: String,
+  },
+  intDate: {
+    type: String,
+  },
+  image2: {
+    type: String,
+  },
 });
 
 const cef_collection = mongoose.model('Cef', cef_Schema);

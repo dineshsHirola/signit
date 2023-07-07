@@ -49,6 +49,30 @@ const ApplicationToCancelEnrolment = () => {
     };
   };
 
+  const [intSignatureImage, setIntSignatureImage] = useState('');
+  const [intSignatureFile, setIntSignatureFile] = useState('');
+
+  const [file2, setFile2] = useState(null);
+  const handleFileChange2 = (file) => {
+    const size = (file.size / (1024 * 1024)).toFixed(2);
+    if (size > 2) {
+      setIntSignatureError(true);
+    } else {
+      setIntSignatureError(false);
+      setIntSignatureFile(file);
+      previewSignatureFiles2(file);
+    }
+    setFile2(file);
+  };
+
+  const previewSignatureFiles2 = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setIntSignatureImage(reader.result);
+    };
+  };
+
   const [formData, setFormData] = useState({
     courseName: '',
     courseCode: '',
@@ -72,8 +96,16 @@ const ApplicationToCancelEnrolment = () => {
     detail: '',
     date: '',
     reason: '',
-    intStudent: '',
+    // intStudent: '',
+    reasonsForReleaseRequest: '',
+    intPrefix: 'Mr',
+    intFirstName: '',
+    intMiddleName: '',
+    intLastName: '',
+    intDate: '',
   });
+
+  const [changePageState, setChangePageState] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -124,9 +156,18 @@ const ApplicationToCancelEnrolment = () => {
   const [fileNull, setFileNull] = useState(false);
   const [radioNull, setRadioNull] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const [intDateNull, setIntDateNull] = useState(false);
+
+  const [explanationOfDecisionNull, setExplanationOfDecisionNull] =
+    useState(false);
+  const [intNameError, setIntNameError] = useState(false);
+  const [intNameNull, setIntNameNull] = useState(false);
+  const [intSignatureError, setIntSignatureError] = useState(false);
+  const [intFileNull, setIntFileNull] = useState(false);
+  const [intStudent, setIntStudent] = useState('No');
+
+  const handleNext = async (e) => {
     e.preventDefault();
-    console.log(formData);
     const courseNameVer = handleCourseNameError(
       formData.courseName,
       setCourseNameError,
@@ -161,6 +202,88 @@ const ApplicationToCancelEnrolment = () => {
     );
     const altEmailVer = altEmailValidator(formData.altEmail, setAltEmailError);
     const typeOfIdVer = typeOfIdValidation(formData.typeOfId, setTypeIdNull);
+    const imageVer = typeOfIdValidation(signatureImage, setFileNull);
+    const idVer = IdValidation(formData.idNumber, setIdError, setIdNull);
+    const addressVer = addressValidation(
+      formData.buildingName,
+      formData.street,
+      formData.town,
+      formData.state,
+      formData.postCode,
+      formData.country,
+      setAddressNull
+    );
+    const courseCodeVer = courseCodValidation(
+      formData.courseCode,
+      setCourseCodeNull
+    );
+    const qualCodeVer = courseCodValidation(
+      formData.qualCode,
+      setQualeCodeNull
+    );
+    const qualName = courseCodValidation(formData.qualName, setQualeNameNull);
+    const reasonVer = courseCodValidation(formData.reason, setReasonsNull);
+    const detailVer = courseCodValidation(formData.detail, setDetailsNull);
+    const radioVer = courseCodValidation(intStudent, setRadioNull);
+
+    if (
+      courseNameVer &&
+      startDateVer &&
+      nameVer &&
+      dbVer &&
+      mobVer &&
+      emailVer &&
+      // altEmailVer &&
+      addressVer &&
+      courseCodeVer &&
+      qualCodeVer &&
+      qualName &&
+      reasonVer &&
+      detailVer &&
+      radioVer &&
+      imageVer
+    ) {
+      setChangePageState(true);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const courseNameVer = handleCourseNameError(
+      formData.courseName,
+      setCourseNameError,
+      setCourseNameNUll
+    );
+    const startDateVer = startDateValidation(formData.date, setstartDateNull);
+    const nameVer = handleNameError(
+      formData.firstName,
+      formData.lastName,
+      setNameNull,
+      setNameError
+    );
+    const dbVer = dobValidation(formData.dob, setDobNull, setDobError);
+    const genderVer = genderValidation(formData.gender, setGenderNull);
+    const telVer = telValidation(
+      formData.telCode,
+      formData.telephone,
+      setCountryCodeNull,
+      setTelError
+    );
+    const mobVer = mobileValidation(
+      formData.mobCode,
+      formData.mobile,
+      setMobileCountryCodeNull,
+      setMobileError,
+      setMobileNUll
+    );
+    const emailVer = emailValidator(
+      formData.email,
+      setEmailError,
+      setEmailNull
+    );
+    const altEmailVer = altEmailValidator(formData.altEmail, setAltEmailError);
+    const typeOfIdVer = typeOfIdValidation(formData.typeOfId, setTypeIdNull);
+    const imageVer = typeOfIdValidation(signatureImage, setFileNull);
     const idVer = IdValidation(formData.idNumber, setIdError, setIdNull);
     const addressVer = addressValidation(
       formData.buildingName,
@@ -183,28 +306,45 @@ const ApplicationToCancelEnrolment = () => {
     const reasonVer = courseCodValidation(formData.reason, setReasonsNull);
     const detailVer = courseCodValidation(formData.detail, setDetailsNull);
     const radioVer = courseCodValidation(formData.intStudent, setRadioNull);
+    const reasonsForReleaseRequestVer = courseCodValidation(
+      formData.reasonsForReleaseRequest,
+      setExplanationOfDecisionNull
+    );
+    const IntImageVer = typeOfIdValidation(intSignatureImage, setIntFileNull);
+    const IntNameVer = handleNameError(
+      formData.intFirstName,
+      formData.intLastName,
+      setIntNameNull,
+      setIntNameError
+    );
+    const IntDateVer = startDateValidation(intStudent, setIntDateNull);
 
     if (
-      courseNameVer &&
-      startDateVer &&
-      nameVer &&
-      dbVer &&
-      mobVer &&
-      emailVer &&
-      altEmailVer &&
-      addressVer &&
-      courseCodeVer &&
-      qualCodeVer &&
-      qualName &&
-      reasonVer &&
-      detailVer &&
-      radioVer
+      // courseNameVer &&
+      // startDateVer &&
+      // nameVer &&
+      // dbVer &&
+      // mobVer &&
+      // emailVer &&
+      // addressVer &&
+      // courseCodeVer &&
+      // qualCodeVer &&
+      // qualName &&
+      // reasonVer &&
+      // detailVer &&
+      // radioVer &&
+      // imageVer && 
+      reasonsForReleaseRequestVer &&
+      IntImageVer &&
+      IntNameVer &&
+      IntDateVer
     ) {
-      console.log(formData);
       await axios
         .post('http://localhost:8000/forms/cef', {
           formData,
-          signatureImage
+          signatureImage,
+          intStudent,
+          intSignatureImage,
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
@@ -216,481 +356,777 @@ const ApplicationToCancelEnrolment = () => {
         .catch((e) => {
           console.log('Axios error', e);
         });
+    } else {
+      alert('Pending');
     }
+  };
+
+  const handleChangePageStateBack = (e) => {
+    e.preventDefault();
+    setChangePageState(false);
   };
 
   return (
     <div className="outer-div">
       <Container>
-        <h1 className="form-h1">APPLICATION TO CANCEL ENROLMENT</h1>
-        <p className="sub-p">
-          Please read the information and complete all relevant pages of this
-          form, sign the declaration, and submit this form in person Signet
-          Institute reception counter or via email: info@signet.edu.auYou must
-          refer to your Student Agreement for the Signet Institute Fees and
-          Refunds Policy to confirm if you are liable to pay any course fees or
-          eligible to apply for refund.Only form cancellation requests will be
-          considered.
-        </p>
-        <div className="form-parent">
-          <Form className="cancel-enrollment-form-div">
-            <p className="form-p">STUDENT DETAILS</p>
-            <div className="name-div">
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label>Full Name</Form.Label>
-                <br />
-                <div className="d-flex">
+        {changePageState === false && (
+          <>
+            <h1 className="form-h1">APPLICATION TO CANCEL ENROLMENT</h1>
+            <p className="sub-p">
+              Please read the information and complete all relevant pages of
+              this form, sign the declaration, and submit this form in person
+              Signet Institute reception counter or via email:
+              info@signet.edu.auYou must refer to your Student Agreement for the
+              Signet Institute Fees and Refunds Policy to confirm if you are
+              liable to pay any course fees or eligible to apply for refund.Only
+              form cancellation requests will be considered.
+            </p>
+            <div className="form-parent">
+              <Form className="cancel-enrollment-form-div">
+                <p className="form-p">STUDENT DETAILS</p>
+                <div className="name-div">
                   <Form.Group
                     className="mb-3"
                     controlId="exampleForm.ControlInput1"
                   >
-                    <Form.Select
-                      aria-label="Default select example"
-                      onChange={handleChange}
-                      name="prefix"
-                    >
-                      <option value="Mr." selected>
-                        Mr.
-                      </option>
-                      <option value="Mrs.">Mrs.</option>
-                    </Form.Select>
-                    <p className="input-p">Title</p>
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Control
-                      type="text"
-                      onChange={handleChange}
-                      name="firstName"
-                    />
-                    <p className="input-p">First Name</p>
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Control
-                      type="text"
-                      onChange={handleChange}
-                      name="middleName"
-                    />
-                    <p className="input-p">Middel Name</p>
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Control
-                      type="text"
-                      onChange={handleChange}
-                      name="lastName"
-                    />
-                    <p className="input-p">Last Name</p>
-                  </Form.Group>
-                </div>
-                {nameError ? (
-                  <p style={{ color: 'red' }}>
-                    First Name and Last Name should contain only alphabets
-                  </p>
-                ) : null}
-                {nameNull ? (
-                  <p style={{ color: 'red' }}>
-                    Please enter First Name and Last Name
-                  </p>
-                ) : null}
-              </Form.Group>
-            </div>
-            <div className="flex-width">
-              <div className="input-flex mobile-flex-div ">
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlInput1"
-                >
-                  <Form.Label>Date of Birth:</Form.Label>
-                  <br />
-                  <Form.Control
-                    type="date"
-                    onChange={handleChange}
-                    name="dob"
-                    className="dob-input"
-                  />
-                  {dobError ? (
-                    <p style={{ color: 'red' }}>Select valid DOB</p>
-                  ) : null}
-                  {dobNull ? (
-                    <p style={{ color: 'red' }}>Please select DOB</p>
-                  ) : null}
-                </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlInput1"
-                >
-                  <Form.Label>Mobile:</Form.Label>
-                  <br />
-                  <div className="mobile-flex-div-child">
-                    <Form.Select
-                      aria-label="Default select example"
-                      className="flag-select"
-                      onChange={handleChange}
-                      name="mobCode"
-                    >
-                      <option>Select</option>
-                      {JsonData.map((value) => {
-                        return (
-                          <option value={value.dial_code}>
-                            <span>
-                              <span>{value.flag} &nbsp;</span>
-                              <span>{value.name} &nbsp;</span>
-                              <span>{value.dial_code}</span>
-                            </span>
-                          </option>
-                        );
-                      })}
-                    </Form.Select>
-                    <Form.Control
-                      type="tel"
-                      onChange={handleChange}
-                      name="mobile"
-                    />
-                  </div>
-                  {mobileContryCodeNull ? (
-                    <p style={{ color: 'red' }}>
-                      Please select country dail code
-                    </p>
-                  ) : null}
-                  {mobileError ? (
-                    <p style={{ color: 'red' }}>Enter valid mobile number</p>
-                  ) : null}
-                  {mobileNull ? (
-                    <p style={{ color: 'red' }}>Enter your mobile number</p>
-                  ) : null}
-                </Form.Group>
-              </div>
-            </div>
-            <div className="flex-width">
-              <div className="input-flex">
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlInput1"
-                >
-                  <Form.Label>Email:</Form.Label>
-                  <br />
-                  <Form.Control
-                    type="email"
-                    onChange={handleChange}
-                    name="email"
-                  />
-                  <p className="input-p">example@example.com</p>
-                  {emailError ? (
-                    <p style={{ color: 'red' }}>Enter valid email</p>
-                  ) : null}
-                  {emailNull ? (
-                    <p style={{ color: 'red' }}>Enter your email</p>
-                  ) : null}
-                </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlInput1"
-                >
-                  <Form.Label>Alternative Email:</Form.Label>
-                  <br />
-                  <Form.Control
-                    type="email"
-                    onChange={handleChange}
-                    name="altEmail"
-                  />
-                  <p className="input-p">example@example.com</p>
-                  {altEmailError ? (
-                    <p style={{ color: 'red' }}>Enter valid alt email</p>
-                  ) : null}
-                </Form.Group>
-              </div>
-            </div>
-
-            <div className="flex-width">
-              <div className="address-div">
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlInput1"
-                >
-                  <Form.Label>Address</Form.Label>
-                  <br />
-                  <div className="input-flex ">
-                    <div>
-                      <Form.Control
-                        type="text"
-                        onChange={handleChange}
-                        name="buildingName"
-                      />
-                      <p className="input-p">Building name, Unit name</p>
-                    </div>
-                    <div>
-                      <Form.Control
-                        type="text"
-                        onChange={handleChange}
-                        name="street"
-                      />
-                      <p className="input-p">Street Address</p>
-                    </div>
-                  </div>
-                  <div className="input-flex">
-                    <div>
-                      <Form.Control
-                        type="text"
-                        onChange={handleChange}
-                        name="town"
-                      />
-                      <p className="input-p">Suburb/Town</p>
-                    </div>
-                    <div>
-                      <Form.Control
-                        type="text"
-                        onChange={handleChange}
-                        name="state"
-                      />
-                      <p className="input-p">State</p>
-                    </div>
-                  </div>
-                  <div className="input-flex">
-                    <div>
-                      <Form.Control
-                        type="text"
-                        onChange={handleChange}
-                        name="postCode"
-                      />
-                      <p className="input-p">Postcode</p>
-                    </div>
-                    <div>
-                      <Form.Select
-                        aria-label="Default select example"
-                        onChange={handleChange}
-                        name="country"
-                        className="country-select select-country"
+                    <Form.Label>
+                      Full Name<span className="mandate">*</span>
+                    </Form.Label>
+                    <br />
+                    <div className="d-flex">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
                       >
-                        <option>Please Select</option>
-                        {JsonData.map((value) => {
-                          return (
-                            <option key={value.code} value={value.name}>
-                              {value.name}
-                            </option>
-                          );
-                        })}
-                      </Form.Select>
-                      <p className="input-p">Country</p>
+                        <Form.Select
+                          aria-label="Default select example"
+                          onChange={handleChange}
+                          name="prefix"
+                          value={formData.prefix}
+                        >
+                          <option value="Mr." selected>
+                            Mr.
+                          </option>
+                          <option value="Mrs.">Mrs.</option>
+                        </Form.Select>
+                        <p className="input-p">Title</p>
+                      </Form.Group>
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                      >
+                        <Form.Control
+                          type="text"
+                          onChange={handleChange}
+                          name="firstName"
+                          value={formData.firstName}
+                        />
+                        <p className="input-p">First Name</p>
+                      </Form.Group>
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                      >
+                        <Form.Control
+                          type="text"
+                          onChange={handleChange}
+                          name="middleName"
+                          value={formData.middleName}
+                        />
+                        <p className="input-p">Middel Name</p>
+                      </Form.Group>
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                      >
+                        <Form.Control
+                          type="text"
+                          onChange={handleChange}
+                          name="lastName"
+                          value={formData.lastName}
+                        />
+                        <p className="input-p">Last Name</p>
+                      </Form.Group>
                     </div>
-                  </div>
-                  {addressNull ? (
-                    <p style={{ color: 'red' }}>Enter all fields of Address</p>
-                  ) : null}
-                </Form.Group>
-              </div>
-            </div>
-
-            <div className="flex-width">
-              <div className="input-flex">
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlInput1"
-                >
-                  <Form.Label>Course Code:</Form.Label>
-                  <br />
-                  <Form.Control
-                    type="text"
-                    onChange={handleChange}
-                    name="courseCode"
-                  />
-                  {courseCodeNull ? (
-                    <p style={{ color: 'red' }}>Course Code is required</p>
-                  ) : null}
-                </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlInput1"
-                >
-                  <Form.Label>Course Name:</Form.Label>
-                  <br />
-                  <Form.Control
-                    type="text"
-                    onChange={handleChange}
-                    name="courseName"
-                  />
-                  {courseNameError ? (
-                    <p style={{ color: 'red' }}>
-                      Course Name should contain only alphabets
-                    </p>
-                  ) : null}
-                  {courseNameNull ? (
-                    <p style={{ color: 'red' }}>Please enter course name</p>
-                  ) : null}
-                </Form.Group>
-              </div>
-            </div>
-
-            <div className="textarea-div">
-              <h5>Details for the Request</h5>
-              <div className="flex-width">
-                <div className="input-flex">
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>Course / Qualification Code</Form.Label>
-                    <br />
-                    <Form.Control
-                      type="text"
-                      onChange={handleChange}
-                      name="qualCode"
-                    />
-                    {qualeCodeNull ? (
-                      <p style={{ color: 'red' }}>Course Code is required</p>
+                    {nameError ? (
+                      <p style={{ color: 'red' }}>
+                        First Name and Last Name should contain only alphabets
+                      </p>
                     ) : null}
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>Course / Qualification Name</Form.Label>
-                    <br />
-                    <Form.Control
-                      type="text"
-                      onChange={handleChange}
-                      name="qualName"
-                    />
-                    {qualeNameNull ? (
-                      <p style={{ color: 'red' }}>Please enter course name</p>
+                    {nameNull ? (
+                      <p style={{ color: 'red' }}>
+                        Please enter First Name and Last Name
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
-              </div>
-            </div>
+                <div className="flex-width">
+                  <div className="input-flex mobile-flex-div ">
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label>
+                        Date of Birth:<span className="mandate">*</span>
+                      </Form.Label>
+                      <br />
+                      <Form.Control
+                        type="date"
+                        onChange={handleChange}
+                        name="dob"
+                        className="dob-input"
+                        value={formData.dob}
+                      />
+                      {dobError ? (
+                        <p style={{ color: 'red' }}>Select valid DOB</p>
+                      ) : null}
+                      {dobNull ? (
+                        <p style={{ color: 'red' }}>Please select DOB</p>
+                      ) : null}
+                    </Form.Group>
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label>
+                        Mobile:<span className="mandate">*</span>
+                      </Form.Label>
+                      <br />
+                      <div className="mobile-flex-div-child">
+                        <Form.Select
+                          aria-label="Default select example"
+                          className="flag-select"
+                          onChange={handleChange}
+                          name="mobCode"
+                          value={formData.mobCode}
+                        >
+                          <option>Select</option>
+                          {JsonData.map((value) => {
+                            return (
+                              <option value={value.dial_code}>
+                                <span>
+                                  <span>{value.flag} &nbsp;</span>
+                                  <span>{value.name} &nbsp;</span>
+                                  <span>{value.dial_code}</span>
+                                </span>
+                              </option>
+                            );
+                          })}
+                        </Form.Select>
+                        <Form.Control
+                          type="tel"
+                          onChange={handleChange}
+                          name="mobile"
+                          value={formData.mobile}
+                        />
+                      </div>
+                      {mobileContryCodeNull ? (
+                        <p style={{ color: 'red' }}>
+                          Please select country dail code
+                        </p>
+                      ) : null}
+                      {mobileError ? (
+                        <p style={{ color: 'red' }}>
+                          Enter valid mobile number
+                        </p>
+                      ) : null}
+                      {mobileNull ? (
+                        <p style={{ color: 'red' }}>Enter your mobile number</p>
+                      ) : null}
+                    </Form.Group>
+                  </div>
+                </div>
+                <div className="flex-width">
+                  <div className="input-flex">
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label>
+                        Email:<span className="mandate">*</span>
+                      </Form.Label>
+                      <br />
+                      <Form.Control
+                        type="email"
+                        onChange={handleChange}
+                        name="email"
+                        value={formData.email}
+                      />
+                      <p className="input-p">example@example.com</p>
+                      {emailError ? (
+                        <p style={{ color: 'red' }}>Enter valid email</p>
+                      ) : null}
+                      {emailNull ? (
+                        <p style={{ color: 'red' }}>Enter your email</p>
+                      ) : null}
+                    </Form.Group>
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label>Alternative Email:</Form.Label>
+                      <br />
+                      <Form.Control
+                        type="email"
+                        onChange={handleChange}
+                        name="altEmail"
+                        value={formData.altEmail}
+                      />
+                      <p className="input-p">example@example.com</p>
+                      {altEmailError ? (
+                        <p style={{ color: 'red' }}>Enter valid alt email</p>
+                      ) : null}
+                    </Form.Group>
+                  </div>
+                </div>
 
-            <div className="flex-width">
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label className="complainet-p">
-                  Provide details when do you want to cancel your enrolment.
-                </Form.Label>
-                <Form.Control
-                  as="textarea"
-                  onChange={handleChange}
-                  name="detail"
-                />
-                {detailsNull ? (
-                  <p style={{ color: 'red' }}>Details is required</p>
-                ) : null}
-              </Form.Group>
-            </div>
+                <div className="flex-width">
+                  <div className="address-div">
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label>
+                        Address<span className="mandate">*</span>
+                      </Form.Label>
+                      <br />
+                      <div className="input-flex ">
+                        <div>
+                          <Form.Control
+                            type="text"
+                            onChange={handleChange}
+                            name="buildingName"
+                            value={formData.buildingName}
+                          />
+                          <p className="input-p">Building name, Unit name</p>
+                        </div>
+                        <div>
+                          <Form.Control
+                            type="text"
+                            onChange={handleChange}
+                            name="street"
+                            value={formData.street}
+                          />
+                          <p className="input-p">Street Address</p>
+                        </div>
+                      </div>
+                      <div className="input-flex">
+                        <div>
+                          <Form.Control
+                            type="text"
+                            onChange={handleChange}
+                            name="town"
+                            value={formData.town}
+                          />
+                          <p className="input-p">Suburb/Town</p>
+                        </div>
+                        <div>
+                          <Form.Control
+                            type="text"
+                            onChange={handleChange}
+                            name="state"
+                            value={formData.state}
+                          />
+                          <p className="input-p">State</p>
+                        </div>
+                      </div>
+                      <div className="input-flex">
+                        <div>
+                          <Form.Control
+                            type="text"
+                            onChange={handleChange}
+                            name="postCode"
+                            value={formData.postCode}
+                          />
+                          <p className="input-p">Postcode</p>
+                        </div>
+                        <div>
+                          <Form.Select
+                            aria-label="Default select example"
+                            onChange={handleChange}
+                            name="country"
+                            className="country-select select-country"
+                            value={formData.country}
+                          >
+                            <option>Please Select</option>
+                            {JsonData.map((value) => {
+                              return (
+                                <option key={value.code} value={value.name}>
+                                  {value.name}
+                                </option>
+                              );
+                            })}
+                          </Form.Select>
+                          <p className="input-p">Country</p>
+                        </div>
+                      </div>
+                      {addressNull ? (
+                        <p style={{ color: 'red' }}>
+                          Enter all fields of Address
+                        </p>
+                      ) : null}
+                    </Form.Group>
+                  </div>
+                </div>
 
-            <div className="flex-width dob-mar">
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label>Date effective from:</Form.Label>
-                <br />
-                <Form.Control type="date" onChange={handleChange} name="date" />
-                {startDateNull ? (
-                  <p style={{ color: 'red' }}>Date is required</p>
-                ) : null}
-              </Form.Group>
-            </div>
+                <div className="flex-width">
+                  <div className="input-flex">
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label>
+                        Course Code:<span className="mandate">*</span>
+                      </Form.Label>
+                      <br />
+                      <Form.Control
+                        type="text"
+                        onChange={handleChange}
+                        name="courseCode"
+                        value={formData.courseCode}
+                      />
+                      {courseCodeNull ? (
+                        <p style={{ color: 'red' }}>Course Code is required</p>
+                      ) : null}
+                    </Form.Group>
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label>
+                        Course Name:<span className="mandate">*</span>
+                      </Form.Label>
+                      <br />
+                      <Form.Control
+                        type="text"
+                        onChange={handleChange}
+                        name="courseName"
+                        value={formData.courseName}
+                      />
+                      {courseNameError ? (
+                        <p style={{ color: 'red' }}>
+                          Course Name should contain only alphabets
+                        </p>
+                      ) : null}
+                      {courseNameNull ? (
+                        <p style={{ color: 'red' }}>Please enter course name</p>
+                      ) : null}
+                    </Form.Group>
+                  </div>
+                </div>
 
-            <div className="flex-width ">
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label className="complainet-p">
-                  Provided the reasons for your request:
-                </Form.Label>
-                <Form.Control
-                  as="textarea"
-                  onChange={handleChange}
-                  name="reason"
-                />
-                {reasonsNull ? (
-                  <p style={{ color: 'red' }}>Reason is required</p>
-                ) : null}
-              </Form.Group>
-            </div>
+                <div className="textarea-div">
+                  <h5>Details for the Request</h5>
+                  <div className="flex-width">
+                    <div className="input-flex">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                      >
+                        <Form.Label>
+                          Course / Qualification Code
+                          <span className="mandate">*</span>
+                        </Form.Label>
+                        <br />
+                        <Form.Control
+                          type="text"
+                          onChange={handleChange}
+                          name="qualCode"
+                          value={formData.qualCode}
+                        />
+                        {qualeCodeNull ? (
+                          <p style={{ color: 'red' }}>
+                            Course Code is required
+                          </p>
+                        ) : null}
+                      </Form.Group>
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                      >
+                        <Form.Label>
+                          Course / Qualification Name
+                          <span className="mandate">*</span>
+                        </Form.Label>
+                        <br />
+                        <Form.Control
+                          type="text"
+                          onChange={handleChange}
+                          name="qualName"
+                          value={formData.qualName}
+                        />
+                        {qualeNameNull ? (
+                          <p style={{ color: 'red' }}>
+                            Please enter course name
+                          </p>
+                        ) : null}
+                      </Form.Group>
+                    </div>
+                  </div>
+                </div>
 
-            <div className="flex-width ">
-              <div className="textarea-div">
-                <h5>Supporting Documents:</h5>
+                <div className="flex-width">
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlInput1"
+                  >
+                    <Form.Label className="complainet-p">
+                      Provide details when do you want to cancel your enrolment.
+                      <span className="mandate">*</span>
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      onChange={handleChange}
+                      name="detail"
+                      value={formData.detail}
+                    />
+                    {detailsNull ? (
+                      <p style={{ color: 'red' }}>Details is required</p>
+                    ) : null}
+                  </Form.Group>
+                </div>
+
+                <div className="flex-width dob-mar">
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlInput1"
+                  >
+                    <Form.Label>
+                      Date effective from:<span className="mandate">*</span>
+                    </Form.Label>
+                    <br />
+                    <Form.Control
+                      type="date"
+                      onChange={handleChange}
+                      name="date"
+                      value={formData.date}
+                    />
+                    {startDateNull ? (
+                      <p style={{ color: 'red' }}>Date is required</p>
+                    ) : null}
+                  </Form.Group>
+                </div>
+
+                <div className="flex-width ">
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlInput1"
+                  >
+                    <Form.Label className="complainet-p">
+                      Provided the reasons for your request:
+                      <span className="mandate">*</span>
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      onChange={handleChange}
+                      name="reason"
+                      value={formData.reason}
+                    />
+                    {reasonsNull ? (
+                      <p style={{ color: 'red' }}>Reason is required</p>
+                    ) : null}
+                  </Form.Group>
+                </div>
+
+                <div className="flex-width ">
+                  <div className="textarea-div">
+                    <h5>
+                      Supporting Documents:<span className="mandate">*</span>
+                    </h5>
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label>
+                        Your request will only be considered if you have
+                        provided evidence of the reasons for your request.
+                        Please list the documents attached:
+                      </Form.Label>
+                      <FileUploader
+                        handleChange={handleFileChange}
+                        name="file"
+                        types={fileTypes}
+                        accept="image/png, image/jpeg, image/jpg, application/pdf"
+                      />
+                      <p>
+                        <i>Image should be less than 2MB</i>
+                      </p>
+                      {signatureError ? (
+                        <p style={{ color: 'red' }}>
+                          Image Size should be less than 2MB
+                        </p>
+                      ) : null}
+                      {fileNull ? (
+                        <p style={{ color: 'red' }}>
+                          Supporting Document is required
+                        </p>
+                      ) : null}
+                    </Form.Group>
+                  </div>
+                </div>
+
+                <div className="flex-width ">
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlInput1"
+                  >
+                    <Form.Label>Are you an International student?</Form.Label>
+                    <Form.Check
+                      inline
+                      label="Yes"
+                      name="intStudent"
+                      className="radio-input"
+                      value="Yes"
+                      type="radio"
+                      onChange={(e) => {
+                        setIntStudent(e.target.value);
+                      }}
+                    />
+                    <Form.Check
+                      inline
+                      label="No"
+                      name="intStudent"
+                      className="radio-input"
+                      value="No"
+                      type="radio"
+                      onChange={(e) => {
+                        setIntStudent(e.target.value);
+                      }}
+                    />
+                  </Form.Group>
+                </div>
+
+                {intStudent === 'Yes' && (
+                  <div className="flex-width btn-mar-top">
+                    <button onClick={handleNext}>Next</button>
+                  </div>
+                )}
+              </Form>
+            </div>
+          </>
+        )}
+        {changePageState && (
+          <>
+            <h1 className="form-h1">
+              Release Request (International Student only):
+            </h1>
+            <p className="sub-p">
+              Complete this section only if you wish to transfer to another
+              registered provider and require to be released from Signet
+              Institute. You must attach a Letter of offer from new training
+              provider. Refer to Overseas Student Transfer Policy on Signet
+              Institute Student Portal for more details.
+            </p>
+            <div className="form-parent">
+              <Form className="cancel-enrollment-form-div">
+                <p className="form-p">Reasons for Release Request:</p>
+                <div className="textarea-div">
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlInput1"
+                  >
+                    <Form.Label>
+                      Signet Institute has cancelled or no longer offers the
+                      program Do not meet the requirements for entry into the
+                      program (academic /English language)Sponsor related
+                      considerations Compassionate or compelling reasons
+                      (explain below)Others - please explain.
+                      <span className="mandate">*</span>
+                    </Form.Label>
+                    <br />
+                    <Form.Control
+                      as="textarea"
+                      onChange={handleChange}
+                      name="reasonsForReleaseRequest"
+                      value={formData.reasonsForReleaseRequest}
+                    />
+                    {explanationOfDecisionNull ? (
+                      <p style={{ color: 'red' }}>
+                        Reasons for Release Request is required
+                      </p>
+                    ) : null}
+                  </Form.Group>
+                </div>
+                <p className="form-p">Supporting Documents:</p>
+                <div className="flex-width ">
+                  <div className="textarea-div">
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label>
+                        You must provide the following documents to support your
+                        release request. Please tick to indicate the documents
+                        provided Letter of offer from new training provider
+                        Support documents - providing information to support
+                        reason provided above Personal statement explaining
+                        reason for release request Others - please indicate.
+                        <span className="mandate">*</span>
+                      </Form.Label>
+                      <FileUploader
+                        handleChange={handleFileChange2}
+                        name="file"
+                        types={fileTypes}
+                        accept="image/png, image/jpeg, image/jpg, application/pdf"
+                      />
+                      <p>
+                        <i>Image should be less than 2MB</i>
+                      </p>
+                      {intSignatureError ? (
+                        <p style={{ color: 'red' }}>
+                          Image Size should be less than 2MB
+                        </p>
+                      ) : null}
+                      {intFileNull ? (
+                        <p style={{ color: 'red' }}>
+                          Supporting Documents is required
+                        </p>
+                      ) : null}
+                    </Form.Group>
+                  </div>
+                </div>
+                <p className="form-p">Student Declaration:</p>
+                <p>I understand and agree that:</p>
+                <ul>
+                  <li>
+                    any change to my enrolments at Signet Institute (CoEs for
+                    Overseas Students) is not finalised until my complete
+                    application has been received and approved by Signet
+                    Institute. I will be advised in writing of the outcome of my
+                    completed application within ten (10) business days.
+                  </li>
+                  <li>
+                    it is my responsibility to ensure that Signet Institute has
+                    my current contact details. Signet Institute will not be
+                    responsible for delays in responding to my request if I
+                    change my contact details and do not notify Signet Institute
+                    of this;
+                  </li>
+                  <li>
+                    if there are any due or outstanding fees or charges
+                    (according to my student agreement), I am still liable to
+                    pay those. Signet Institute may approach debt collection
+                    agencies and/or credit bureaus to recover outstanding debts
+                    if I fail to do so;
+                  </li>
+                  <li>
+                    I declare that my application for cancelation of enrolment
+                    and/or my request for release is for genuine reasons and
+                    that I have attached the required documentation to support
+                    my application. I declare that the information I have
+                    provided is true and correct. Applicable to Overseas
+                    Students only:
+                  </li>
+                  <li>
+                    I understand and accept that the approval of my request for
+                    enrolment cancellation and/or request for release may affect
+                    my current student visa and that Signet Institute will be
+                    advising the Department of Home Affairs (DHA) of changes to
+                    my enrolment with Signet Institute.
+                  </li>
+                </ul>
+                <div className="name-div">
+                  <Form.Group
+                    className="mb-3"
+                    controlId="exampleForm.ControlInput1"
+                  >
+                    <Form.Label>
+                      Student Name:<span className="mandate">*</span>
+                    </Form.Label>
+                    <br />
+                    <div className="d-flex">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                      >
+                        <Form.Select
+                          aria-label="Default select example"
+                          onChange={handleChange}
+                          name="intPrefix"
+                          value={formData.intPrefix}
+                        >
+                          <option value="Mr." selected>
+                            Mr.
+                          </option>
+                          <option value="Mrs.">Mrs.</option>
+                        </Form.Select>
+                        <p className="input-p">Title</p>
+                      </Form.Group>
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                      >
+                        <Form.Control
+                          type="text"
+                          onChange={handleChange}
+                          name="intFirstName"
+                          value={formData.intFirstName}
+                        />
+                        <p className="input-p">First Name</p>
+                      </Form.Group>
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                      >
+                        <Form.Control
+                          type="text"
+                          onChange={handleChange}
+                          name="intMiddleName"
+                          value={formData.intMiddleName}
+                        />
+                        <p className="input-p">Middel Name</p>
+                      </Form.Group>
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                      >
+                        <Form.Control
+                          type="text"
+                          onChange={handleChange}
+                          name="intLastName"
+                          value={formData.intLastName}
+                        />
+                        <p className="input-p">Last Name</p>
+                      </Form.Group>
+                    </div>
+                    {intNameError ? (
+                      <p style={{ color: 'red' }}>
+                        First Name and Last Name should contain only alphabets
+                      </p>
+                    ) : null}
+                    {intNameNull ? (
+                      <p style={{ color: 'red' }}>
+                        Please enter First Name and Last Name
+                      </p>
+                    ) : null}
+                  </Form.Group>
+                </div>
                 <Form.Group
                   className="mb-3"
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Label>
-                    Your request will only be considered if you have provided
-                    evidence of the reasons for your request. Please list the
-                    documents attached:
+                    Date<span className="mandate">*</span>
                   </Form.Label>
-                  <FileUploader
-                    handleChange={handleFileChange}
-                    name="file"
-                    types={fileTypes}
-                    accept="image/png, image/jpeg, image/jpg, application/pdf"
+                  <br />
+                  <Form.Control
+                    type="date"
+                    onChange={handleChange}
+                    name="intDate"
+                    value={formData.intDate}
                   />
-                  <p>
-                    <i>Image should be less than 2MB</i>
-                  </p>
-                  {signatureError ? (
-                    <p style={{ color: 'red' }}>
-                      Image Size should be less than 2MB
-                    </p>
-                  ) : null}
-                  {fileNull ? (
-                    <p style={{ color: 'red' }}>
-                      Supporting Document is required
-                    </p>
+                  {intDateNull ? (
+                    <p style={{ color: 'red' }}>Date is required</p>
                   ) : null}
                 </Form.Group>
-              </div>
+                <div className="input-flex">
+                  <button onClick={handleChangePageStateBack}>Back</button>
+                  <button onClick={handleSubmit}>Submit</button>
+                </div>
+              </Form>
             </div>
-
-            <div className="flex-width ">
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label>Are you an International student?</Form.Label>
-                <Form.Check
-                  inline
-                  label="Yes"
-                  name="intStudent"
-                  className="radio-input"
-                  value="Yes"
-                  type="radio"
-                  onChange={handleChange}
-                />
-                <Form.Check
-                  inline
-                  label="No"
-                  name="intStudent"
-                  className="radio-input"
-                  value="No"
-                  type="radio"
-                  onChange={handleChange}
-                />
-                {radioNull ? (
-                  <p style={{ color: 'red' }}>Reason is required</p>
-                ) : null}
-              </Form.Group>
-            </div>
-
-            <div className="flex-width btn-mar-top">
-              <button onClick={handleSubmit}>Submit</button>
-            </div>
-          </Form>
-        </div>
+          </>
+        )}
       </Container>
     </div>
   );

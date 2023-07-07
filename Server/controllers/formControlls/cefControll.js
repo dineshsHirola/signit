@@ -27,9 +27,14 @@ module.exports = async (req, res) => {
     detail,
     date,
     reason,
-    intStudent,
+    reasonsForReleaseRequest,
+    intPrefix,
+    intFirstName,
+    intMiddleName,
+    intLastName,
+    intDate,
   } = req.body.formData;
-  const { signatureImage } = req.body;
+  const { signatureImage, intSignatureImage, intStudent } = req.body;
 
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUDE_NAME,
@@ -79,6 +84,13 @@ module.exports = async (req, res) => {
           postCode: postCode,
           country: country,
         },
+        reasonsForReleaseRequest,
+        intPrefix,
+        intFirstName,
+        intMiddleName,
+        intLastName,
+        intDate,
+        // image2,
       });
 
       cef_collection

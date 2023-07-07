@@ -69,6 +69,69 @@ const ctf_Schema = new mongoose.Schema({
       type: String,
     },
   },
+  courseCodeTitle: {
+    type: String,
+  },
+  statementOfAttenment: {
+    type: String,
+  },
+  headOfCompliance: {
+    type: String,
+  },
+  explanationOfDecision: {
+    type: String,
+  },
+  courseSectionDate: {
+    type: String,
+  },
+  repFirstName: {
+    type: String,
+  },
+  repLastName: {
+    type: String,
+  },
+  unitsDate: {
+    type: String,
+  },
+  initials: {
+    type: String,
+  },
+  initialsDate: {
+    type: String,
+  },
+  adminFirstName: {
+    type: String,
+  },
+  adminLastName: {
+    type: String,
+  },
+  adminDate: {
+    type: String,
+  },
+  managerFirstName: {
+    type: String,
+  },
+  managerLastName: {
+    type: String,
+  },
+  managerDate: {
+    type: String,
+  },
+  studentAdvisedInWriting: {
+    type: String,
+  },
+  ctRecordedInSms: {
+    type: String,
+  },
+  applicationClosed: {
+    type: String,
+  },
+  unitCode: {
+    type: Array,
+  },
+  unitTitle: {
+    type: Array,
+  },
 });
 
 const ctf_collection = mongoose.model('Ctf', ctf_Schema);

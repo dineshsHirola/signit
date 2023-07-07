@@ -365,9 +365,44 @@ label.office-use.form-label {
   width: 300px !important;
 }
 
+.creditTransfer form {
+  width: 76%;
+}
+
 .flex-width {
   margin-inline: auto;
-  width: 85%;
+  /* width: 85%; */
+  width: 100%;
+}
+
+.refund-req form {
+  width: 77%;
+}
+
+table {
+  width: 100%;
+}
+
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
+  border-color: inherit;
+  border-style: solid;
+  border-width: 0;
+  border: 2px solid #fff;
+  padding: 5px;
+  color: #fff;
+}
+
+td input#exampleForm\.ControlInput1 {
+  border: none;
+}
+
+.gte-name-align{
+  justify-content: flex-start;
 }
 
 .dob-input {

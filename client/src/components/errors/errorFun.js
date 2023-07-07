@@ -227,7 +227,7 @@ export const altEmailValidator = (email, setAltEmailError) => {
 };
 
 export const typeOfIdValidation = (typeOfID, setTypeIdNull) => {
-  if (typeOfID === '') {
+  if (!typeOfID) {
     setTypeIdNull(true);
     return false;
   } else {
@@ -291,6 +291,110 @@ export const handleCheckboxSubmit = (
     return true;
   }
 };
+
+export const handleAdminCheckboxSubmit = (
+  declaration1,
+  declaration2,
+  declaration3,
+  setCheckError
+) => {
+  if (
+    declaration1 === false &&
+    declaration2 === false &&
+    declaration3 === false
+  ) {
+    setCheckError(true);
+    return false;
+  } else {
+    setCheckError(false);
+    return true;
+  }
+};
+
+export const handleAcknowledgement = (declaration1, setCheckError) => {
+  if (declaration1 === true) {
+    setCheckError(false);
+    return true;
+  } else {
+    setCheckError(true);
+    return false;
+  }
+};
+
+export const refundTypeValidation = (
+  refundType,
+  otherRefundInput,
+  setRadioNull
+) => {
+  if (refundType === '') {
+    setRadioNull(true);
+    return false;
+  } else {
+    if (refundType === 'other') {
+      if (otherRefundInput === '') {
+        setRadioNull(true);
+        return false;
+      } else {
+        setRadioNull(false);
+        return true;
+      }
+    } else {
+      setRadioNull(false);
+      return true;
+    }
+  }
+};
+
+export const OfficialCertificateVaidation = (
+  refundType,
+  otherRefundInput,
+  setRadioNull
+) => {
+  if (refundType === '') {
+    setRadioNull(true);
+    return false;
+  } else {
+    if (refundType === 'Yes') {
+      if (otherRefundInput === '') {
+        setRadioNull(true);
+        return false;
+      } else {
+        setRadioNull(false);
+        return true;
+      }
+    } else {
+      setRadioNull(false);
+      return true;
+    }
+  }
+};
+
+export const providedCertifiedCopyOfEvidenceVaidation = (
+  refundType,
+  otherRefundInput,
+  setRadioNull
+) => {
+  if (refundType === '') {
+    setRadioNull(true);
+    return false;
+  } else {
+    if (refundType === 'No') {
+      if (otherRefundInput === '') {
+        setRadioNull(true);
+        return false;
+      } else {
+        setRadioNull(false);
+        return true;
+      }
+    } else {
+      setRadioNull(false);
+      return true;
+    }
+  }
+};
+
+
+
 
 export const handleComplaintSurNameError = (surName, setSurNameError) => {
   var exp1 = /^[A-Za-z ]+$/;

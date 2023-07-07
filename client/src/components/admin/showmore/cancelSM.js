@@ -233,7 +233,6 @@ const CancelSM = () => {
                           />
                         </Table.Cell>
                       </Table.Row>
-
                       <Table.Row>
                         <Table.Cell>SUPPORTING DOCUMENT</Table.Cell>
                         <Table.Cell><Link to={`https://res.cloudinary.com/duusv7nak/image/upload/v1687522782/${userData.image}`}>Supporting Document</Link></Table.Cell>

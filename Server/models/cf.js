@@ -47,6 +47,9 @@ const cf_Schema = new mongoose.Schema({
   ProcessedDate: {
     type: String,
   },
+  sign: {
+    type: Array,
+  },
 });
 
 const cf_collection = mongoose.model('Cf', cf_Schema);

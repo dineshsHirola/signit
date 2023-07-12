@@ -104,6 +104,15 @@ const gtef_Schema = new mongoose.Schema({
   airfaresTotalCost: {
     type: String,
   },
+  anticipatedCostperPerson: {
+    type: String,
+  },
+  anticipatedNumberOfPeople: {
+    type: String,
+  },
+  anticipatedTotalCost: {
+    type: String,
+  },
   selfProvide: {
     type: String,
   },
@@ -147,7 +156,10 @@ const gtef_Schema = new mongoose.Schema({
     type: String,
   },
   signatureImage: {
-    type: String,
+    type: Array,
+  },
+  sign: {
+    type: Array,
   },
 });
 

@@ -132,6 +132,27 @@ const ctf_Schema = new mongoose.Schema({
   unitTitle: {
     type: Array,
   },
+  officialCertificate: {
+    type: String,
+  },
+  officialTranscript: {
+    type: String,
+  },
+  signatureImage: {
+    type: Array,
+  },
+  signatureImage2: {
+    type: Array,
+  },
+  sign: {
+    type: Array,
+  },
+  adminSign: {
+    type: Array,
+  },
+  campusSign: {
+    type: Array,
+  },
 });
 
 const ctf_collection = mongoose.model('Ctf', ctf_Schema);

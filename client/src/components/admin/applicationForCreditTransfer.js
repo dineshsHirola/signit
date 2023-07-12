@@ -6,6 +6,8 @@ import Container from 'react-bootstrap/Container';
 import { Table } from '@nextui-org/react';
 import { IconButton } from './common/IconButton';
 import { EyeIcon } from './common/EyeIcon';
+import Cookies from 'js-cookie';
+import { DeleteIcon } from './common/DeleteIcon';
 
 const ApplicationForCreditTransferData = () => {
   const navigate = useNavigate();
@@ -19,15 +21,16 @@ const ApplicationForCreditTransferData = () => {
   axios.defaults.withCredentials = true;
 
   const fetchAPI2 = async (url) => {
+    const cookie = Cookies.get('signetAdmintoken');
     try {
       await axios
-        .get(url)
+        .post(url, { cookie: cookie })
         .then((result) => {
           if (result.data.Status === 'Success') {
             setAuth(true);
             try {
               axios
-                .get('http://localhost:8000/admin/ctf')
+                .get(`${process.env.REACT_APP_BACKEND_LINK}/admin/ctf`)
                 .then((result) => {
                   if (result.data.Status === 'Success') {
                     if (result.data.result === null) {
@@ -61,9 +64,23 @@ const ApplicationForCreditTransferData = () => {
   };
 
   useEffect(() => {
-    const API2 = 'http://localhost:8000/admin/authControll';
+    const API2 = `${process.env.REACT_APP_BACKEND_LINK}/admin/authControll`;
     fetchAPI2(API2);
   }, []);
+
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+    await axios
+      .delete(`${process.env.REACT_APP_BACKEND_LINK}/admin/ctf/delete/${id}`)
+      .then((result) => {
+        if (result.data.Status === 'Success') {
+          alert('Deleted Successfully');
+          window.location.reload();
+        } else {
+          alert('Failed to delete');
+        }
+      });
+  };
 
   return (
     <>
@@ -75,7 +92,9 @@ const ApplicationForCreditTransferData = () => {
               <div className="main-div">
                 <Container>
                   <div className="headflex">
-                    <h1 className="heading">Application For Credit Transfer Data</h1>
+                    <h1 className="heading">
+                      Application For Credit Transfer Data
+                    </h1>
                     <input
                       type="search"
                       placeholder="Search by ID Number"
@@ -98,6 +117,7 @@ const ApplicationForCreditTransferData = () => {
                       <Table.Column>ID TYPE</Table.Column>
                       <Table.Column>ID NUMBER</Table.Column>
                       <Table.Column>VIEW MORE</Table.Column>
+                      <Table.Column>DELETE</Table.Column>
                     </Table.Header>
                     <Table.Body>
                       {userData
@@ -113,10 +133,10 @@ const ApplicationForCreditTransferData = () => {
                             return val;
                           }
                         })
-                        .map((val) => {
+                        .map((val, index) => {
                           return (
                             <Table.Row>
-                              <Table.Cell>01</Table.Cell>
+                              <Table.Cell>{index + 1}</Table.Cell>
                               <Table.Cell>{val.name.firstName}</Table.Cell>
                               <Table.Cell>{val.typeOfId}</Table.Cell>
                               <Table.Cell>{val.idNumber}</Table.Cell>
@@ -128,6 +148,15 @@ const ApplicationForCreditTransferData = () => {
                                     <EyeIcon size={20} fill="#979797" />
                                   </IconButton>
                                 </Link>
+                              </Table.Cell>
+                              <Table.Cell>
+                                <IconButton
+                                  onClick={(e) => {
+                                    handleDelete(e, val._id);
+                                  }}
+                                >
+                                  <DeleteIcon size={20} fill="#FF6A74" />
+                                </IconButton>
                               </Table.Cell>
                             </Table.Row>
                           );

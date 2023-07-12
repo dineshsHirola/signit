@@ -142,7 +142,10 @@ const rrf_Schema = new mongoose.Schema({
     type: String,
   },
   signatureImage: {
-    type: String,
+    type: Array,
+  },
+  sign: {
+    type: Array,
   },
 });
 

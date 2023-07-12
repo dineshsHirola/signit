@@ -7,6 +7,7 @@ import Container from 'react-bootstrap/esm/Container';
 import { IconButton } from '../common/IconButton';
 import { EyeIcon } from '../common/EyeIcon';
 import ContactUsModal from './ContactUsModal';
+import Cookies from 'js-cookie';
 
 const ContactUSData = () => {
   const navigate = useNavigate();
@@ -21,15 +22,16 @@ const ContactUSData = () => {
   axios.defaults.withCredentials = true;
 
   const fetchAPI2 = async (url) => {
+    const cookie = Cookies.get('signetAdmintoken');
     try {
       await axios
-        .get(url)
+        .post(url, { cookie: cookie })
         .then((result) => {
           if (result.data.Status === 'Success') {
             setAuth(true);
             try {
               axios
-                .get('http://localhost:8000/admin/contactUs')
+                .get(`${process.env.REACT_APP_BACKEND_LINK}/admin/contactUs`)
                 .then((result) => {
                   if (result.data.Status === 'Success') {
                     if (result.data.result === null) {
@@ -63,7 +65,7 @@ const ContactUSData = () => {
   };
 
   useEffect(() => {
-    const API2 = 'http://localhost:8000/admin/authControll';
+    const API2 = `${process.env.REACT_APP_BACKEND_LINK}/admin/authControll`;
     fetchAPI2(API2);
   }, []);
   return (

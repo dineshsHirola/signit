@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import { Table } from '@nextui-org/react';
 import { useNavigate } from 'react-router-dom';
 import SideBar from './common/SideBar';
+import Cookies from 'js-cookie';
 
 const AdminProfile = () => {
   const navigate = useNavigate();
@@ -20,15 +21,16 @@ const AdminProfile = () => {
   axios.defaults.withCredentials = true;
 
   const fetchAPI2 = async (url) => {
+    const cookie = Cookies.get('signetAdmintoken');
     try {
       await axios
-        .get(url)
+        .post(url, { cookie: cookie })
         .then((result) => {
           if (result.data.Status === 'Success') {
             setAuth(true);
             try {
               axios
-                .get('http://localhost:8000/admin/profile')
+                .get(`${process.env.REACT_APP_BACKEND_LINK}/admin/profile`)
                 .then((result) => {
                   if (result.data.Status === 'Success') {
                     if (result.data.result === null) {
@@ -37,7 +39,7 @@ const AdminProfile = () => {
                     } else {
                       setShowData(true);
                       setUserData(result.data.result);
-                      setAdminUserName(result.data.result.username)
+                      setAdminUserName(result.data.result.username);
                     }
                   } else {
                     navigate('/admin/login');
@@ -63,7 +65,7 @@ const AdminProfile = () => {
   };
 
   useEffect(() => {
-    const API2 = 'http://localhost:8000/admin/authControll';
+    const API2 = `${process.env.REACT_APP_BACKEND_LINK}/admin/authControll`;
     fetchAPI2(API2);
   }, []);
 
@@ -89,7 +91,7 @@ const AdminProfile = () => {
     ) {
       if (adminNewPassword === adminConfirmPassword) {
         await axios
-          .put(`http://localhost:8000/admin/changeCred`, {
+          .put(`${process.env.REACT_APP_BACKEND_LINK}/admin/changeCred`, {
             adminUserName,
             adminExistingPassword,
             adminNewPassword,

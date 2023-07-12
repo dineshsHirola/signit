@@ -39,7 +39,7 @@ const ContactUsForm = () => {
     const mobVer = contactUsMobileValidation(formData.mobile, setMobileError);
     if (mobVer) {
       await axios
-        .post('http://localhost:8000/forms/contactUs', {
+        .post(`${process.env.REACT_APP_BACKEND_LINK}/forms/contactUs`, {
           formData,
           automotiveCourses,
           businessCourses,

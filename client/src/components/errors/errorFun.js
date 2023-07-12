@@ -236,6 +236,88 @@ export const typeOfIdValidation = (typeOfID, setTypeIdNull) => {
   }
 };
 
+export const typeOfIdValidationArr = (typeOfID, setTypeIdNull) => {
+  if (typeOfID.length <= 0) {
+    setTypeIdNull(true);
+    return false;
+  } else {
+    setTypeIdNull(false);
+    return true;
+  }
+};
+
+export const requestValidator = (
+  updateContact,
+  enrollmentLetter,
+  certificate,
+  soa,
+  progressReport,
+  leave,
+  otherReq,
+  leaveFrom,
+  leaveTo,
+  otherInput,
+  setReqNull
+) => {
+  if (
+    updateContact === true ||
+    enrollmentLetter === true ||
+    certificate === true ||
+    soa === true ||
+    progressReport === true ||
+    leave === true ||
+    otherReq === true
+  ) {
+    if (leave === true) {
+      if (!leaveFrom || !leaveTo) {
+        setReqNull(true);
+        return false;
+      } else {
+        setReqNull(false);
+        return true;
+      }
+    } else if (otherReq === true) {
+      if (!otherInput) {
+        setReqNull(true);
+        return false;
+      } else {
+        setReqNull(false);
+        return true;
+      }
+    } else {
+      setReqNull(false);
+      return true;
+    }
+  } else {
+    setReqNull(true);
+    return false;
+  }
+};
+
+export const OfficialCertificateVaidationArr = (
+  refundType,
+  otherRefundInput,
+  setRadioNull
+) => {
+  if (refundType === '') {
+    setRadioNull(true);
+    return false;
+  } else {
+    if (refundType === 'Yes') {
+      if (otherRefundInput.length <= 0) {
+        setRadioNull(true);
+        return false;
+      } else {
+        setRadioNull(false);
+        return true;
+      }
+    } else {
+      setRadioNull(false);
+      return true;
+    }
+  }
+};
+
 export const IdValidation = (ID, setIdError, setIdNull) => {
   const exp = /^[0-9]+$/;
   if (!ID) {
@@ -392,9 +474,6 @@ export const providedCertifiedCopyOfEvidenceVaidation = (
     }
   }
 };
-
-
-
 
 export const handleComplaintSurNameError = (surName, setSurNameError) => {
   var exp1 = /^[A-Za-z ]+$/;

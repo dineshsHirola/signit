@@ -6,7 +6,8 @@ import Container from 'react-bootstrap/Container';
 import { Table } from '@nextui-org/react';
 import { IconButton } from '../common/IconButton';
 import { EyeIcon } from '../common/EyeIcon';
-import PopModal from '../common/modal';
+import { ImageLinkModal2, PopModal, PopModal2 } from '../common/modal';
+import Cookies from 'js-cookie';
 
 const CancelSM = () => {
   const slug = useParams();
@@ -17,19 +18,25 @@ const CancelSM = () => {
   const [showData, setShowData] = useState(false);
   const [userData, setUserData] = useState();
   const [modalShow, setModalShow] = useState(false);
+  const [modalShow2, setModalShow2] = useState(false);
+  const [modalShow3, setModalShow3] = useState(false);
+  const [modalShow4, setModalShow4] = useState(false);
 
   axios.defaults.withCredentials = true;
 
   const fetchAPI2 = async (url) => {
+    const cookie = Cookies.get('signetAdmintoken');
     try {
       await axios
-        .get(url)
+        .post(url, { cookie: cookie })
         .then((result) => {
           if (result.data.Status === 'Success') {
             setAuth(true);
             try {
               axios
-                .get(`http://localhost:8000/admin/cef/${slugURL}`)
+                .get(
+                  `${process.env.REACT_APP_BACKEND_LINK}/admin/cef/${slugURL}`
+                )
                 .then((result) => {
                   if (result.data.Status === 'Success') {
                     if (result.data.result === null) {
@@ -63,7 +70,7 @@ const CancelSM = () => {
   };
 
   useEffect(() => {
-    const API2 = 'http://localhost:8000/admin/authControll';
+    const API2 = `${process.env.REACT_APP_BACKEND_LINK}/admin/authControll`;
     fetchAPI2(API2);
   }, []);
 
@@ -77,7 +84,9 @@ const CancelSM = () => {
               <div className="main-div">
                 <Container>
                   <div className="headflex">
-                    <h1 className="heading">Complaint Form</h1>
+                    <h1 className="heading">
+                      Application To Cancel Enrolment Data
+                    </h1>
                   </div>
                   <Table
                     aria-label="Example table with static content"
@@ -223,27 +232,108 @@ const CancelSM = () => {
                       <Table.Row>
                         <Table.Cell>REASONS FOR REQUEST</Table.Cell>
                         <Table.Cell>
-                          <IconButton onClick={() => setModalShow(true)}>
+                          <IconButton onClick={() => setModalShow2(true)}>
                             <EyeIcon size={20} fill="#979797" />
                           </IconButton>
-                          <PopModal
-                            show={modalShow}
+                          <PopModal2
+                            show={modalShow2}
                             reason={userData.reason}
-                            onHide={() => setModalShow(false)}
+                            onHide={() => setModalShow2(false)}
                           />
                         </Table.Cell>
                       </Table.Row>
                       <Table.Row>
                         <Table.Cell>SUPPORTING DOCUMENT</Table.Cell>
-                        <Table.Cell><Link to={`https://res.cloudinary.com/duusv7nak/image/upload/v1687522782/${userData.image}`}>Supporting Document</Link></Table.Cell>
+                        <Table.Cell>
+                          <IconButton onClick={() => setModalShow3(true)}>
+                            <EyeIcon size={20} fill="#979797" />
+                          </IconButton>
+                          <ImageLinkModal2
+                            show={modalShow3}
+                            link={userData.image}
+                            onHide={() => setModalShow3(false)}
+                          />
+                        </Table.Cell>
                       </Table.Row>
                       <Table.Row>
                         <Table.Cell>INTERNATIONAL STUDENT ?</Table.Cell>
-                        <Table.Cell>{userData.receivedDate}</Table.Cell>
+                        <Table.Cell>{userData.intStudent}</Table.Cell>
                       </Table.Row>
                       <Table.Row>
-                        <Table.Cell>PROCESSED BY</Table.Cell>
-                        <Table.Cell>{userData.intStudent}</Table.Cell>
+                        <Table.Cell>REASONS FOR RELEASE REQUEST</Table.Cell>
+                        <Table.Cell>
+                          {userData.reasonsForReleaseRequest}
+                        </Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SUPPORTING
+                          DOCUMENTS
+                        </Table.Cell>
+                        <Table.Cell>
+                          <IconButton onClick={() => setModalShow4(true)}>
+                            <EyeIcon size={20} fill="#979797" />
+                          </IconButton>
+                          <ImageLinkModal2
+                            show={modalShow4}
+                            link={userData.image2}
+                            onHide={() => setModalShow4(false)}
+                          />
+                        </Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell>STUDENT DECLARATION</Table.Cell>
+                        <Table.Cell></Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STUDENT
+                          NAME
+                        </Table.Cell>
+                        <Table.Cell></Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PREFIX
+                        </Table.Cell>
+                        <Table.Cell>{userData.intPrefix}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRST
+                          NAME
+                        </Table.Cell>
+                        <Table.Cell>{userData.intFirstName}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MIDDLE
+                          NAME
+                        </Table.Cell>
+                        <Table.Cell>{userData.intMiddleName}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAST
+                          NAME
+                        </Table.Cell>
+                        <Table.Cell>{userData.intLastName}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATE
+                        </Table.Cell>
+                        <Table.Cell>{userData.intDate}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell>STUDENT SIGNATURE</Table.Cell>
+                        <Table.Cell>
+                          <a
+                            href={`${process.env.REACT_APP_IMAGE_URL}${userData.sign[0]}`}
+                          >
+                            Signature
+                          </a>
+                        </Table.Cell>
                       </Table.Row>
                     </Table.Body>
                   </Table>

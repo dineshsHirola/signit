@@ -6,7 +6,8 @@ import Container from 'react-bootstrap/Container';
 import { Table } from '@nextui-org/react';
 import { IconButton } from '../common/IconButton';
 import { EyeIcon } from '../common/EyeIcon';
-import PopModal from '../common/modal';
+import { PopModal, PopModal2 } from '../common/modal';
+import Cookies from 'js-cookie';
 
 const ComplaintSM = () => {
   const slug = useParams();
@@ -17,19 +18,23 @@ const ComplaintSM = () => {
   const [showData, setShowData] = useState(false);
   const [userData, setUserData] = useState();
   const [modalShow, setModalShow] = useState(false);
+  const [modalShow2, setModalShow2] = useState(false);
 
   axios.defaults.withCredentials = true;
 
   const fetchAPI2 = async (url) => {
+    const cookie = Cookies.get('signetAdmintoken');
     try {
       await axios
-        .get(url)
+        .post(url, { cookie: cookie })
         .then((result) => {
           if (result.data.Status === 'Success') {
             setAuth(true);
             try {
               axios
-                .get(`http://localhost:8000/admin/cf/${slugURL}`)
+                .get(
+                  `${process.env.REACT_APP_BACKEND_LINK}/admin/cf/${slugURL}`
+                )
                 .then((result) => {
                   if (result.data.Status === 'Success') {
                     if (result.data.result === null) {
@@ -63,7 +68,7 @@ const ComplaintSM = () => {
   };
 
   useEffect(() => {
-    const API2 = 'http://localhost:8000/admin/authControll';
+    const API2 = `${process.env.REACT_APP_BACKEND_LINK}/admin/authControll`;
     fetchAPI2(API2);
   }, []);
 
@@ -136,7 +141,8 @@ const ComplaintSM = () => {
                           </IconButton>
                           <PopModal
                             show={modalShow}
-                            reason={userData.reason}
+                            title={'REASON'}
+                            reason={'HELLO'}
                             onHide={() => setModalShow(false)}
                           />
                         </Table.Cell>
@@ -144,14 +150,27 @@ const ComplaintSM = () => {
                       <Table.Row>
                         <Table.Cell>OUTCOME</Table.Cell>
                         <Table.Cell>
-                          <IconButton onClick={() => setModalShow(true)}>
+                          <IconButton onClick={() => setModalShow2(true)}>
                             <EyeIcon size={20} fill="#979797" />
                           </IconButton>
-                          <PopModal
-                            show={modalShow}
+                          <PopModal2
+                            show={modalShow2}
+                            title={'OUTCOME'}
                             reason={userData.outcome}
-                            onHide={() => setModalShow(false)}
+                            onHide={() => setModalShow2(false)}
                           />
+                        </Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          STUDENT SIGNATURE
+                        </Table.Cell>
+                        <Table.Cell>
+                          <a
+                            href={`${process.env.REACT_APP_IMAGE_URL}${userData.sign}`}
+                          >
+                            Signature
+                          </a>
                         </Table.Cell>
                       </Table.Row>
                       <Table.Row>

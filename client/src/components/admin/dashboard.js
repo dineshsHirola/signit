@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import { useNavigate } from 'react-router-dom';
 import SideBar from './common/SideBar';
+import Cookies from 'js-cookie';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -12,9 +13,10 @@ const Dashboard = () => {
   axios.defaults.withCredentials = true;
 
   const fetchAPI2 = async (url) => {
+    const cookie = Cookies.get('signetAdmintoken');
     try {
       await axios
-        .get(url)
+        .post(url, { cookie: cookie })
         .then((result) => {
           if (result.data.Status === 'Success') {
             setAuth(true);
@@ -32,7 +34,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    const API2 = 'http://localhost:8000/admin/authControll';
+    const API2 = `${process.env.REACT_APP_BACKEND_LINK}/admin/authControll`;
     fetchAPI2(API2);
   }, []);
 

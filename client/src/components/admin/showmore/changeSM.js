@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import SideBar from '../common/SideBar';
 import Container from 'react-bootstrap/Container';
 import { Table } from '@nextui-org/react';
+import Cookies from 'js-cookie';
 
 const ChangeSM = () => {
   const slug = useParams();
@@ -17,15 +18,16 @@ const ChangeSM = () => {
   axios.defaults.withCredentials = true;
 
   const fetchAPI2 = async (url) => {
+    const cookie = Cookies.get('signetAdmintoken');
     try {
       await axios
-        .get(url)
+        .post(url, { cookie: cookie })
         .then((result) => {
           if (result.data.Status === 'Success') {
             setAuth(true);
             try {
               axios
-                .get(`http://localhost:8000/admin/csdf/${slugURL}`)
+                .get(`${process.env.REACT_APP_BACKEND_LINK}/admin/csdf/${slugURL}`)
                 .then((result) => {
                   if (result.data.Status === 'Success') {
                     if (result.data.result === null) {
@@ -59,7 +61,7 @@ const ChangeSM = () => {
   };
 
   useEffect(() => {
-    const API2 = 'http://localhost:8000/admin/authControll';
+    const API2 = `${process.env.REACT_APP_BACKEND_LINK}/admin/authControll`;
     fetchAPI2(API2);
   }, []);
 

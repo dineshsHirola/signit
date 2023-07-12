@@ -227,7 +227,7 @@ const ChangeOfStudentDetailsForm = () => {
       OverAddVer
     ) {
       await axios
-        .post('http://localhost:8000/forms/csdf', {
+        .post(`${process.env.REACT_APP_BACKEND_LINK}/forms/csdf`, {
           formData1,
           formData2,
         })
@@ -975,7 +975,7 @@ const ChangeOfStudentDetailsForm = () => {
                 </p>
               ) : null}
             </div>
-            <button onClick={handleSubmit}>Next</button>
+            <button onClick={handleSubmit}>Submit</button>
           </Form>
         </div>
       </Container>

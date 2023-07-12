@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import JsonData from '../../FormJSON/countryName.json';
 import Container from 'react-bootstrap/Container';
+import SignatureCanvas from 'react-signature-canvas';
 import axios from 'axios';
 import {
   IdValidation,
@@ -14,9 +15,24 @@ import {
   handleReceivedNameError,
   mobileValidation,
   startDateValidation,
+  typeOfIdValidation,
 } from '../errors/errorFun';
 
 const ComplaintForm = () => {
+  const [sign, setSign] = useState();
+  const [url, setUrl] = useState();
+
+  const handleClear = (e) => {
+    e.preventDefault();
+    sign.clear();
+    setUrl('');
+  };
+
+  const handleGenerate = (e) => {
+    e.preventDefault();
+    setUrl(sign.getTrimmedCanvas().toDataURL('image/png'));
+  };
+
   const [formData, setFormData] = useState({
     studentNumber: '',
     mobileCode: '',
@@ -102,6 +118,8 @@ const ComplaintForm = () => {
 
   const [processedError, setProcessedError] = useState(false);
 
+  const [signNull, setSignNull] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const studendNumVer = IdValidation(
@@ -146,6 +164,7 @@ const ComplaintForm = () => {
       formData.ProcessedBy,
       setProcessedError
     );
+    const signVer = typeOfIdValidation(url, setSignNull);
     if (
       studendNumVer &&
       mobileVer &&
@@ -156,11 +175,15 @@ const ComplaintForm = () => {
       declration &&
       dateVer &&
       receivedVer &&
-      processedVer
+      processedVer &&
+      signVer
     ) {
+      const arr = [url];
+
       await axios
-        .post('http://localhost:8000/forms/cf', {
+        .post(`${process.env.REACT_APP_BACKEND_LINK}/forms/cf`, {
           formData,
+          arr,
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
@@ -195,12 +218,15 @@ const ComplaintForm = () => {
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
               >
-                <Form.Label>Student Number:</Form.Label>
+                <Form.Label>
+                  Student Number:<span className="mandate">*</span>
+                </Form.Label>
                 <br />
                 <Form.Control
                   type="number"
                   onChange={handleChange}
                   name="studentNumber"
+                  value={formData.studentNumber}
                 />
                 {idError ? (
                   <p style={{ color: 'red' }}>Enter valid Student number</p>
@@ -213,7 +239,9 @@ const ComplaintForm = () => {
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
               >
-                <Form.Label>Mobile:</Form.Label>
+                <Form.Label>
+                  Mobile:<span className="mandate">*</span>
+                </Form.Label>
                 <br />
                 <div className="mobile-flex-div-child">
                   <Form.Select
@@ -221,6 +249,7 @@ const ComplaintForm = () => {
                     className="flag-select"
                     onChange={handleChange}
                     name="mobileCode"
+                    value={formData.mobileCode}
                   >
                     <option>Select</option>
                     {JsonData.map((value) => {
@@ -240,19 +269,20 @@ const ComplaintForm = () => {
                     onChange={handleChange}
                     name="mobile"
                     className="mobile-input"
+                    value={formData.mobile}
                   />
-                  {mobileContryCodeNull ? (
-                    <p style={{ color: 'red' }}>
-                      Please select country dail code
-                    </p>
-                  ) : null}
-                  {mobileError ? (
-                    <p style={{ color: 'red' }}>Enter valid mobile number</p>
-                  ) : null}
-                  {mobileNull ? (
-                    <p style={{ color: 'red' }}>Enter your mobile number</p>
-                  ) : null}
                 </div>
+                {mobileContryCodeNull ? (
+                  <p style={{ color: 'red' }}>
+                    Please select country dail code
+                  </p>
+                ) : null}
+                {mobileError ? (
+                  <p style={{ color: 'red' }}>Enter valid mobile number</p>
+                ) : null}
+                {mobileNull ? (
+                  <p style={{ color: 'red' }}>Enter your mobile number</p>
+                ) : null}
               </Form.Group>
             </div>
             <div className="name-div complaint-input">
@@ -267,6 +297,7 @@ const ComplaintForm = () => {
                     type="text"
                     onChange={handleChange}
                     name="surName"
+                    value={formData.surName}
                   />
                   {surNameError ? (
                     <p style={{ color: 'red' }}>
@@ -283,6 +314,7 @@ const ComplaintForm = () => {
                     type="text"
                     onChange={handleChange}
                     name="givenName"
+                    value={formData.givenName}
                   />
                   {nameError ? (
                     <p style={{ color: 'red' }}>
@@ -298,12 +330,15 @@ const ComplaintForm = () => {
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
               >
-                <Form.Label>Email:</Form.Label>
+                <Form.Label>
+                  Email:<span className="mandate">*</span>
+                </Form.Label>
                 <br />
                 <Form.Control
                   type="email"
                   onChange={handleChange}
                   name="email"
+                  value={formData.email}
                 />
                 <p className="input-p">example@example.com</p>
                 {emailError ? (
@@ -323,6 +358,7 @@ const ComplaintForm = () => {
                   type="text"
                   onChange={handleChange}
                   name="courseName"
+                  value={formData.courseName}
                 />
                 {courseNameError ? (
                   <p style={{ color: 'red' }}>
@@ -347,6 +383,7 @@ const ComplaintForm = () => {
                   as="textarea"
                   onChange={handleChange}
                   name="reason"
+                  value={formData.reason}
                 />
               </Form.Group>
             </div>
@@ -364,6 +401,7 @@ const ComplaintForm = () => {
                   as="textarea"
                   onChange={handleChange}
                   name="outcome"
+                  value={formData.outcome}
                 />
               </Form.Group>
             </div>
@@ -392,6 +430,7 @@ const ComplaintForm = () => {
                   name="declaration1"
                   type="checkbox"
                 />
+                <span className="mandate">*</span>
 
                 <Form.Check
                   inline
@@ -400,6 +439,7 @@ const ComplaintForm = () => {
                   name="declaration2"
                   type="checkbox"
                 />
+                <span className="mandate">*</span>
                 <Form.Check
                   inline
                   label="I understand my complaint will be acknowledged and will be forward to the relevant officer."
@@ -407,6 +447,7 @@ const ComplaintForm = () => {
                   name="declaration3"
                   type="checkbox"
                 />
+                <span className="mandate">*</span>
                 <Form.Check
                   inline
                   label="I declare that the information & documentation given is true and accurate to the best of my knowledge and I have not willfully suppressed any information."
@@ -414,6 +455,7 @@ const ComplaintForm = () => {
                   name="declaration4"
                   type="checkbox"
                 />
+                <span className="mandate">*</span>
                 {checkError ? (
                   <p style={{ color: 'red' }}>
                     Agree all the declarations to submit
@@ -422,9 +464,47 @@ const ComplaintForm = () => {
               </Form.Group>
             </div>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Date:</Form.Label>
+              <Form.Label>
+                Signature<span className="mandate">*</span>
+              </Form.Label>
               <br />
-              <Form.Control type="date" onChange={handleChange} name="date" />
+              <div className="sign_div">
+                <SignatureCanvas
+                  canvasProps={{
+                    width: 300,
+                    height: 100,
+                    className: 'sigCanvas',
+                  }}
+                  ref={(data) => setSign(data)}
+                />
+              </div>
+              {!url ? (
+                <button onClick={handleGenerate} className="sign-btn">
+                  Save
+                </button>
+              ) : (
+                <button className="sign-btn saved-btn" disabled={true}>
+                  Saved
+                </button>
+              )}
+              <button onClick={handleClear} className="sign-btn">
+                Clear
+              </button>
+              {signNull ? (
+                <p style={{ color: 'red' }}>Signature is required</p>
+              ) : null}
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>
+                Date:<span className="mandate">*</span>
+              </Form.Label>
+              <br />
+              <Form.Control
+                type="date"
+                onChange={handleChange}
+                name="date"
+                value={formData.date}
+              />
               {startDateNull ? (
                 <p style={{ color: 'red' }}>Please select start date</p>
               ) : null}
@@ -442,6 +522,7 @@ const ComplaintForm = () => {
                     type="text"
                     onChange={handleChange}
                     name="receivedBy"
+                    value={formData.receivedBy}
                   />
                   {receivedError ? (
                     <p style={{ color: 'red' }}>
@@ -459,6 +540,7 @@ const ComplaintForm = () => {
                     type="date"
                     onChange={handleChange}
                     name="receivedDate"
+                    value={formData.receivedDate}
                   />
                 </Form.Group>
               </div>
@@ -473,6 +555,7 @@ const ComplaintForm = () => {
                     type="text"
                     onChange={handleChange}
                     name="ProcessedBy"
+                    value={formData.ProcessedBy}
                   />
                   {processedError ? (
                     <p style={{ color: 'red' }}>
@@ -492,11 +575,12 @@ const ComplaintForm = () => {
                     type="date"
                     onChange={handleChange}
                     name="ProcessedDate"
+                    value={formData.ProcessedDate}
                   />
                 </Form.Group>
               </div>
             </div>
-            <button onClick={handleSubmit}>Continue</button>
+            <button onClick={handleSubmit}>Submit</button>
           </Form>
         </div>
       </Container>

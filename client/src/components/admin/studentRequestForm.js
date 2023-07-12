@@ -6,6 +6,8 @@ import Container from 'react-bootstrap/Container';
 import { Table } from '@nextui-org/react';
 import { IconButton } from './common/IconButton';
 import { EyeIcon } from './common/EyeIcon';
+import Cookies from 'js-cookie';
+import { DeleteIcon } from './common/DeleteIcon';
 
 const StudentRequestFormData = () => {
   const navigate = useNavigate();
@@ -19,15 +21,16 @@ const StudentRequestFormData = () => {
   axios.defaults.withCredentials = true;
 
   const fetchAPI2 = async (url) => {
+    const cookie = Cookies.get('signetAdmintoken');
     try {
       await axios
-        .get(url)
+        .post(url, { cookie: cookie })
         .then((result) => {
           if (result.data.Status === 'Success') {
             setAuth(true);
             try {
               axios
-                .get('http://localhost:8000/admin/srf')
+                .get(`${process.env.REACT_APP_BACKEND_LINK}/admin/srf`)
                 .then((result) => {
                   if (result.data.Status === 'Success') {
                     if (result.data.result === null) {
@@ -61,9 +64,23 @@ const StudentRequestFormData = () => {
   };
 
   useEffect(() => {
-    const API2 = 'http://localhost:8000/admin/authControll';
+    const API2 = `${process.env.REACT_APP_BACKEND_LINK}/admin/authControll`;
     fetchAPI2(API2);
   }, []);
+
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+    await axios
+      .delete(`${process.env.REACT_APP_BACKEND_LINK}/admin/srf/delete/${id}`)
+      .then((result) => {
+        if (result.data.Status === 'Success') {
+          alert('Deleted Successfully');
+          window.location.reload();
+        } else {
+          alert('Failed to delete');
+        }
+      });
+  };
 
   return (
     <>
@@ -98,6 +115,7 @@ const StudentRequestFormData = () => {
                       <Table.Column>COURSE CODE</Table.Column>
                       <Table.Column>STUDENT ID</Table.Column>
                       <Table.Column>VIEW MORE</Table.Column>
+                      <Table.Column>DELETE</Table.Column>
                     </Table.Header>
                     <Table.Body>
                       {userData
@@ -113,10 +131,10 @@ const StudentRequestFormData = () => {
                             return val;
                           }
                         })
-                        .map((val) => {
+                        .map((val, index) => {
                           return (
                             <Table.Row>
-                              <Table.Cell>01</Table.Cell>
+                              <Table.Cell>{index + 1}</Table.Cell>
                               <Table.Cell>{val.name.givenName}</Table.Cell>
                               <Table.Cell>{val.courseCode}</Table.Cell>
                               <Table.Cell>{val.studentID}</Table.Cell>
@@ -128,6 +146,15 @@ const StudentRequestFormData = () => {
                                     <EyeIcon size={20} fill="#979797" />
                                   </IconButton>
                                 </Link>
+                              </Table.Cell>
+                              <Table.Cell>
+                                <IconButton
+                                  onClick={(e) => {
+                                    handleDelete(e, val._id);
+                                  }}
+                                >
+                                  <DeleteIcon size={20} fill="#FF6A74" />
+                                </IconButton>
                               </Table.Cell>
                             </Table.Row>
                           );

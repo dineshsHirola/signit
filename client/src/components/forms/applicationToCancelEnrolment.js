@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import JsonData from '../../FormJSON/countryName.json';
 import Container from 'react-bootstrap/Container';
+import SignatureCanvas from 'react-signature-canvas';
 import { FileUploader } from 'react-drag-drop-files';
 import axios from 'axios';
 import {
@@ -20,12 +21,29 @@ import {
   startDateValidation,
   telValidation,
   typeOfIdValidation,
+  typeOfIdValidationArr,
 } from '../errors/errorFun';
 
 const ApplicationToCancelEnrolment = () => {
+  const [sign, setSign] = useState();
+  const [url, setUrl] = useState();
+
+  const handleClear = (e) => {
+    e.preventDefault();
+    sign.clear();
+    setUrl('');
+  };
+
+  const handleGenerate = (e) => {
+    e.preventDefault();
+    setUrl(sign.getTrimmedCanvas().toDataURL('image/png'));
+  };
+
   const [signatureFile, setSignatureFile] = useState('');
   const [signatureImage, setSignatureImage] = useState('');
   const [signatureError, setSignatureError] = useState(false);
+
+  const [signNull, setSignNull] = useState(false);
 
   const fileTypes = ['JPG', 'PNG', 'PDF'];
   const [file, setFile] = useState(null);
@@ -47,6 +65,71 @@ const ApplicationToCancelEnrolment = () => {
     reader.onloadend = () => {
       setSignatureImage(reader.result);
     };
+  };
+
+  const [base64Images, setBase64Images] = useState([]);
+  const [base64Images1, setBase64Images1] = useState([]);
+
+  const handleImageUpload = (event) => {
+    const files = event.target.files;
+
+    const imagesArray = Array.from(files);
+    Promise.all(
+      imagesArray.map((image) => {
+        return new Promise((resolve, reject) => {
+          if (image.size > 2 * 1024 * 1024) {
+            alert('Image Shoud be less than 2 mb');
+            reject(new Error('Image size exceeds 2 MB limit.'));
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            resolve(e.target.result);
+          };
+          reader.onerror = (error) => {
+            reject(error);
+          };
+          reader.readAsDataURL(image);
+        });
+      })
+    )
+      .then((results) => {
+        setBase64Images((prevImages) => [...prevImages, ...results]);
+      })
+      .catch((error) => {
+        console.log('Error converting images to base64:', error);
+      });
+  };
+
+  const handleImageUpload2 = (event) => {
+    const files = event.target.files;
+
+    const imagesArray = Array.from(files);
+    Promise.all(
+      imagesArray.map((image) => {
+        return new Promise((resolve, reject) => {
+          if (image.size > 2 * 1024 * 1024) {
+            alert('Image Shoud be less than 2 mb');
+            reject(new Error('Image size exceeds 2 MB limit.'));
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            resolve(e.target.result);
+          };
+          reader.onerror = (error) => {
+            reject(error);
+          };
+          reader.readAsDataURL(image);
+        });
+      })
+    )
+      .then((results) => {
+        setBase64Images1((prevImages) => [...prevImages, ...results]);
+      })
+      .catch((error) => {
+        console.log('Error converting images to base64:', error);
+      });
   };
 
   const [intSignatureImage, setIntSignatureImage] = useState('');
@@ -182,12 +265,12 @@ const ApplicationToCancelEnrolment = () => {
     );
     const dbVer = dobValidation(formData.dob, setDobNull, setDobError);
     const genderVer = genderValidation(formData.gender, setGenderNull);
-    const telVer = telValidation(
-      formData.telCode,
-      formData.telephone,
-      setCountryCodeNull,
-      setTelError
-    );
+    // const telVer = telValidation(
+    //   formData.telCode,
+    //   formData.telephone,
+    //   setCountryCodeNull,
+    //   setTelError
+    // );
     const mobVer = mobileValidation(
       formData.mobCode,
       formData.mobile,
@@ -202,7 +285,7 @@ const ApplicationToCancelEnrolment = () => {
     );
     const altEmailVer = altEmailValidator(formData.altEmail, setAltEmailError);
     const typeOfIdVer = typeOfIdValidation(formData.typeOfId, setTypeIdNull);
-    const imageVer = typeOfIdValidation(signatureImage, setFileNull);
+    const imageVer = typeOfIdValidationArr(base64Images, setFileNull);
     const idVer = IdValidation(formData.idNumber, setIdError, setIdNull);
     const addressVer = addressValidation(
       formData.buildingName,
@@ -283,7 +366,7 @@ const ApplicationToCancelEnrolment = () => {
     );
     const altEmailVer = altEmailValidator(formData.altEmail, setAltEmailError);
     const typeOfIdVer = typeOfIdValidation(formData.typeOfId, setTypeIdNull);
-    const imageVer = typeOfIdValidation(signatureImage, setFileNull);
+    const imageVer = typeOfIdValidationArr(base64Images, setFileNull);
     const idVer = IdValidation(formData.idNumber, setIdError, setIdNull);
     const addressVer = addressValidation(
       formData.buildingName,
@@ -310,14 +393,15 @@ const ApplicationToCancelEnrolment = () => {
       formData.reasonsForReleaseRequest,
       setExplanationOfDecisionNull
     );
-    const IntImageVer = typeOfIdValidation(intSignatureImage, setIntFileNull);
+    const IntImageVer = typeOfIdValidationArr(base64Images1, setIntFileNull);
     const IntNameVer = handleNameError(
       formData.intFirstName,
       formData.intLastName,
       setIntNameNull,
       setIntNameError
     );
-    const IntDateVer = startDateValidation(intStudent, setIntDateNull);
+    const IntDateVer = typeOfIdValidation(formData.intDate, setIntDateNull);
+    const signVer = typeOfIdValidation(url, setSignNull);
 
     if (
       // courseNameVer &&
@@ -333,18 +417,22 @@ const ApplicationToCancelEnrolment = () => {
       // reasonVer &&
       // detailVer &&
       // radioVer &&
-      // imageVer && 
+      // imageVer &&
       reasonsForReleaseRequestVer &&
       IntImageVer &&
       IntNameVer &&
-      IntDateVer
+      IntDateVer &&
+      signVer
     ) {
+      const arr = [url];
+
       await axios
-        .post('http://localhost:8000/forms/cef', {
+        .post(`${process.env.REACT_APP_BACKEND_LINK}/forms/cef`, {
           formData,
-          signatureImage,
+          base64Images,
           intStudent,
-          intSignatureImage,
+          base64Images1,
+          arr,
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
@@ -356,8 +444,6 @@ const ApplicationToCancelEnrolment = () => {
         .catch((e) => {
           console.log('Axios error', e);
         });
-    } else {
-      alert('Pending');
     }
   };
 
@@ -842,15 +928,34 @@ const ApplicationToCancelEnrolment = () => {
                         provided evidence of the reasons for your request.
                         Please list the documents attached:
                       </Form.Label>
-                      <FileUploader
-                        handleChange={handleFileChange}
-                        name="file"
-                        types={fileTypes}
+                      <label for="inputField" class="btn btn-info">
+                        Upload File
+                      </label>
+                      <input
+                        type="file"
+                        style={{ display: 'none' }}
+                        id="inputField"
+                        multiple
+                        onChange={handleImageUpload}
                         accept="image/png, image/jpeg, image/jpg, application/pdf"
                       />
                       <p>
-                        <i>Image should be less than 2MB</i>
+                        <i className="file-sub">
+                          Image should be less than 2MB
+                        </i>
                       </p>
+                      <div>
+                        {base64Images.map((base64, index) => (
+                          <>
+                            <img
+                              key={index}
+                              src={base64}
+                              alt={`Image ${index}`}
+                              width={100}
+                            />
+                          </>
+                        ))}
+                      </div>
                       {signatureError ? (
                         <p style={{ color: 'red' }}>
                           Image Size should be less than 2MB
@@ -963,15 +1068,34 @@ const ApplicationToCancelEnrolment = () => {
                         reason for release request Others - please indicate.
                         <span className="mandate">*</span>
                       </Form.Label>
-                      <FileUploader
-                        handleChange={handleFileChange2}
-                        name="file"
-                        types={fileTypes}
+                      <label for="inputField1" class="btn btn-info">
+                        Upload File
+                      </label>
+                      <input
+                        type="file"
+                        style={{ display: 'none' }}
+                        id="inputField1"
+                        multiple
+                        onChange={handleImageUpload2}
                         accept="image/png, image/jpeg, image/jpg, application/pdf"
                       />
                       <p>
-                        <i>Image should be less than 2MB</i>
+                        <i className="file-sub">
+                          Image should be less than 2MB
+                        </i>
                       </p>
+                      <div>
+                        {base64Images1.map((base64, index) => (
+                          <>
+                            <img
+                              key={index}
+                              src={base64}
+                              alt={`Image ${index}`}
+                              width={100}
+                            />
+                          </>
+                        ))}
+                      </div>
                       {intSignatureError ? (
                         <p style={{ color: 'red' }}>
                           Image Size should be less than 2MB
@@ -1101,6 +1225,40 @@ const ApplicationToCancelEnrolment = () => {
                     ) : null}
                   </Form.Group>
                 </div>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>
+                    Student Signature<span className="mandate">*</span>
+                  </Form.Label>
+                  <br />
+                  <div className="sign_div">
+                    <SignatureCanvas
+                      canvasProps={{
+                        width: 300,
+                        height: 100,
+                        className: 'sigCanvas',
+                      }}
+                      ref={(data) => setSign(data)}
+                    />
+                  </div>
+                  {!url ? (
+                    <button onClick={handleGenerate} className="sign-btn">
+                      Save
+                    </button>
+                  ) : (
+                    <button className="sign-btn saved-btn" disabled={true}>
+                      Saved
+                    </button>
+                  )}
+                  <button onClick={handleClear} className="sign-btn">
+                    Clear
+                  </button>
+                  {signNull ? (
+                    <p style={{ color: 'red' }}>Signature is required</p>
+                  ) : null}
+                </Form.Group>
                 <Form.Group
                   className="mb-3"
                   controlId="exampleForm.ControlInput1"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import Container from 'react-bootstrap/Container';
+import SignatureCanvas from 'react-signature-canvas';
 import JsonData from '../../FormJSON/countryName.json';
 import {
   IdValidation,
@@ -26,6 +27,20 @@ import {
 import { FileUploader } from 'react-drag-drop-files';
 
 const GTEForm = () => {
+  const [sign, setSign] = useState();
+  const [url, setUrl] = useState();
+
+  const handleClear = (e) => {
+    e.preventDefault();
+    sign.clear();
+    setUrl('');
+  };
+
+  const handleGenerate = (e) => {
+    e.preventDefault();
+    setUrl(sign.getTrimmedCanvas().toDataURL('image/png'));
+  };
+
   const [formData, setFormData] = useState({
     ref: '',
     prefix: 'Mr',
@@ -64,9 +79,9 @@ const GTEForm = () => {
     airfaresCostperPerson: '',
     airfaresNumberOfPeople: '',
     airfaresTotalCost: '',
-    // airfaresCostperPerson: '',
-    // airfaresNumberOfPeople: '',
-    // airfaresTotalCost: '',
+    anticipatedCostperPerson: '',
+    anticipatedNumberOfPeople: '',
+    anticipatedTotalCost: '',
     selfProvide: '',
     selfCertified: '',
     sponserProvide: '',
@@ -97,6 +112,8 @@ const GTEForm = () => {
   const [signatureImage, setSignatureImage] = useState('');
   const [signatureError, setSignatureError] = useState(false);
 
+  const [signNull, setSignNull] = useState(false);
+
   const fileTypes = ['JPG', 'PNG', 'PDF'];
   const [file, setFile] = useState(null);
   const handleFileChange = (file) => {
@@ -125,6 +142,39 @@ const GTEForm = () => {
       ...formData,
       [name]: value,
     });
+  };
+
+  const [base64Images, setBase64Images] = useState([]);
+
+  const handleImageUpload = (event) => {
+    const files = event.target.files;
+
+    const imagesArray = Array.from(files);
+    Promise.all(
+      imagesArray.map((image) => {
+        return new Promise((resolve, reject) => {
+          if (image.size > 2 * 1024 * 1024) {
+            alert('Image Shoud be less than 2 mb');
+            reject(new Error('Image size exceeds 2 MB limit.'));
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            resolve(e.target.result);
+          };
+          reader.onerror = (error) => {
+            reject(error);
+          };
+          reader.readAsDataURL(image);
+        });
+      })
+    )
+      .then((results) => {
+        setBase64Images((prevImages) => [...prevImages, ...results]);
+      })
+      .catch((error) => {
+        console.log('Error converting images to base64:', error);
+      });
   };
 
   const [courseNameError, setCourseNameError] = useState(false);
@@ -251,14 +301,23 @@ const GTEForm = () => {
       formData.declarationDate,
       setDeclarationDateNull
     );
+    const signVer = typeOfIdValidation(url, setSignNull);
 
-    if (genuineStudentVer && declarationNameVer && declarationDateVer) {
+    if (
+      genuineStudentVer &&
+      declarationNameVer &&
+      declarationDateVer &&
+      signVer
+    ) {
+      const arr = [url];
+
       await axios
-        .post('http://localhost:8000/forms/gtef', {
+        .post(`${process.env.REACT_APP_BACKEND_LINK}/forms/gtef`, {
           formData,
-          signatureImage,
+          base64Images,
           changingAreaOfStudy,
           providedCertifiedCopyOfEvidence,
+          arr,
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
@@ -1027,16 +1086,16 @@ const GTEForm = () => {
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Label>Course Fee</Form.Label>
-                  <table>
-                    <tr>
+                  <table className="gte-table">
+                    <tr className="gte-table">
                       <th></th>
                       <th>Cost per person (AUD)</th>
                       <th>Number of People</th>
                       <th>Total Cost (AUD)</th>
                     </tr>
-                    <tr>
-                      <td>First year course fee</td>
-                      <td>
+                    <tr className="gte-table">
+                      <td className="gte-table">First year course fee</td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1045,7 +1104,7 @@ const GTEForm = () => {
                           value={formData.firstYearCostperPerson}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1054,7 +1113,7 @@ const GTEForm = () => {
                           value={formData.firstYearNumberOfPeople}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1071,16 +1130,16 @@ const GTEForm = () => {
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Label>Living Costs (12 months)</Form.Label>
-                  <table>
-                    <tr>
+                  <table className="gte-table">
+                    <tr className="gte-table">
                       <th></th>
                       <th>Cost per person (AUD)</th>
                       <th>Number of People</th>
                       <th>Total Cost (AUD)</th>
                     </tr>
-                    <tr>
-                      <td>Applicant</td>
-                      <td>
+                    <tr className="gte-table">
+                      <td className="gte-table">Applicant</td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1089,7 +1148,7 @@ const GTEForm = () => {
                           value={formData.applicantCostperPerson}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1098,7 +1157,7 @@ const GTEForm = () => {
                           value={formData.applicantNumberOfPeople}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1108,9 +1167,9 @@ const GTEForm = () => {
                         />
                       </td>
                     </tr>
-                    <tr>
-                      <td>Partner / Spouse</td>
-                      <td>
+                    <tr className="gte-table">
+                      <td className="gte-table">Partner / Spouse</td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1119,7 +1178,7 @@ const GTEForm = () => {
                           value={formData.partnerCostperPerson}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1128,7 +1187,7 @@ const GTEForm = () => {
                           value={formData.partnerNumberOfPeople}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1138,9 +1197,9 @@ const GTEForm = () => {
                         />
                       </td>
                     </tr>
-                    <tr>
-                      <td>Each dependent child</td>
-                      <td>
+                    <tr className="gte-table">
+                      <td className="gte-table">Each dependent child</td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1149,7 +1208,7 @@ const GTEForm = () => {
                           value={formData.childCostperPerson}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1158,7 +1217,7 @@ const GTEForm = () => {
                           value={formData.childNumberOfPeople}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1176,16 +1235,16 @@ const GTEForm = () => {
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Label>Travel Expenses</Form.Label>
-                  <table>
-                    <tr>
+                  <table className="gte-table">
+                    <tr className="gte-table">
                       <th></th>
                       <th>Cost per person (AUD)</th>
                       <th>Number of People</th>
                       <th>Total Cost (AUD)</th>
                     </tr>
-                    <tr>
-                      <td>Airfares / Return Tickets</td>
-                      <td>
+                    <tr className="gte-table">
+                      <td className="gte-table">Airfares / Return Tickets</td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1194,7 +1253,7 @@ const GTEForm = () => {
                           value={formData.airfaresCostperPerson}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1203,7 +1262,7 @@ const GTEForm = () => {
                           value={formData.airfaresNumberOfPeople}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1221,40 +1280,40 @@ const GTEForm = () => {
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Label>Anticipated Total Costs</Form.Label>
-                  <table>
-                    <tr>
+                  <table className="gte-table">
+                    <tr className="gte-table">
                       <th></th>
                       <th>Cost per person (AUD)</th>
                       <th>Number of People</th>
                       <th>Total Cost (AUD)</th>
                     </tr>
-                    <tr>
-                      <td>Anticipated Total Costs</td>
-                      <td>
+                    <tr className="gte-table">
+                      <td className="gte-table">Anticipated Total Costs</td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
-                          name="airfaresCostperPerson"
+                          name="anticipatedCostperPerson"
                           className="dob-input"
-                          value={formData.airfaresCostperPerson}
+                          value={formData.anticipatedCostperPerson}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
-                          name="airfaresNumberOfPeople"
+                          name="anticipatedNumberOfPeople"
                           className="dob-input"
-                          value={formData.airfaresNumberOfPeople}
+                          value={formData.anticipatedNumberOfPeople}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
-                          name="airfaresTotalCost"
+                          name="anticipatedTotalCost"
                           className="dob-input"
-                          value={formData.airfaresTotalCost}
+                          value={formData.anticipatedTotalCost}
                         />
                       </td>
                     </tr>
@@ -1267,21 +1326,22 @@ const GTEForm = () => {
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Label>Living Costs (12 months)</Form.Label>
+
                   <table>
-                    <tr>
-                      <th></th>
-                      <th>
+                    <tr className="gte-table">
+                      <th className="gte-table"></th>
+                      <th className="gte-table">
                         Provide details of the source (Example: Bank
                         Name/Branch)
                       </th>
-                      <th>
+                      <th className="gte-table">
                         Certified copies of Proof of Funds (Examples: Bank
                         statements, loan documents, scholarship letter)
                       </th>
                     </tr>
-                    <tr>
-                      <td>Self</td>
-                      <td>
+                    <tr className="gte-table">
+                      <td className="gte-table">Self</td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1290,7 +1350,7 @@ const GTEForm = () => {
                           value={formData.selfProvide}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1300,9 +1360,9 @@ const GTEForm = () => {
                         />
                       </td>
                     </tr>
-                    <tr>
-                      <td>Sponsor</td>
-                      <td>
+                    <tr className="gte-table">
+                      <td className="gte-table">Sponsor</td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1311,7 +1371,7 @@ const GTEForm = () => {
                           value={formData.sponserProvide}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1321,9 +1381,9 @@ const GTEForm = () => {
                         />
                       </td>
                     </tr>
-                    <tr>
-                      <td>Loan</td>
-                      <td>
+                    <tr className="gte-table">
+                      <td className="gte-table">Loan</td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1332,7 +1392,7 @@ const GTEForm = () => {
                           value={formData.loanProvide}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1342,9 +1402,9 @@ const GTEForm = () => {
                         />
                       </td>
                     </tr>
-                    <tr>
-                      <td>Other – specify</td>
-                      <td>
+                    <tr className="gte-table">
+                      <td className="gte-table">Other – specify</td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1353,7 +1413,7 @@ const GTEForm = () => {
                           value={formData.otherProvide}
                         />
                       </td>
-                      <td>
+                      <td className="gte-table">
                         <Form.Control
                           type="text"
                           onChange={handleChange}
@@ -1419,15 +1479,34 @@ const GTEForm = () => {
                       <Form.Label>
                         Please attach evidence (if applicable).
                       </Form.Label>
-                      <FileUploader
-                        handleChange={handleFileChange}
-                        name="file"
-                        types={fileTypes}
+                      <label for="inputField" class="btn btn-info">
+                        Upload File
+                      </label>
+                      <input
+                        type="file"
+                        style={{ display: 'none' }}
+                        id="inputField"
+                        multiple
+                        onChange={handleImageUpload}
                         accept="image/png, image/jpeg, image/jpg, application/pdf"
                       />
                       <p>
-                        <i>Image should be less than 2MB</i>
+                        <i className="file-sub">
+                          Image should be less than 2MB
+                        </i>
                       </p>
+                      <div>
+                        {base64Images.map((base64, index) => (
+                          <>
+                            <img
+                              key={index}
+                              src={base64}
+                              alt={`Image ${index}`}
+                              width={100}
+                            />
+                          </>
+                        ))}
+                      </div>
                       {signatureError ? (
                         <p style={{ color: 'red' }}>
                           Image Size should be less than 2MB
@@ -1508,6 +1587,40 @@ const GTEForm = () => {
                     <p style={{ color: 'red' }}>
                       Please enter First Name and Last Name
                     </p>
+                  ) : null}
+                </Form.Group>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>
+                    Student Signature<span className="mandate">*</span>
+                  </Form.Label>
+                  <br />
+                  <div className="sign_div">
+                    <SignatureCanvas
+                      canvasProps={{
+                        width: 300,
+                        height: 100,
+                        className: 'sigCanvas',
+                      }}
+                      ref={(data) => setSign(data)}
+                    />
+                  </div>
+                  {!url ? (
+                    <button onClick={handleGenerate} className="sign-btn">
+                      Save
+                    </button>
+                  ) : (
+                    <button className="sign-btn saved-btn" disabled={true}>
+                      Saved
+                    </button>
+                  )}
+                  <button onClick={handleClear} className="sign-btn">
+                    Clear
+                  </button>
+                  {signNull ? (
+                    <p style={{ color: 'red' }}>Signature is required</p>
                   ) : null}
                 </Form.Group>
                 <Form.Group

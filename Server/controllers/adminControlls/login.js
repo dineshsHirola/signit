@@ -36,8 +36,8 @@ module.exports = async (req, res) => {
                 expiresIn: '1d',
               }
             );
-            res.cookie('signetAdmintoken', token, { httpOnly: true });
-            return res.send({ Status: 'Success' });
+            // res.cookie('signetAdmintoken', token, { httpOnly: true });
+            return res.send({ Status: 'Success', cookie:token });
           } else {
             res.send({ Status: 'Password is Incorrect' });
           }

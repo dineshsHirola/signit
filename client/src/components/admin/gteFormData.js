@@ -6,6 +6,8 @@ import Container from 'react-bootstrap/Container';
 import { Table } from '@nextui-org/react';
 import { IconButton } from './common/IconButton';
 import { EyeIcon } from './common/EyeIcon';
+import Cookies from 'js-cookie';
+import { DeleteIcon } from './common/DeleteIcon';
 
 const GteFormData = () => {
   const navigate = useNavigate();
@@ -13,21 +15,22 @@ const GteFormData = () => {
   const [auth, setAuth] = useState(false);
   const [showData, setShowData] = useState(false);
   const [userData, setUserData] = useState();
-  const [rowperPage ,setRowPerPage] = useState(5);
+  const [rowperPage, setRowPerPage] = useState(5);
   const [search, setSearch] = useState('');
 
   axios.defaults.withCredentials = true;
 
   const fetchAPI2 = async (url) => {
+    const cookie = Cookies.get('signetAdmintoken');
     try {
       await axios
-        .get(url)
+        .post(url, { cookie: cookie })
         .then((result) => {
           if (result.data.Status === 'Success') {
             setAuth(true);
             try {
               axios
-                .get('http://localhost:8000/admin/gtef')
+                .get(`${process.env.REACT_APP_BACKEND_LINK}/admin/gtef`)
                 .then((result) => {
                   if (result.data.Status === 'Success') {
                     if (result.data.result === null) {
@@ -60,11 +63,24 @@ const GteFormData = () => {
     }
   };
 
-
   useEffect(() => {
-    const API2 = 'http://localhost:8000/admin/authControll';
+    const API2 = `${process.env.REACT_APP_BACKEND_LINK}/admin/authControll`;
     fetchAPI2(API2);
   }, []);
+
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+    await axios
+      .delete(`${process.env.REACT_APP_BACKEND_LINK}/admin/gtef/delete/${id}`)
+      .then((result) => {
+        if (result.data.Status === 'Success') {
+          alert('Deleted Successfully');
+          window.location.reload();
+        } else {
+          alert('Failed to delete');
+        }
+      });
+  };
 
   return (
     <>
@@ -77,7 +93,13 @@ const GteFormData = () => {
                 <Container>
                   <div className="headflex">
                     <h1 className="heading">GTE Form Data</h1>
-                    <input type="search" placeholder="Search by First Name" onChange={(e)=>{setSearch(e.target.value)}}/>
+                    <input
+                      type="search"
+                      placeholder="Search by First Name"
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                      }}
+                    />
                   </div>
                   <Table
                     aria-label="Example table with static content"
@@ -92,39 +114,47 @@ const GteFormData = () => {
                       <Table.Column>FIRST NAME</Table.Column>
                       <Table.Column>STUDENT REFERENCE</Table.Column>
                       <Table.Column>VIEW MORE</Table.Column>
+                      <Table.Column>DELETE</Table.Column>
                     </Table.Header>
                     <Table.Body>
                       {userData
                         .filter((val) => {
-                            const email = String(val.name.firstName);
-                            if (search === '') {
-                              return val;
-                            } else if (
-                              email
-                                .toLocaleLowerCase()
-                                .includes(search.toLocaleLowerCase())
-                            ) {
-                              return val;
-                            }
-                          })
-                      .map((val) => {
-                        return (
-                          <Table.Row>
-                            <Table.Cell>01</Table.Cell>
-                            <Table.Cell>{val.name.firstName}</Table.Cell>
-                            <Table.Cell>{val.ref}</Table.Cell>
-                            <Table.Cell>
-                              <Link
-                               to={`/admin/gteFormData/${val._id}`}
-                              >
-                                <IconButton>
-                                  <EyeIcon size={20} fill="#979797" />
+                          const email = String(val.name.firstName);
+                          if (search === '') {
+                            return val;
+                          } else if (
+                            email
+                              .toLocaleLowerCase()
+                              .includes(search.toLocaleLowerCase())
+                          ) {
+                            return val;
+                          }
+                        })
+                        .map((val, index) => {
+                          return (
+                            <Table.Row>
+                              <Table.Cell>{index + 1}</Table.Cell>
+                              <Table.Cell>{val.name.firstName}</Table.Cell>
+                              <Table.Cell>{val.ref}</Table.Cell>
+                              <Table.Cell>
+                                <Link to={`/admin/gteFormData/${val._id}`}>
+                                  <IconButton>
+                                    <EyeIcon size={20} fill="#979797" />
+                                  </IconButton>
+                                </Link>
+                              </Table.Cell>
+                              <Table.Cell>
+                                <IconButton
+                                  onClick={(e) => {
+                                    handleDelete(e, val._id);
+                                  }}
+                                >
+                                  <DeleteIcon size={20} fill="#FF6A74" />
                                 </IconButton>
-                              </Link>
-                            </Table.Cell>
-                          </Table.Row>
-                        );
-                      })}
+                              </Table.Cell>
+                            </Table.Row>
+                          );
+                        })}
                     </Table.Body>
                     <Table.Pagination
                       shadow
@@ -135,8 +165,14 @@ const GteFormData = () => {
                   </Table>
                   <div className="row-select-flex">
                     <p>ROWS PER PAGE</p>
-                    <select onChange={(e)=>{setRowPerPage(e.target.value)}}>
-                      <option value={5} selected>5</option>
+                    <select
+                      onChange={(e) => {
+                        setRowPerPage(e.target.value);
+                      }}
+                    >
+                      <option value={5} selected>
+                        5
+                      </option>
                       <option value={15}>15</option>
                       <option value={15}>10</option>
                       <option value={20}>20</option>

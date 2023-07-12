@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import JsonData from '../../FormJSON/countryName.json';
 import Container from 'react-bootstrap/Container';
+import SignatureCanvas from 'react-signature-canvas';
 import axios from 'axios';
 import {
   CredittelValidation,
   IdValidation,
   OfficialCertificateVaidation,
+  OfficialCertificateVaidationArr,
   addressValidation,
   altEmailValidator,
   dobValidation,
@@ -25,6 +27,47 @@ import {
 import { FileUploader } from 'react-drag-drop-files';
 
 const ApplicationForCreditTransfer = () => {
+  const [sign, setSign] = useState();
+  const [url, setUrl] = useState();
+
+  const [sign1, setSign1] = useState();
+  const [url1, setUrl1] = useState();
+
+  const [sign2, setSign2] = useState();
+  const [url2, setUrl2] = useState();
+
+  const handleClear = (e) => {
+    e.preventDefault();
+    sign.clear();
+    setUrl('');
+  };
+
+  const handleGenerate = (e) => {
+    e.preventDefault();
+    setUrl(sign.getTrimmedCanvas().toDataURL('image/png'));
+  };
+
+  const handleClear1 = (e) => {
+    e.preventDefault();
+    sign1.clear();
+    setUrl1('');
+  };
+
+  const handleGenerate1 = (e) => {
+    e.preventDefault();
+    setUrl1(sign1.getTrimmedCanvas().toDataURL('image/png'));
+  };
+  const handleClear2 = (e) => {
+    e.preventDefault();
+    sign2.clear();
+    setUrl2('');
+  };
+
+  const handleGenerate2 = (e) => {
+    e.preventDefault();
+    setUrl2(sign2.getTrimmedCanvas().toDataURL('image/png'));
+  };
+
   const [changePageState, setChangePageState] = useState(true);
   const [changePageState1, setChangePageState1] = useState(false);
   const [changePageState2, setChangePageState2] = useState(false);
@@ -33,6 +76,71 @@ const ApplicationForCreditTransfer = () => {
   const [declaration3, setDeclaration3] = useState(false);
 
   const [checkError, setCheckError] = useState(false);
+
+  const [base64Images, setBase64Images] = useState([]);
+  const [base64Images1, setBase64Images1] = useState([]);
+
+  const handleImageUpload = (event) => {
+    const files = event.target.files;
+
+    const imagesArray = Array.from(files);
+    Promise.all(
+      imagesArray.map((image) => {
+        return new Promise((resolve, reject) => {
+          if (image.size > 2 * 1024 * 1024) {
+            alert('Image Shoud be less than 2 mb');
+            reject(new Error('Image size exceeds 2 MB limit.'));
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            resolve(e.target.result);
+          };
+          reader.onerror = (error) => {
+            reject(error);
+          };
+          reader.readAsDataURL(image);
+        });
+      })
+    )
+      .then((results) => {
+        setBase64Images((prevImages) => [...prevImages, ...results]);
+      })
+      .catch((error) => {
+        console.log('Error converting images to base64:', error);
+      });
+  };
+
+  const handleImageUpload2 = (event) => {
+    const files = event.target.files;
+
+    const imagesArray = Array.from(files);
+    Promise.all(
+      imagesArray.map((image) => {
+        return new Promise((resolve, reject) => {
+          if (image.size > 2 * 1024 * 1024) {
+            alert('Image Shoud be less than 2 mb');
+            reject(new Error('Image size exceeds 2 MB limit.'));
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            resolve(e.target.result);
+          };
+          reader.onerror = (error) => {
+            reject(error);
+          };
+          reader.readAsDataURL(image);
+        });
+      })
+    )
+      .then((results) => {
+        setBase64Images1((prevImages) => [...prevImages, ...results]);
+      })
+      .catch((error) => {
+        console.log('Error converting images to base64:', error);
+      });
+  };
 
   const handleDecalaration1 = () => {
     if (declaration1 === false) {
@@ -108,6 +216,10 @@ const ApplicationForCreditTransfer = () => {
   const [signatureImage2, setSignatureImage2] = useState('');
   const [signatureError2, setSignatureError2] = useState(false);
   const [fileNull2, setFileNull2] = useState(false);
+
+  const [signNull, setSignNull] = useState(false);
+  const [signNull1, setSignNull1] = useState(false);
+  const [signNull2, setSignNull2] = useState(false);
 
   const fileTypes = ['JPG', 'PNG', 'PDF'];
   const [file, setFile] = useState(null);
@@ -266,7 +378,7 @@ const ApplicationForCreditTransfer = () => {
       nameVer &&
       dbVer &&
       genderVer &&
-      telVer &&
+      // telVer &&
       mobVer &&
       emailVer &&
       altEmailVer &&
@@ -328,14 +440,14 @@ const ApplicationForCreditTransfer = () => {
       formData.statementOfAttenment,
       setQualificationNull
     );
-    const certificateVer = OfficialCertificateVaidation(
+    const certificateVer = OfficialCertificateVaidationArr(
       officialCertificate,
-      signatureImage,
+      base64Images,
       setOfficialCertificateNull
     );
-    const transcriptVer = OfficialCertificateVaidation(
+    const transcriptVer = OfficialCertificateVaidationArr(
       officialTranscript,
-      signatureImage2,
+      base64Images1,
       setOfficialTranscriptNull
     );
     const headOfComplianceVer = typeOfIdValidation(
@@ -350,12 +462,13 @@ const ApplicationForCreditTransfer = () => {
       formData.courseSectionDate,
       setCourseSectionDateNull
     );
+    const signVer = typeOfIdValidation(url, setSignNull);
 
     if (
       nameVer &&
       dbVer &&
       genderVer &&
-      telVer &&
+      // telVer &&
       mobVer &&
       emailVer &&
       altEmailVer &&
@@ -368,12 +481,27 @@ const ApplicationForCreditTransfer = () => {
       transcriptVer &&
       headOfComplianceVer &&
       explanationOfDecisionVer &&
-      courseSectionDateVer
+      courseSectionDateVer &&
+      signVer
     ) {
       setChangePageState(false);
       setChangePageState1(false);
       setChangePageState2(true);
     }
+  };
+
+  const handleback2 = (e) => {
+    e.preventDefault();
+    setChangePageState(true);
+    setChangePageState1(false);
+    setChangePageState2(false);
+  };
+
+  const handleBack3 = (e) => {
+    e.preventDefault();
+    setChangePageState(false);
+    setChangePageState1(true);
+    setChangePageState2(false);
   };
 
   const handleSubmit = async (e) => {
@@ -425,14 +553,14 @@ const ApplicationForCreditTransfer = () => {
       formData.statementOfAttenment,
       setQualificationNull
     );
-    const certificateVer = OfficialCertificateVaidation(
+    const certificateVer = OfficialCertificateVaidationArr(
       officialCertificate,
-      signatureImage,
+      base64Images,
       setOfficialCertificateNull
     );
-    const transcriptVer = OfficialCertificateVaidation(
+    const transcriptVer = OfficialCertificateVaidationArr(
       officialTranscript,
-      signatureImage2,
+      base64Images1,
       setOfficialTranscriptNull
     );
     const headOfComplianceVer = typeOfIdValidation(
@@ -488,19 +616,39 @@ const ApplicationForCreditTransfer = () => {
       initialsVer &&
       initialsDateVer
     ) {
+      const arr = [url];
+      const arr1 = [url1];
+      const arr2 = [url2];
+      // if (!url1 && !url2) {
+      //   arr.push(url);
+      // } else if (url1 && !url2) {
+      //   arr.push(url, url1);
+      // } else if (!url1 && url2) {
+      //   arr.push(url, url2);
+      // } else {
+      //   arr.push(url, url1, url2);
+      // }
+
       await axios
-        .post('http://localhost:8000/forms/ctf', {
+        .post(`${process.env.REACT_APP_BACKEND_LINK}/forms/ctf`, {
           formData,
           declaration1,
           declaration2,
           declaration3,
           inputArr,
+          officialCertificate,
+          officialTranscript,
+          base64Images,
+          base64Images1,
+          arr,
+          arr1,
+          arr2,
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
-            alert('Success');
+            alert('Data Submitted Successfully');
           } else {
-            alert('Failed');
+            alert('Failed To Submit Data');
           }
         })
         .catch((e) => {
@@ -543,6 +691,7 @@ const ApplicationForCreditTransfer = () => {
                         aria-label="Default select example"
                         onChange={handleChange}
                         name="prefix"
+                        value={formData.prefix}
                       >
                         <option value="Mr." selected>
                           Mr.
@@ -559,6 +708,7 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleChange}
                         name="firstName"
+                        value={formData.firstName}
                       />
                       <p className="input-p">First Name</p>
                     </Form.Group>
@@ -570,6 +720,7 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleChange}
                         name="middleName"
+                        value={formData.middleName}
                       />
                       <p className="input-p">Middel Name</p>
                     </Form.Group>
@@ -581,6 +732,7 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleChange}
                         name="lastName"
+                        value={formData.lastName}
                       />
                       <p className="input-p">Last Name</p>
                     </Form.Group>
@@ -609,6 +761,7 @@ const ApplicationForCreditTransfer = () => {
                       type="date"
                       onChange={handleChange}
                       name="dob"
+                      value={formData.dob}
                     />
                     {dobError ? (
                       <p style={{ color: 'red' }}>Select valid DOB</p>
@@ -629,6 +782,7 @@ const ApplicationForCreditTransfer = () => {
                       aria-label="Default select example"
                       onChange={handleChange}
                       name="gender"
+                      value={formData.gender}
                     >
                       <option>Please Select</option>
                       <option value="M">Male</option>
@@ -653,6 +807,7 @@ const ApplicationForCreditTransfer = () => {
                         className="flag-select"
                         onChange={handleChange}
                         name="telCode"
+                        value={formData.telCode}
                       >
                         <option>Select</option>
                         {JsonData.map((value) => {
@@ -672,6 +827,7 @@ const ApplicationForCreditTransfer = () => {
                         onChange={handleChange}
                         name="telephone"
                         minLength={10}
+                        value={formData.telephone}
                       />
                       {contryCodeNull ? (
                         <p style={{ color: 'red' }}>
@@ -697,6 +853,7 @@ const ApplicationForCreditTransfer = () => {
                         className="flag-select"
                         onChange={handleChange}
                         name="mobCode"
+                        value={formData.mobCode}
                       >
                         <option>Select</option>
                         {JsonData.map((value) => {
@@ -715,6 +872,7 @@ const ApplicationForCreditTransfer = () => {
                         type="tel"
                         onChange={handleChange}
                         name="mobile"
+                        value={formData.mobile}
                       />
                     </div>
                     {mobileContryCodeNull ? (
@@ -743,6 +901,7 @@ const ApplicationForCreditTransfer = () => {
                       type="email"
                       onChange={handleChange}
                       name="email"
+                      value={formData.email}
                     />
                     <p className="input-p">example@example.com</p>
                     {emailError ? (
@@ -762,6 +921,7 @@ const ApplicationForCreditTransfer = () => {
                       type="email"
                       onChange={handleChange}
                       name="altEmail"
+                      value={formData.altEmail}
                     />
                     <p className="input-p">example@example.com</p>
                     {altEmailError ? (
@@ -784,6 +944,7 @@ const ApplicationForCreditTransfer = () => {
                       type="text"
                       onChange={handleChange}
                       name="typeOfId"
+                      value={formData.typeOfId}
                     />
                     {typeIdNull ? (
                       <p style={{ color: 'red' }}>Enter type of ID</p>
@@ -801,6 +962,7 @@ const ApplicationForCreditTransfer = () => {
                       type="number"
                       onChange={handleChange}
                       name="idNumber"
+                      value={formData.idNumber}
                     />
                     {idError ? (
                       <p style={{ color: 'red' }}>Enter valid ID number</p>
@@ -825,6 +987,7 @@ const ApplicationForCreditTransfer = () => {
                           type="text"
                           onChange={handleChange}
                           name="buildingName"
+                          value={formData.buildingName}
                         />
                         <p className="input-p">Building name, Unit name</p>
                       </div>
@@ -833,6 +996,7 @@ const ApplicationForCreditTransfer = () => {
                           type="text"
                           onChange={handleChange}
                           name="street"
+                          value={formData.street}
                         />
                         <p className="input-p">Street Address</p>
                       </div>
@@ -843,6 +1007,7 @@ const ApplicationForCreditTransfer = () => {
                           type="text"
                           onChange={handleChange}
                           name="town"
+                          value={formData.town}
                         />
                         <p className="input-p">Suburb/Town</p>
                       </div>
@@ -851,6 +1016,7 @@ const ApplicationForCreditTransfer = () => {
                           type="text"
                           onChange={handleChange}
                           name="state"
+                          value={formData.state}
                         />
                         <p className="input-p">State</p>
                       </div>
@@ -861,6 +1027,7 @@ const ApplicationForCreditTransfer = () => {
                           type="text"
                           onChange={handleChange}
                           name="postCode"
+                          value={formData.postCode}
                         />
                         <p className="input-p">Postcode</p>
                       </div>
@@ -869,6 +1036,7 @@ const ApplicationForCreditTransfer = () => {
                           aria-label="Default select example"
                           onChange={handleChange}
                           name="country"
+                          value={formData.country}
                         >
                           <option>Please Select</option>
                           {JsonData.map((value) => {
@@ -889,6 +1057,7 @@ const ApplicationForCreditTransfer = () => {
                     ) : null}
                   </Form.Group>
                 </div>
+
                 <button onClick={handleNext}>Next</button>
               </>
             )}
@@ -1130,235 +1299,311 @@ const ApplicationForCreditTransfer = () => {
                       <p style={{ color: 'red' }}>This filed is Required</p>
                     ) : null}
                   </Form.Group>
+                </div>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>
+                    Name of the College that has issued your Qualification or
+                    Statement of Attainment<span className="mandate">*</span>
+                  </Form.Label>
+                  <br />
+                  <Form.Control
+                    type="text"
+                    onChange={handleChange}
+                    name="statementOfAttenment"
+                    value={formData.statementOfAttenment}
+                  />
+                  {qualificationNull ? (
+                    <p style={{ color: 'red' }}>
+                      Qualification/Statement of Attainment is required
+                    </p>
+                  ) : null}
+                </Form.Group>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>
+                    Official Certificate Attached:
+                    <span className="mandate">*</span>
+                  </Form.Label>
+                  <Form.Check
+                    inline
+                    label="Yes"
+                    name="officialCertificate"
+                    className="radio-input"
+                    value="Yes"
+                    type="radio"
+                    onChange={(e) => {
+                      setOfficialCertificate(e.target.value);
+                    }}
+                  />
+                  <Form.Check
+                    inline
+                    label="No"
+                    name="officialCertificate"
+                    className="radio-input"
+                    value="No"
+                    type="radio"
+                    onChange={(e) => {
+                      setOfficialCertificate(e.target.value);
+                    }}
+                  />
+
+                  {officialCertificate === 'Yes' ? (
+                    <div className="flex-width ">
+                      <div className="textarea-div">
+                        <Form.Group
+                          className="mb-3"
+                          controlId="exampleForm.ControlInput1"
+                        >
+                          <Form.Label>
+                            Certificate Upload
+                            <span className="mandate">*</span>
+                          </Form.Label>
+                          <label for="inputField" class="btn btn-info">
+                            Upload File
+                          </label>
+                          <input
+                            type="file"
+                            style={{ display: 'none' }}
+                            id="inputField"
+                            multiple
+                            onChange={handleImageUpload}
+                            accept="image/png, image/jpeg, image/jpg, application/pdf"
+                          />
+                          <p>
+                            <i className="file-sub">
+                              Image should be less than 2MB
+                            </i>
+                          </p>
+                          <div>
+                            {base64Images.map((base64, index) => (
+                              <>
+                                <img
+                                  key={index}
+                                  src={base64}
+                                  alt={`Image ${index}`}
+                                  width={100}
+                                />
+                              </>
+                            ))}
+                          </div>
+                          {signatureError ? (
+                            <p style={{ color: 'red' }}>
+                              Image Size should be less than 2MB
+                            </p>
+                          ) : null}
+                          {fileNull ? (
+                            <p style={{ color: 'red' }}>
+                              Official Certificate is required
+                            </p>
+                          ) : null}
+                        </Form.Group>
+                      </div>
+                    </div>
+                  ) : null}
+                  {officialCertificateNull ? (
+                    <p style={{ color: 'red' }}>This field is Required</p>
+                  ) : null}
+                </Form.Group>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>
+                    Official Transcript Attached:
+                    <span className="mandate">*</span>
+                  </Form.Label>
+                  <Form.Check
+                    inline
+                    label="Yes"
+                    name="officialTranscript"
+                    className="radio-input"
+                    value="Yes"
+                    type="radio"
+                    onChange={(e) => {
+                      setOfficialTranscript(e.target.value);
+                    }}
+                  />
+                  <Form.Check
+                    inline
+                    label="No"
+                    name="officialTranscript"
+                    className="radio-input"
+                    value="No"
+                    type="radio"
+                    onChange={(e) => {
+                      setOfficialTranscript(e.target.value);
+                    }}
+                  />
+
+                  {officialTranscript === 'Yes' ? (
+                    <div className="flex-width ">
+                      <div className="textarea-div">
+                        <Form.Group
+                          className="mb-3"
+                          controlId="exampleForm.ControlInput1"
+                        >
+                          <Form.Label>
+                            Transcript Upload
+                            <span className="mandate">*</span>
+                          </Form.Label>
+                          <label for="inputField1" class="btn btn-info">
+                            Upload File
+                          </label>
+                          <input
+                            type="file"
+                            style={{ display: 'none' }}
+                            id="inputField1"
+                            multiple
+                            onChange={handleImageUpload2}
+                            accept="image/png, image/jpeg, image/jpg, application/pdf"
+                          />
+                          <p>
+                            <i className="file-sub">
+                              Image should be less than 2MB
+                            </i>
+                          </p>
+                          <div>
+                            {base64Images1.map((base64, index) => (
+                              <>
+                                <img
+                                  key={index}
+                                  src={base64}
+                                  alt={`Image ${index}`}
+                                  width={100}
+                                />
+                              </>
+                            ))}
+                          </div>
+                          {signatureError2 ? (
+                            <p style={{ color: 'red' }}>
+                              Image Size should be less than 2MB
+                            </p>
+                          ) : null}
+                          {fileNull2 ? (
+                            <p style={{ color: 'red' }}>
+                              Transcript is required
+                            </p>
+                          ) : null}
+                        </Form.Group>
+                      </div>
+                    </div>
+                  ) : null}
+                  {officialTranscriptNull ? (
+                    <p style={{ color: 'red' }}>This field is Required</p>
+                  ) : null}
+                </Form.Group>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>
+                    Head of Compliance/Academic Manager Determination:
+                    <span className="mandate">*</span>
+                  </Form.Label>
+                  <Form.Check
+                    inline
+                    label="Credit Transfer Approved"
+                    name="headOfCompliance"
+                    className="radio-input"
+                    value="Credit Transfer Approved"
+                    type="radio"
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    inline
+                    label="Credit Transfer Not Approved"
+                    name="headOfCompliance"
+                    className="radio-input"
+                    value="Credit Transfer Not Approved"
+                    type="radio"
+                    onChange={handleChange}
+                  />
+                  {headOfComplianceNull ? (
+                    <p style={{ color: 'red' }}>This field is Required</p>
+                  ) : null}
+                </Form.Group>
+                <div className="textarea-div">
                   <Form.Group
                     className="mb-3"
                     controlId="exampleForm.ControlInput1"
                   >
                     <Form.Label>
-                      Name of the College that has issued your Qualification or
-                      Statement of Attainment<span className="mandate">*</span>
+                      If NOT Approved, explanation for decision:
+                      <span className="mandate">*</span>
                     </Form.Label>
                     <br />
                     <Form.Control
-                      type="text"
+                      as="textarea"
                       onChange={handleChange}
-                      name="statementOfAttenment"
+                      name="explanationOfDecision"
+                      value={formData.explanationOfDecision}
                     />
-                    {qualificationNull ? (
+                    {explanationOfDecisionNull ? (
                       <p style={{ color: 'red' }}>
-                        Qualification/Statement of Attainment is required
+                        Explanation Of Decision is required
                       </p>
                     ) : null}
                   </Form.Group>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>
-                      Official Certificate Attached:
-                      <span className="mandate">*</span>
-                    </Form.Label>
-                    <Form.Check
-                      inline
-                      label="Yes"
-                      name="officialCertificate"
-                      className="radio-input"
-                      value="Yes"
-                      type="radio"
-                      onChange={(e) => {
-                        setOfficialCertificate(e.target.value);
-                      }}
-                    />
-                    <Form.Check
-                      inline
-                      label="No"
-                      name="officialCertificate"
-                      className="radio-input"
-                      value="No"
-                      type="radio"
-                      onChange={(e) => {
-                        setOfficialCertificate(e.target.value);
-                      }}
-                    />
-
-                    {officialCertificate === 'Yes' ? (
-                      <div className="flex-width ">
-                        <div className="textarea-div">
-                          <Form.Group
-                            className="mb-3"
-                            controlId="exampleForm.ControlInput1"
-                          >
-                            <Form.Label>
-                              Certificate Upload
-                              <span className="mandate">*</span>
-                            </Form.Label>
-                            <FileUploader
-                              handleChange={handleFileChange}
-                              name="file"
-                              types={fileTypes}
-                              accept="image/png, image/jpeg, image/jpg, application/pdf"
-                            />
-                            <p>
-                              <i>Image should be less than 2MB</i>
-                            </p>
-                            {signatureError ? (
-                              <p style={{ color: 'red' }}>
-                                Image Size should be less than 2MB
-                              </p>
-                            ) : null}
-                            {fileNull ? (
-                              <p style={{ color: 'red' }}>
-                                Official Certificate is required
-                              </p>
-                            ) : null}
-                          </Form.Group>
-                        </div>
-                      </div>
-                    ) : null}
-                    {officialCertificateNull ? (
-                      <p style={{ color: 'red' }}>This field is Required</p>
-                    ) : null}
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>
-                      Official Transcript Attached:
-                      <span className="mandate">*</span>
-                    </Form.Label>
-                    <Form.Check
-                      inline
-                      label="Yes"
-                      name="officialTranscript"
-                      className="radio-input"
-                      value="Yes"
-                      type="radio"
-                      onChange={(e) => {
-                        setOfficialTranscript(e.target.value);
-                      }}
-                    />
-                    <Form.Check
-                      inline
-                      label="No"
-                      name="officialTranscript"
-                      className="radio-input"
-                      value="No"
-                      type="radio"
-                      onChange={(e) => {
-                        setOfficialTranscript(e.target.value);
-                      }}
-                    />
-
-                    {officialTranscript === 'Yes' ? (
-                      <div className="flex-width ">
-                        <div className="textarea-div">
-                          <Form.Group
-                            className="mb-3"
-                            controlId="exampleForm.ControlInput1"
-                          >
-                            <Form.Label>
-                              Transcript Upload
-                              <span className="mandate">*</span>
-                            </Form.Label>
-                            <FileUploader
-                              handleChange={handleFileChange2}
-                              name="file2"
-                              types={fileTypes}
-                              accept="image/png, image/jpeg, image/jpg, application/pdf"
-                            />
-                            <p>
-                              <i>Image should be less than 2MB</i>
-                            </p>
-                            {signatureError2 ? (
-                              <p style={{ color: 'red' }}>
-                                Image Size should be less than 2MB
-                              </p>
-                            ) : null}
-                            {fileNull2 ? (
-                              <p style={{ color: 'red' }}>
-                                Transcript is required
-                              </p>
-                            ) : null}
-                          </Form.Group>
-                        </div>
-                      </div>
-                    ) : null}
-                    {officialTranscriptNull ? (
-                      <p style={{ color: 'red' }}>This field is Required</p>
-                    ) : null}
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>
-                      Head of Compliance/Academic Manager Determination:
-                      <span className="mandate">*</span>
-                    </Form.Label>
-                    <Form.Check
-                      inline
-                      label="Credit Transfer Approved"
-                      name="headOfCompliance"
-                      className="radio-input"
-                      value="Credit Transfer Approved"
-                      type="radio"
-                      onChange={handleChange}
-                    />
-                    <Form.Check
-                      inline
-                      label="Credit Transfer Not Approved"
-                      name="headOfCompliance"
-                      className="radio-input"
-                      value="Credit Transfer Not Approved"
-                      type="radio"
-                      onChange={handleChange}
-                    />
-                    {headOfComplianceNull ? (
-                      <p style={{ color: 'red' }}>This field is Required</p>
-                    ) : null}
-                  </Form.Group>
-                  <div className="textarea-div">
-                    <Form.Group
-                      className="mb-3"
-                      controlId="exampleForm.ControlInput1"
-                    >
-                      <Form.Label>
-                        If NOT Approved, explanation for decision:
-                        <span className="mandate">*</span>
-                      </Form.Label>
-                      <br />
-                      <Form.Control
-                        as="textarea"
-                        onChange={handleChange}
-                        name="explanationOfDecision"
-                      />
-                      {explanationOfDecisionNull ? (
-                        <p style={{ color: 'red' }}>
-                          Explanation Of Decision is required
-                        </p>
-                      ) : null}
-                    </Form.Group>
-                  </div>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>
-                      Date<span className="mandate">*</span>
-                    </Form.Label>
-                    <br />
-                    <Form.Control
-                      type="date"
-                      onChange={handleChange}
-                      name="courseSectionDate"
-                    />
-                    {courseSectionDateNull ? (
-                      <p style={{ color: 'red' }}>Date is required</p>
-                    ) : null}
-                  </Form.Group>
-                  <button onClick={handleNext2}>Next</button>
                 </div>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>
+                    Student Signature<span className="mandate">*</span>
+                  </Form.Label>
+                  <br />
+                  <div className="sign_div">
+                    <SignatureCanvas
+                      canvasProps={{
+                        width: 300,
+                        height: 100,
+                        className: 'sigCanvas',
+                      }}
+                      ref={(data) => setSign(data)}
+                    />
+                  </div>
+                  {!url ? (
+                    <button onClick={handleGenerate} className="sign-btn">
+                      Save
+                    </button>
+                  ) : (
+                    <button className="sign-btn saved-btn" disabled={true}>
+                      Saved
+                    </button>
+                  )}
+                  <button onClick={handleClear} className="sign-btn">
+                    Clear
+                  </button>
+                  {signNull ? (
+                    <p style={{ color: 'red' }}>Signature is required</p>
+                  ) : null}
+                </Form.Group>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>
+                    Date<span className="mandate">*</span>
+                  </Form.Label>
+                  <br />
+                  <Form.Control
+                    type="date"
+                    onChange={handleChange}
+                    name="courseSectionDate"
+                    value={formData.courseSectionDate}
+                  />
+                  {courseSectionDateNull ? (
+                    <p style={{ color: 'red' }}>Date is required</p>
+                  ) : null}
+                </Form.Group>
+                <button onClick={handleback2}>Back</button>
+                <button onClick={handleNext2}>Next</button>
               </>
             )}
             {changePageState2 && (
@@ -1383,6 +1628,7 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleInputAddChange}
                         name="unitCode1"
+                        value={inputArr.unitCode1}
                       />
                     </div>
                     <div>
@@ -1391,6 +1637,7 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleInputAddChange}
                         name="unitTitle1"
+                        value={inputArr.unitCode1}
                       />
                     </div>
                   </div>
@@ -1399,11 +1646,13 @@ const ApplicationForCreditTransfer = () => {
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitCode2"
+                      value={inputArr.unitCode2}
                     />
                     <Form.Control
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitTitle2"
+                      value={inputArr.unitTitle2}
                     />
                   </div>
                   <div className="input-flex">
@@ -1411,11 +1660,13 @@ const ApplicationForCreditTransfer = () => {
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitCode3"
+                      value={inputArr.unitCode3}
                     />
                     <Form.Control
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitTitle3"
+                      value={inputArr.unitTitle3}
                     />
                   </div>
                   <div className="input-flex">
@@ -1423,11 +1674,13 @@ const ApplicationForCreditTransfer = () => {
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitCode4"
+                      value={inputArr.unitCode4}
                     />
                     <Form.Control
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitTitle4"
+                      value={inputArr.unitTitle4}
                     />
                   </div>
                   <div className="input-flex">
@@ -1435,11 +1688,13 @@ const ApplicationForCreditTransfer = () => {
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitCode5"
+                      value={inputArr.unitCode5}
                     />
                     <Form.Control
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitTitle5"
+                      value={inputArr.unitTitle5}
                     />
                   </div>
                   <div className="input-flex">
@@ -1447,11 +1702,13 @@ const ApplicationForCreditTransfer = () => {
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitCode6"
+                      value={inputArr.unitCode6}
                     />
                     <Form.Control
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitTitle6"
+                      value={inputArr.unitTitle6}
                     />
                   </div>
                   <div className="input-flex">
@@ -1459,11 +1716,13 @@ const ApplicationForCreditTransfer = () => {
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitCode7"
+                      value={inputArr.unitCode7}
                     />
                     <Form.Control
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitTitle7"
+                      value={inputArr.unitTitle7}
                     />
                   </div>
                   <div className="input-flex">
@@ -1471,11 +1730,13 @@ const ApplicationForCreditTransfer = () => {
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitCode8"
+                      value={inputArr.unitCode8}
                     />
                     <Form.Control
                       type="text"
                       onChange={handleInputAddChange}
                       name="unitTitle8"
+                      value={inputArr.unitTitle8}
                     />
                   </div>
                 </Form.Group>
@@ -1493,6 +1754,7 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleChange}
                         name="repFirstName"
+                        value={formData.repFirstName}
                       />
                       <p className="input-p">First Name</p>
                     </div>
@@ -1501,6 +1763,7 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleChange}
                         name="repLastName"
+                        value={formData.repLastName}
                       />
                       <p className="input-p">Last Name</p>
                     </div>
@@ -1523,6 +1786,7 @@ const ApplicationForCreditTransfer = () => {
                     type="date"
                     onChange={handleChange}
                     name="unitsDate"
+                    value={formData.unitsDate}
                   />
                   <p className="input-p">Date</p>
                 </Form.Group>
@@ -1535,27 +1799,61 @@ const ApplicationForCreditTransfer = () => {
                     <Form.Label>
                       Administrative Records<span className="mandate">*</span>
                     </Form.Label>
-                    <Form.Check
-                      inline
-                      label="Student Advised in writing"
-                      onChange={handleDecalaration1}
-                      name="Student Advised in writing"
-                      type="checkbox"
-                    />
-                    <Form.Check
-                      inline
-                      label="CT recorded in SMS"
-                      onChange={handleDecalaration2}
-                      name="CT recorded in SMS"
-                      type="checkbox"
-                    />
-                    <Form.Check
-                      inline
-                      label="Application Closed"
-                      onChange={handleDecalaration3}
-                      name="Application Closed"
-                      type="checkbox"
-                    />
+                    {declaration1 ? (
+                      <Form.Check
+                        inline
+                        label="Student Advised in writing"
+                        onChange={handleDecalaration1}
+                        name="Student Advised in writing"
+                        type="checkbox"
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Student Advised in writing"
+                        onChange={handleDecalaration1}
+                        name="Student Advised in writing"
+                        type="checkbox"
+                      />
+                    )}
+                    {declaration2 ? (
+                      <Form.Check
+                        inline
+                        label="CT recorded in SMS"
+                        onChange={handleDecalaration2}
+                        name="CT recorded in SMS"
+                        type="checkbox"
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="CT recorded in SMS"
+                        onChange={handleDecalaration2}
+                        name="CT recorded in SMS"
+                        type="checkbox"
+                      />
+                    )}
+                    {declaration3 ? (
+                      <Form.Check
+                        inline
+                        label="Application Closed"
+                        onChange={handleDecalaration3}
+                        name="Application Closed"
+                        type="checkbox"
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Application Closed"
+                        onChange={handleDecalaration3}
+                        name="Application Closed"
+                        type="checkbox"
+                      />
+                    )}
+
                     {adminRecordsNull ? (
                       <p style={{ color: 'red' }}>This field is required</p>
                     ) : null}
@@ -1572,6 +1870,7 @@ const ApplicationForCreditTransfer = () => {
                     type="text"
                     onChange={handleChange}
                     name="initials"
+                    value={formData.initials}
                   />
                   {initialsNull ? (
                     <p style={{ color: 'red' }}>Initials is required</p>
@@ -1588,6 +1887,7 @@ const ApplicationForCreditTransfer = () => {
                     type="date"
                     onChange={handleChange}
                     name="initialsDate"
+                    value={formData.initialsDate}
                   />
                   <p className="input-p">Date</p>
                   {initialsDateNull ? (
@@ -1605,6 +1905,7 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleChange}
                         name="adminFirstName"
+                        value={formData.adminFirstName}
                       />
                       <p className="input-p">First Name</p>
                     </div>
@@ -1613,6 +1914,7 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleChange}
                         name="adminLastName"
+                        value={formData.adminLastName}
                       />
                       <p className="input-p">Last Name</p>
                     </div>
@@ -1625,11 +1927,41 @@ const ApplicationForCreditTransfer = () => {
                   className="mb-3"
                   controlId="exampleForm.ControlInput1"
                 >
+                  <Form.Label>Administrators's Signature</Form.Label>
+                  <br />
+                  <div className="sign_div">
+                    <SignatureCanvas
+                      canvasProps={{
+                        width: 300,
+                        height: 100,
+                        className: 'sigCanvas',
+                      }}
+                      ref={(data) => setSign1(data)}
+                    />
+                  </div>
+                  {!url1 ? (
+                    <button onClick={handleGenerate1} className="sign-btn">
+                      Save
+                    </button>
+                  ) : (
+                    <button className="sign-btn saved-btn" disabled={true}>
+                      Saved
+                    </button>
+                  )}
+                  <button onClick={handleClear1} className="sign-btn">
+                    Clear
+                  </button>
+                </Form.Group>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
                   <Form.Label>Date:</Form.Label>
                   <Form.Control
                     type="date"
                     onChange={handleChange}
                     name="adminDate"
+                    value={formData.adminDate}
                   />
                   <p className="input-p">Date</p>
                 </Form.Group>
@@ -1644,6 +1976,7 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleChange}
                         name="managerFirstName"
+                        value={formData.managerFirstName}
                       />
                       <p className="input-p">First Name</p>
                     </div>
@@ -1652,10 +1985,40 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleChange}
                         name="managerLastName"
+                        value={formData.managerLastName}
                       />
                       <p className="input-p">Last Name</p>
                     </div>
                   </div>
+                </Form.Group>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>Campus manager's Signature</Form.Label>
+                  <br />
+                  <div className="sign_div">
+                    <SignatureCanvas
+                      canvasProps={{
+                        width: 300,
+                        height: 100,
+                        className: 'sigCanvas',
+                      }}
+                      ref={(data) => setSign2(data)}
+                    />
+                  </div>
+                  {!url2 ? (
+                    <button onClick={handleGenerate2} className="sign-btn">
+                      Save
+                    </button>
+                  ) : (
+                    <button className="sign-btn saved-btn" disabled={true}>
+                      Saved
+                    </button>
+                  )}
+                  <button onClick={handleClear2} className="sign-btn">
+                    Clear
+                  </button>
                 </Form.Group>
                 <Form.Group
                   className="mb-3"
@@ -1666,9 +2029,11 @@ const ApplicationForCreditTransfer = () => {
                     type="date"
                     onChange={handleChange}
                     name="managerDate"
+                    value={formData.managerDate}
                   />
                   <p className="input-p">Date</p>
                 </Form.Group>
+                <button onClick={handleBack3}>Back</button>
                 <button onClick={handleSubmit}>Submit</button>
               </>
             )}

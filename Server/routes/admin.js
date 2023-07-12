@@ -25,6 +25,13 @@ const logout = require('../controllers/adminControlls/logout');
 const adminCred = require('../controllers/auth/adminCred');
 const changeCred = require('../controllers/auth/changeCred');
 const contactUs = require('../controllers/adminControlls/contactUs');
+const rrfDelete = require('../controllers/adminControlls/delete/rrfDelete');
+const cfDelete = require('../controllers/adminControlls/delete/cfDelete');
+const srfDelete = require('../controllers/adminControlls/delete/srfDelete');
+const ctfDelete = require('../controllers/adminControlls/delete/ctfDelete');
+const cefDelete = require('../controllers/adminControlls/delete/cefDelete');
+const gteDelete = require('../controllers/adminControlls/delete/gteDelete');
+const csdfDelete = require('../controllers/adminControlls/delete/csdfDelete');
 
 router.use(express.json());
 router.use(cookieParser());
@@ -51,7 +58,7 @@ router.get('/cef', cefControll);
 router.get('/gtef', gtefControll);
 router.get('/csdf', csdfControll);
 router.post('/login', login);
-router.get('/authControll', authControll);
+router.post('/authControll', authControll);
 router.get('/cf/:id', cfSM);
 router.get('/cef/:id', cefSM);
 router.get('/csdf/:id', csdfSM);
@@ -64,8 +71,12 @@ router.get('/profile', adminCred);
 router.put('/changeCred', changeCred);
 router.get('/contactUs', contactUs);
 
-
-
-
+router.delete('/rrf/delete/:id', rrfDelete);
+router.delete('/cf/delete/:id', cfDelete);
+router.delete('/srf/delete/:id', srfDelete);
+router.delete('/ctf/delete/:id', ctfDelete);
+router.delete('/cef/delete/:id', cefDelete);
+router.delete('/gtef/delete/:id', gteDelete);
+router.delete('/csdf/delete/:id', csdfDelete);
 
 module.exports = router;

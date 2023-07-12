@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import SideBar from './common/SideBar';
+import Cookies from 'js-cookie';
 
 const AdminSelectForm = () => {
   const navigate = useNavigate();
@@ -13,9 +14,10 @@ const AdminSelectForm = () => {
   axios.defaults.withCredentials = true;
 
   const fetchAPI2 = async (url) => {
+    const cookie = Cookies.get('signetAdmintoken');
     try {
       await axios
-        .get(url)
+        .post(url, { cookie: cookie })
         .then((result) => {
           if (result.data.Status === 'Success') {
             setAuth(true);
@@ -33,7 +35,7 @@ const AdminSelectForm = () => {
   };
 
   useEffect(() => {
-    const API2 = 'http://localhost:8000/admin/authControll';
+    const API2 = `${process.env.REACT_APP_BACKEND_LINK}/admin/authControll`;
     fetchAPI2(API2);
   }, []);
 

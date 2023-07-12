@@ -4,6 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import SideBar from '../common/SideBar';
 import Container from 'react-bootstrap/Container';
 import { Table } from '@nextui-org/react';
+import Cookies from 'js-cookie';
+import { IconButton } from '../common/IconButton';
+import { EyeIcon } from '../common/EyeIcon';
+import { ImageLinkModal2 } from '../common/modal';
 
 const RefundSM = () => {
   const slug = useParams();
@@ -14,18 +18,23 @@ const RefundSM = () => {
   const [showData, setShowData] = useState(false);
   const [userData, setUserData] = useState();
 
+  const [modalShow, setModalShow] = useState(false);
+
   axios.defaults.withCredentials = true;
 
   const fetchAPI2 = async (url) => {
+    const cookie = Cookies.get('signetAdmintoken');
     try {
       await axios
-        .get(url)
+        .post(url, { cookie: cookie })
         .then((result) => {
           if (result.data.Status === 'Success') {
             setAuth(true);
             try {
               axios
-                .get(`http://localhost:8000/admin/rrf/${slugURL}`)
+                .get(
+                  `${process.env.REACT_APP_BACKEND_LINK}/admin/rrf/${slugURL}`
+                )
                 .then((result) => {
                   if (result.data.Status === 'Success') {
                     if (result.data.result === null) {
@@ -59,7 +68,7 @@ const RefundSM = () => {
   };
 
   useEffect(() => {
-    const API2 = 'http://localhost:8000/admin/authControll';
+    const API2 = `${process.env.REACT_APP_BACKEND_LINK}/admin/authControll`;
     fetchAPI2(API2);
   }, []);
 
@@ -101,19 +110,30 @@ const RefundSM = () => {
                         <Table.Cell></Table.Cell>
                       </Table.Row>
                       <Table.Row>
-                        <Table.Cell>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PREFIX</Table.Cell>
+                        <Table.Cell>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PREFIX
+                        </Table.Cell>
                         <Table.Cell>{userData.name.prefix}</Table.Cell>
                       </Table.Row>
                       <Table.Row>
-                        <Table.Cell>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRST NAME</Table.Cell>
+                        <Table.Cell>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIRST
+                          NAME
+                        </Table.Cell>
                         <Table.Cell>{userData.name.firstName}</Table.Cell>
                       </Table.Row>
                       <Table.Row>
-                        <Table.Cell>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MIDDLE NAME</Table.Cell>
+                        <Table.Cell>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MIDDLE
+                          NAME
+                        </Table.Cell>
                         <Table.Cell>{userData.name.middleName}</Table.Cell>
                       </Table.Row>
                       <Table.Row>
-                        <Table.Cell>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAST NAME</Table.Cell>
+                        <Table.Cell>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAST
+                          NAME
+                        </Table.Cell>
                         <Table.Cell>{userData.name.lastName}</Table.Cell>
                       </Table.Row>
                       <Table.Row>
@@ -160,25 +180,33 @@ const RefundSM = () => {
                       </Table.Row>
                       <Table.Row>
                         <Table.Cell className="table-gold-p">
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BUILDING NAME
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BUILDING
+                          NAME
                         </Table.Cell>
                         <Table.Cell>{userData.address.buildingName}</Table.Cell>
                       </Table.Row>
                       <Table.Row>
-                        <Table.Cell className="table-gold-p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STREET</Table.Cell>
+                        <Table.Cell className="table-gold-p">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STREET
+                        </Table.Cell>
                         <Table.Cell>{userData.address.street}</Table.Cell>
                       </Table.Row>
                       <Table.Row>
-                        <Table.Cell className="table-gold-p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TOWN</Table.Cell>
+                        <Table.Cell className="table-gold-p">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TOWN
+                        </Table.Cell>
                         <Table.Cell>{userData.address.town}</Table.Cell>
                       </Table.Row>
                       <Table.Row>
-                        <Table.Cell className="table-gold-p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STATE</Table.Cell>
+                        <Table.Cell className="table-gold-p">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STATE
+                        </Table.Cell>
                         <Table.Cell>{userData.address.state}</Table.Cell>
                       </Table.Row>
                       <Table.Row>
                         <Table.Cell className="table-gold-p">
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POST CODE
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;POST
+                          CODE
                         </Table.Cell>
                         <Table.Cell>{userData.address.postCode}</Table.Cell>
                       </Table.Row>
@@ -187,6 +215,203 @@ const RefundSM = () => {
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COUNTRY
                         </Table.Cell>
                         <Table.Cell>{userData.address.country}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          INVOICE NUMBER
+                        </Table.Cell>
+                        <Table.Cell>{userData.invoiceNumber}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">REASON</Table.Cell>
+                        <Table.Cell>{userData.reason}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          SUPPORTING DOCUMENTS
+                        </Table.Cell>
+                        <Table.Cell>
+                          <IconButton onClick={() => setModalShow(true)}>
+                            <EyeIcon size={20} fill="#979797" />
+                          </IconButton>
+                          <ImageLinkModal2
+                            show={modalShow}
+                            link={userData.signatureImage}
+                            onHide={() => setModalShow(false)}
+                          />
+                        </Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          BANK DETAILS
+                        </Table.Cell>
+                        <Table.Cell></Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BANK
+                          NAME
+                        </Table.Cell>
+                        <Table.Cell>{userData.bankName}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACCOUNT
+                          NAME
+                        </Table.Cell>
+                        <Table.Cell>{userData.accName}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ACCOUNT
+                          NUMBER
+                        </Table.Cell>
+                        <Table.Cell>{userData.accNumber}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BSB:
+                        </Table.Cell>
+                        <Table.Cell>{userData.bsb}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BANK
+                          ADDRESS
+                        </Table.Cell>
+                        <Table.Cell>{userData.bankAddress}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SWIFT
+                          CODE
+                        </Table.Cell>
+                        <Table.Cell>{userData.swiftCode}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SIGNATURE
+                        </Table.Cell>
+                        <Table.Cell>
+                          <a
+                            href={`${process.env.REACT_APP_IMAGE_URL}${userData.sign[0]}`}
+                          >
+                            Signature
+                          </a>
+                        </Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATE
+                        </Table.Cell>
+                        <Table.Cell>{userData.bankDate}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          REFUND TYPE
+                        </Table.Cell>
+                        <Table.Cell>{userData.refundType}</Table.Cell>
+                      </Table.Row>
+                      {userData.refundType === 'other' ? (
+                        <Table.Row>
+                          <Table.Cell className="table-gold-p">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Other
+                            (Please specify):
+                          </Table.Cell>
+                          <Table.Cell>{userData.otherRefundInput}</Table.Cell>
+                        </Table.Row>
+                      ) : null}
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          THIS REFUND AMOUNT IS
+                        </Table.Cell>
+                        <Table.Cell>{userData.refundAmount}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          Comments/ Reason for decision / Calculations of
+                          refund:
+                        </Table.Cell>
+                        <Table.Cell>{userData.comments}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          REFUND METHOD IS
+                        </Table.Cell>
+                        <Table.Cell>{userData.refundMethod}</Table.Cell>
+                      </Table.Row>
+                      {userData.sign.length === 3 && (
+                        <Table.Row>
+                          <Table.Cell className="table-gold-p">
+                            SIGNATURE
+                          </Table.Cell>
+                          <Table.Cell>
+                            <a
+                              href={`${process.env.REACT_APP_IMAGE_URL}${userData.sign[1]}`}
+                            >
+                              Signature
+                            </a>
+                          </Table.Cell>
+                        </Table.Row>
+                      )}
+
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          POSITION
+                        </Table.Cell>
+                        <Table.Cell>{userData.position}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          PRINT NAME
+                        </Table.Cell>
+                        <Table.Cell>{userData.printName}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          DATE PROCESSED
+                        </Table.Cell>
+                        <Table.Cell>{userData.dateProcessed}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          LOGGED IN REFUND REGISTER
+                        </Table.Cell>
+                        <Table.Cell>{userData.refundRegister}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">DATE</Table.Cell>
+                        <Table.Cell>{userData.logDate}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          LOGGED BY
+                        </Table.Cell>
+                        <Table.Cell>{userData.loggedBy}</Table.Cell>
+                      </Table.Row>
+                      {userData.sign[2] && (
+                        <Table.Row>
+                          <Table.Cell className="table-gold-p">
+                            SIGNATURE
+                          </Table.Cell>
+                          <Table.Cell>
+                            <a
+                              href={`${process.env.REACT_APP_IMAGE_URL}${userData.sign[2]}`}
+                            >
+                              Signature
+                            </a>
+                          </Table.Cell>
+                        </Table.Row>
+                      )}
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">
+                          FORMAL LETTER/EMAIL SENT
+                        </Table.Cell>
+                        <Table.Cell>{userData.formal}</Table.Cell>
+                      </Table.Row>
+                      <Table.Row>
+                        <Table.Cell className="table-gold-p">DATE</Table.Cell>
+                        <Table.Cell>{userData.formalDate}</Table.Cell>
                       </Table.Row>
                     </Table.Body>
                   </Table>

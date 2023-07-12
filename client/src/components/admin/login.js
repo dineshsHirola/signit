@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     await axios
       .post(
-        'http://localhost:8000/admin/login',
+        `${process.env.REACT_APP_BACKEND_LINK}/admin/login`,
         {
           username,
           password,
@@ -26,8 +27,10 @@ const Login = () => {
         }
       )
       .then((res) => {
-        console.log(res)
         if (res.data.Status === 'Success') {
+          Cookies.set('signetAdmintoken', res.data.cookie, {
+            expires: 7,
+          });
           navigate('/admin');
         } else {
           alert(res.data.Status);

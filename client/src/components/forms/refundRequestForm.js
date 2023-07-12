@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import JsonData from '../../FormJSON/countryName.json';
 import Container from 'react-bootstrap/Container';
 import PhoneInput from 'react-phone-input-2';
+import SignatureCanvas from 'react-signature-canvas';
 import axios from 'axios';
 import {
   IdValidation,
@@ -21,6 +22,7 @@ import {
   startDateValidation,
   telValidation,
   typeOfIdValidation,
+  typeOfIdValidationArr,
 } from '../errors/errorFun';
 import { FileUploader } from 'react-drag-drop-files';
 
@@ -34,6 +36,46 @@ const RefundRequestForm = () => {
 
   const [radioNull, setRadioNull] = useState(false);
 
+  const [sign, setSign] = useState();
+  const [sign1, setSign1] = useState();
+  const [sign2, setSign2] = useState();
+  const [url, setUrl] = useState();
+  const [url1, setUrl1] = useState();
+  const [url2, setUrl2] = useState();
+
+  const handleClear = (e) => {
+    e.preventDefault();
+    sign.clear();
+    setUrl('');
+  };
+
+  const handleGenerate = (e) => {
+    e.preventDefault();
+    setUrl(sign.getTrimmedCanvas().toDataURL('image/png'));
+  };
+
+  const handleClear1 = (e) => {
+    e.preventDefault();
+    sign1.clear();
+    setUrl1('');
+  };
+
+  const handleGenerate1 = (e) => {
+    e.preventDefault();
+    setUrl1(sign1.getTrimmedCanvas().toDataURL('image/png'));
+  };
+
+  const handleClear2 = (e) => {
+    e.preventDefault();
+    sign2.clear();
+    setUrl2('');
+  };
+
+  const handleGenerate2 = (e) => {
+    e.preventDefault();
+    setUrl2(sign2.getTrimmedCanvas().toDataURL('image/png'));
+  };
+
   const handleDecalaration1 = () => {
     if (declaration1 === false) {
       setDeclaration1(true);
@@ -42,26 +84,83 @@ const RefundRequestForm = () => {
     }
   };
 
-  const fileTypes = ['JPG', 'PNG', 'PDF'];
-  const [file, setFile] = useState(null);
-  const handleFileChange = (file) => {
-    const size = (file.size / (1024 * 1024)).toFixed(2);
-    if (size > 2) {
-      setSignatureError(true);
-    } else {
-      setSignatureError(false);
-      setSignatureFile(file);
-      previewSignatureFiles(file);
-    }
-    setFile(file);
+  const [base64Images, setBase64Images] = useState([]);
+
+  const handleImageUpload = (event) => {
+    const files = event.target.files;
+
+    const imagesArray = Array.from(files);
+    Promise.all(
+      imagesArray.map((image) => {
+        return new Promise((resolve, reject) => {
+          if (image.size > 2 * 1024 * 1024) {
+            alert('Image Shoud be less than 2 mb');
+            reject(new Error('Image size exceeds 2 MB limit.'));
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            resolve(e.target.result);
+          };
+          reader.onerror = (error) => {
+            reject(error);
+          };
+          reader.readAsDataURL(image);
+        });
+      })
+    )
+      .then((results) => {
+        setBase64Images((prevImages) => [...prevImages, ...results]);
+      })
+      .catch((error) => {
+        console.log('Error converting images to base64:', error);
+      });
   };
 
-  const previewSignatureFiles = (file) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setSignatureImage(reader.result);
-    };
+  const fileTypes = ['JPG', 'PNG', 'PDF'];
+  const [file, setFile] = useState(null);
+  const imageArr = [];
+  // const handleFileChange = (file) => {
+  //   const size = (file.size / (1024 * 1024)).toFixed(2);
+
+  //   if (size > 2) {
+  //     setSignatureError(true);
+  //   } else {
+  //     setSignatureError(false);
+  //     imageArr.push(file);
+  //     setSignatureFile(file);
+  //     previewSignatureFiles(imageArr);
+  //   }
+  //   setFile(file);
+  // };
+
+  // const previewSignatureFiles = (file) => {
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(file);
+  //   reader.onloadend = () => {
+  //     setSignatureImage(reader.result);
+  //   };
+  // };
+
+  const handleFileChange = async (file) => {
+    console.log(file);
+    const base64 = await convertBase64(file);
+  };
+
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        resolve(reader.result);
+        console.log(reader.result);
+      };
+
+      reader.onerror = (error) => {
+        reject(error);
+      };
+    });
   };
 
   const [formData, setFormData] = useState({
@@ -184,6 +283,13 @@ const RefundRequestForm = () => {
   const [loggedNull, setLoggedNull] = useState(false);
   const [formalNull, setFormalNull] = useState(false);
   const [formalDateNull, setFormalDateNull] = useState(false);
+  const [signNull, setSignNull] = useState(false);
+  const [signNull2, setSignNull2] = useState(false);
+
+  const handleDelete = (e, index) => {
+    e.preventDefault(e);
+    base64Images.splice(index, 1);
+  };
 
   const handleChangeState = (e) => {
     e.preventDefault();
@@ -310,7 +416,7 @@ const RefundRequestForm = () => {
       setInvoiceNull
     );
     const reasonVer = typeOfIdValidation(formData.reason, setReasonNull);
-    const imageVer = typeOfIdValidation(signatureImage, setFileNull);
+    const imageVer = typeOfIdValidationArr(base64Images, setFileNull);
     const acknowVer = handleAcknowledgement(declaration1, setCheckError);
     const bankNameVer = typeOfIdValidation(formData.bankName, setBankNameError);
     const accNumberVer = typeOfIdValidation(
@@ -355,11 +461,20 @@ const RefundRequestForm = () => {
       setLogDateNull
     );
     const loggedByVer = typeOfIdValidation(formData.loggedBy, setLoggedNull);
+    const signVer = typeOfIdValidation(url, setSignNull);
+    const signVer2 = typeOfIdValidation(url2, setSignNull2);
     const formalVer = typeOfIdValidation(formData.formal, setFormalNull);
     const formDateVer = typeOfIdValidation(
       formData.formalDate,
       setFormalDateNull
     );
+
+    const arr = [];
+    if (url1 === '') {
+      arr.push(url, url2);
+    } else {
+      arr.push(url, url1, url2);
+    }
 
     if (
       loggedInVer &&
@@ -394,14 +509,17 @@ const RefundRequestForm = () => {
       invoiceVer &&
       reasonVer &&
       imageVer &&
-      acknowVer
+      acknowVer &&
+      signVer &&
+      signVer2
     ) {
       await axios
-        .post('http://localhost:8000/forms/rrf', {
+        .post(`${process.env.REACT_APP_BACKEND_LINK}/forms/rrf`, {
           formData,
           refundType,
           otherRefundInput,
-          signatureImage,
+          base64Images,
+          arr
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
@@ -604,7 +722,7 @@ const RefundRequestForm = () => {
                     className="mb-3"
                     controlId="exampleForm.ControlInput1"
                   >
-                    <Form.Label>Telephone:</Form.Label>
+                    <Form.Label>Telephone:<span className="mandate">*</span></Form.Label>
                     <br />
                     <div className="mobile-flex-div-child">
                       <Form.Select
@@ -917,15 +1035,42 @@ const RefundRequestForm = () => {
                         Please attach any supporting documentation:
                         <span className="mandate">*</span>
                       </Form.Label>
-                      <FileUploader
-                        handleChange={handleFileChange}
+                      <br />
+                      {/* <FileUploader
+                        handleChange={handleImageUpload}
                         name="file"
                         types={fileTypes}
                         accept="image/png, image/jpeg, image/jpg, application/pdf"
+                        multiple={true}
+                      /> */}
+                      <label for="inputField" class="btn btn-info">
+                        Upload File
+                      </label>
+                      <input
+                        type="file"
+                        style={{ display: 'none' }}
+                        id="inputField"
+                        multiple
+                        onChange={handleImageUpload}
+                        accept="image/png, image/jpeg, image/jpg, application/pdf"
                       />
                       <p>
-                        <i>Image should be less than 2MB</i>
+                        <i className="file-sub">
+                          Image should be less than 2MB
+                        </i>
                       </p>
+                      <div>
+                        {base64Images.map((base64, index) => (
+                          <>
+                            <img
+                              key={index}
+                              src={base64}
+                              alt={`Image ${index}`}
+                              width={100}
+                            />
+                          </>
+                        ))}
+                      </div>
                       {signatureError ? (
                         <p style={{ color: 'red' }}>
                           Image Size should be less than 2MB
@@ -1096,6 +1241,34 @@ const RefundRequestForm = () => {
                     <p style={{ color: 'red' }}>Date is required</p>
                   ) : null}
                 </Form.Group>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>
+                    Signature<span className="mandate">*</span>
+                  </Form.Label>
+                  <br />
+                  <div className="sign_div">
+                    <SignatureCanvas
+                      canvasProps={{
+                        width: 300,
+                        height: 100,
+                        className: 'sigCanvas',
+                      }}
+                      ref={(data) => setSign(data)}
+                    />
+                  </div>
+                  <button onClick={handleGenerate} className="sign-btn">
+                    Save
+                  </button>
+                  <button onClick={handleClear} className="sign-btn">
+                    Clear
+                  </button>
+                  {signNull ? (
+                    <p style={{ color: 'red' }}>Signature is required</p>
+                  ) : null}
+                </Form.Group>
                 <p className="form-p">PART C – AUTHORISATION</p>
                 <div className="flex-width ">
                   <Form.Group
@@ -1260,6 +1433,31 @@ const RefundRequestForm = () => {
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Label>
+                    Signature<span className="mandate">*</span>
+                  </Form.Label>
+                  <br />
+                  <div className="sign_div">
+                    <SignatureCanvas
+                      canvasProps={{
+                        width: 300,
+                        height: 100,
+                        className: 'sigCanvas',
+                      }}
+                      ref={(data) => setSign1(data)}
+                    />
+                  </div>
+                  <button onClick={handleGenerate1} className="sign-btn">
+                    Save
+                  </button>
+                  <button onClick={handleClear1} className="sign-btn">
+                    Clear
+                  </button>
+                </Form.Group>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>
                     Position:<span className="mandate">*</span>
                   </Form.Label>
                   <br />
@@ -1378,6 +1576,34 @@ const RefundRequestForm = () => {
                   />
                   {loggedNull ? (
                     <p style={{ color: 'red' }}>Logged By Required</p>
+                  ) : null}
+                </Form.Group>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label>
+                    Signature<span className="mandate">*</span>
+                  </Form.Label>
+                  <br />
+                  <div className="sign_div">
+                    <SignatureCanvas
+                      canvasProps={{
+                        width: 300,
+                        height: 100,
+                        className: 'sigCanvas',
+                      }}
+                      ref={(data) => setSign2(data)}
+                    />
+                  </div>
+                  <button onClick={handleGenerate2} className="sign-btn">
+                    Save
+                  </button>
+                  <button onClick={handleClear2} className="sign-btn">
+                    Clear
+                  </button>
+                  {signNull2 ? (
+                    <p style={{ color: 'red' }}>Signature is required</p>
                   ) : null}
                 </Form.Group>
                 <div className="input-flex">

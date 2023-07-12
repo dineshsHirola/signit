@@ -18,6 +18,17 @@ const srf_Schema = new mongoose.Schema({
   dob: {
     type: String,
   },
+  mob: {
+    mobileCode: {
+      type: String,
+    },
+    mobile: {
+      type: String,
+    },
+  },
+  email: {
+    type: String,
+  },
   courseCode: {
     type: String,
   },
@@ -57,6 +68,9 @@ const srf_Schema = new mongoose.Schema({
     otherInput: {
       type: String,
     },
+  },
+  sign: {
+    type: Array,
   },
 });
 

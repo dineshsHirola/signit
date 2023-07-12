@@ -77,7 +77,7 @@ const cef_Schema = new mongoose.Schema({
     type: String,
   },
   image: {
-    type: String,
+    type: Array,
   },
   reasonsForReleaseRequest: {
     type: String,
@@ -98,7 +98,10 @@ const cef_Schema = new mongoose.Schema({
     type: String,
   },
   image2: {
-    type: String,
+    type: Array,
+  },
+  sign: {
+    type: Array,
   },
 });
 

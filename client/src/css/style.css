@@ -65,7 +65,7 @@ label.btn.btn-info {
   padding-bottom: 20px !important;
 }
 
-.saved-btn{
+.saved-btn {
   color: green !important;
   cursor: not-allowed !important;
 }
@@ -814,6 +814,38 @@ i.fa-solid.fa-eye {
   justify-content: flex-start;
   padding-top: 10px;
   padding-left: 10px;
+}
+
+.dashbord-child {
+  border: 1px solid transparent;
+  /* background-color: var(--gold-color); */
+  box-shadow: 0 12px 20px 6px rgb(104 112 118 / 0.08);
+  width: 31%;
+  border-radius: 15px;
+  padding: 18px;
+}
+
+.dashbord-child p,
+h4 {
+  color: var(--gold-color);
+}
+
+.dashbord-child p {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.dashbord-child h4 {
+  font-size: 40px;
+  font-weight: 600;
+}
+
+.dashbord-parent {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding-top: 25px;
 }
 
 .row-select-flex select {

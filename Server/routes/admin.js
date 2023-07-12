@@ -32,6 +32,7 @@ const ctfDelete = require('../controllers/adminControlls/delete/ctfDelete');
 const cefDelete = require('../controllers/adminControlls/delete/cefDelete');
 const gteDelete = require('../controllers/adminControlls/delete/gteDelete');
 const csdfDelete = require('../controllers/adminControlls/delete/csdfDelete');
+const dashBordControll = require('../controllers/adminControlls/dashBordControll');
 
 router.use(express.json());
 router.use(cookieParser());
@@ -50,6 +51,7 @@ router.use(
   })
 );
 
+router.get('/total', dashBordControll);
 router.get('/rrf', rrfControll);
 router.get('/cf', cfControll);
 router.get('/srf', srfControll);

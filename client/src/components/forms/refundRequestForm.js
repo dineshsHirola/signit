@@ -73,6 +73,7 @@ const RefundRequestForm = () => {
 
   const handleGenerate2 = (e) => {
     e.preventDefault();
+    console.log(sign2);
     setUrl2(sign2.getTrimmedCanvas().toDataURL('image/png'));
   };
 
@@ -115,6 +116,11 @@ const RefundRequestForm = () => {
       .catch((error) => {
         console.log('Error converting images to base64:', error);
       });
+  };
+
+  const deleteFile = (e) => {
+    const s = base64Images.filter((item, index) => index !== e);
+    setBase64Images(s);
   };
 
   const fileTypes = ['JPG', 'PNG', 'PDF'];
@@ -285,11 +291,6 @@ const RefundRequestForm = () => {
   const [formalDateNull, setFormalDateNull] = useState(false);
   const [signNull, setSignNull] = useState(false);
   const [signNull2, setSignNull2] = useState(false);
-
-  const handleDelete = (e, index) => {
-    e.preventDefault(e);
-    base64Images.splice(index, 1);
-  };
 
   const handleChangeState = (e) => {
     e.preventDefault();
@@ -519,7 +520,7 @@ const RefundRequestForm = () => {
           refundType,
           otherRefundInput,
           base64Images,
-          arr
+          arr,
         })
         .then((res) => {
           if (res.data.Status === 'Success') {
@@ -568,12 +569,14 @@ const RefundRequestForm = () => {
                       value={formData.courseName}
                     />
                     {courseNameError ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Course Name should contain only alphabets
                       </p>
                     ) : null}
                     {courseNameNull ? (
-                      <p style={{ color: 'red' }}>Please enter course name</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Please enter course name
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -591,7 +594,9 @@ const RefundRequestForm = () => {
                       value={formData.courseStartDate}
                     />
                     {startDateNull ? (
-                      <p style={{ color: 'red' }}>Please select start date</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Please select start date
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -660,12 +665,12 @@ const RefundRequestForm = () => {
                       </Form.Group>
                     </div>
                     {nameError ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         First Name and Last Name should contain only alphabets
                       </p>
                     ) : null}
                     {nameNull ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Please enter First Name and Last Name
                       </p>
                     ) : null}
@@ -687,10 +692,14 @@ const RefundRequestForm = () => {
                       value={formData.dob}
                     />
                     {dobError ? (
-                      <p style={{ color: 'red' }}>Select valid DOB</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Select valid DOB
+                      </p>
                     ) : null}
                     {dobNull ? (
-                      <p style={{ color: 'red' }}>Please select DOB</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Please select DOB
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -706,14 +715,19 @@ const RefundRequestForm = () => {
                       onChange={handleChange}
                       name="gender"
                       value={formData.gender}
+                      placeholder="select"
                     >
-                      <option>Please Select</option>
+                      <option selected hidden>
+                        Please Select
+                      </option>
                       <option value="M">Male</option>
                       <option value="F">Female</option>
                       <option value="PNTS">Prefer not to say</option>
                     </Form.Select>
                     {genderNull ? (
-                      <p style={{ color: 'red' }}>Please select your gender</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Please select your gender
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -722,7 +736,9 @@ const RefundRequestForm = () => {
                     className="mb-3"
                     controlId="exampleForm.ControlInput1"
                   >
-                    <Form.Label>Telephone:<span className="mandate">*</span></Form.Label>
+                    <Form.Label>
+                      Telephone:<span className="mandate">*</span>
+                    </Form.Label>
                     <br />
                     <div className="mobile-flex-div-child">
                       <Form.Select
@@ -733,7 +749,9 @@ const RefundRequestForm = () => {
                         name="telCode"
                         value={formData.telCode}
                       >
-                        <option>Select</option>
+                        <option selected hidden>
+                          Select
+                        </option>
                         {JsonData.map((value) => {
                           return (
                             <option value={value.dial_code}>
@@ -755,12 +773,14 @@ const RefundRequestForm = () => {
                       />
                     </div>
                     {contryCodeNull ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Please select country dail code
                       </p>
                     ) : null}
                     {TelError ? (
-                      <p style={{ color: 'red' }}>Enter valid tel number</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter valid tel number
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -779,7 +799,9 @@ const RefundRequestForm = () => {
                         name="mobCode"
                         value={formData.mobCode}
                       >
-                        <option>Select</option>
+                        <option selected hidden>
+                          Select
+                        </option>
                         {JsonData.map((value) => {
                           return (
                             <option value={value.dial_code}>
@@ -800,15 +822,19 @@ const RefundRequestForm = () => {
                       />
                     </div>
                     {mobileContryCodeNull ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Please select country dail code
                       </p>
                     ) : null}
                     {mobileError ? (
-                      <p style={{ color: 'red' }}>Enter valid mobile number</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter valid mobile number
+                      </p>
                     ) : null}
                     {mobileNull ? (
-                      <p style={{ color: 'red' }}>Enter your mobile number</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter your mobile number
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -829,10 +855,14 @@ const RefundRequestForm = () => {
                     />
                     <p className="input-p">example@example.com</p>
                     {emailError ? (
-                      <p style={{ color: 'red' }}>Enter valid email</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter valid email
+                      </p>
                     ) : null}
                     {emailNull ? (
-                      <p style={{ color: 'red' }}>Enter your email</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter your email
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -849,7 +879,9 @@ const RefundRequestForm = () => {
                     />
                     <p className="input-p">example@example.com</p>
                     {altEmailError ? (
-                      <p style={{ color: 'red' }}>Enter valid alt email</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter valid alt email
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -870,7 +902,9 @@ const RefundRequestForm = () => {
                       value={formData.typeOfId}
                     />
                     {typeIdNull ? (
-                      <p style={{ color: 'red' }}>Enter type of ID</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter type of ID
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -888,10 +922,14 @@ const RefundRequestForm = () => {
                       value={formData.idNumber}
                     />
                     {idError ? (
-                      <p style={{ color: 'red' }}>Enter valid ID number</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter valid ID number
+                      </p>
                     ) : null}
                     {idNull ? (
-                      <p style={{ color: 'red' }}>Enter your ID number</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter your ID number
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -974,7 +1012,7 @@ const RefundRequestForm = () => {
                       </div>
                     </div>
                     {addressNull ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Enter all fields of Address
                       </p>
                     ) : null}
@@ -1002,7 +1040,9 @@ const RefundRequestForm = () => {
                     value={formData.invoiceNumber}
                   />
                   {invoiceNull ? (
-                    <p style={{ color: 'red' }}>Invoice Number is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Invoice Number is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <div className="textarea-div">
@@ -1021,7 +1061,9 @@ const RefundRequestForm = () => {
                       value={formData.reason}
                     />
                     {reasonNull ? (
-                      <p style={{ color: 'red' }}>Reason is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Reason is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -1059,25 +1101,32 @@ const RefundRequestForm = () => {
                           Image should be less than 2MB
                         </i>
                       </p>
-                      <div>
+                      <div className="prev-img-parent">
                         {base64Images.map((base64, index) => (
-                          <>
+                          <div className="prev-img">
                             <img
                               key={index}
                               src={base64}
                               alt={`Image ${index}`}
                               width={100}
                             />
-                          </>
+                            <button
+                              type="button"
+                              className=""
+                              onClick={() => deleteFile(index)}
+                            >
+                              <i class="fa-solid fa-trash"></i>
+                            </button>
+                          </div>
                         ))}
                       </div>
                       {signatureError ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Image Size should be less than 2MB
                         </p>
                       ) : null}
                       {fileNull ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Supporting Document is required
                         </p>
                       ) : null}
@@ -1092,16 +1141,26 @@ const RefundRequestForm = () => {
                     <Form.Label>
                       Acknowledgement:<span className="mandate">*</span>
                     </Form.Label>
-                    <Form.Check
-                      inline
-                      label="I understand that my request for a refund will be processed in accordance with Signet Institute Fees & Refund Policy and Procedure."
-                      onChange={handleDecalaration1}
-                      name="declaration1"
-                      type="checkbox"
-                      defaultChecked={declaration1}
-                    />
+                    {declaration1 ? (
+                      <Form.Check
+                        inline
+                        label="I understand that my request for a refund will be processed in accordance with Signet Institute Fees & Refund Policy and Procedure."
+                        onChange={handleDecalaration1}
+                        name="declaration1"
+                        type="checkbox"
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="I understand that my request for a refund will be processed in accordance with Signet Institute Fees & Refund Policy and Procedure."
+                        onChange={handleDecalaration1}
+                        name="declaration1"
+                        type="checkbox"
+                      />
+                    )}
                     {checkError ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Acknowledgement is required
                       </p>
                     ) : null}
@@ -1124,12 +1183,14 @@ const RefundRequestForm = () => {
                       value={formData.bankName}
                     />
                     {bankNameError ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Bank Name should contain only Alphabets
                       </p>
                     ) : null}
                     {bankNameNull ? (
-                      <p style={{ color: 'red' }}>Bank Name is Required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Bank Name is Required
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -1147,7 +1208,9 @@ const RefundRequestForm = () => {
                       value={formData.accName}
                     />
                     {accNameNull ? (
-                      <p style={{ color: 'red' }}>Account Name is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Account Name is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -1167,7 +1230,9 @@ const RefundRequestForm = () => {
                       value={formData.accNumber}
                     />
                     {accNumberNull ? (
-                      <p style={{ color: 'red' }}>Account Number is Required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Account Number is Required
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -1185,7 +1250,9 @@ const RefundRequestForm = () => {
                       value={formData.bsb}
                     />
                     {bsbNull ? (
-                      <p style={{ color: 'red' }}>BSB is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        BSB is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -1205,7 +1272,9 @@ const RefundRequestForm = () => {
                       value={formData.bankAddress}
                     />
                     {bankAddressNull ? (
-                      <p style={{ color: 'red' }}>Bank Address is Required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Bank Address is Required
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -1238,7 +1307,9 @@ const RefundRequestForm = () => {
                   />
                   <p className="input-p">Date</p>
                   {banktDateNull ? (
-                    <p style={{ color: 'red' }}>Date is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Date is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -1259,14 +1330,22 @@ const RefundRequestForm = () => {
                       ref={(data) => setSign(data)}
                     />
                   </div>
-                  <button onClick={handleGenerate} className="sign-btn">
-                    Save
-                  </button>
+                  {!url ? (
+                    <button onClick={handleGenerate} className="sign-btn">
+                      Save
+                    </button>
+                  ) : (
+                    <button className="sign-btn saved-btn" disabled={true}>
+                      Saved
+                    </button>
+                  )}
                   <button onClick={handleClear} className="sign-btn">
                     Clear
                   </button>
                   {signNull ? (
-                    <p style={{ color: 'red' }}>Signature is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Signature is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <p className="form-p">PART C – AUTHORISATION</p>
@@ -1279,42 +1358,94 @@ const RefundRequestForm = () => {
                       Please tick the type of Refund:
                       <span className="mandate">*</span>
                     </Form.Label>
-                    <Form.Check
-                      inline
-                      label="Withdrawal"
-                      name="refundType"
-                      className="radio-input"
-                      value="Withdrawal"
-                      type="radio"
-                      onChange={handleRefundType}
-                    />
-                    <Form.Check
-                      inline
-                      label="Cancellation"
-                      name="refundType"
-                      className="radio-input"
-                      value="Cancellation"
-                      type="radio"
-                      onChange={handleRefundType}
-                    />
-                    <Form.Check
-                      inline
-                      label="Transfer"
-                      name="refundType"
-                      className="radio-input"
-                      value="Transfer"
-                      type="radio"
-                      onChange={handleRefundType}
-                    />
-                    <Form.Check
-                      inline
-                      label="Other (Please specify):"
-                      className="radio-input"
-                      name="refundType"
-                      value="other"
-                      type="radio"
-                      onChange={handleRefundType}
-                    />
+                    {refundType === 'Withdrawal' ? (
+                      <Form.Check
+                        inline
+                        label="Withdrawal"
+                        name="refundType"
+                        className="radio-input"
+                        value="Withdrawal"
+                        type="radio"
+                        onChange={handleRefundType}
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Withdrawal"
+                        name="refundType"
+                        className="radio-input"
+                        value="Withdrawal"
+                        type="radio"
+                        onChange={handleRefundType}
+                      />
+                    )}
+                    {refundType === 'Cancellation' ? (
+                      <Form.Check
+                        inline
+                        label="Cancellation"
+                        name="refundType"
+                        className="radio-input"
+                        value="Cancellation"
+                        type="radio"
+                        onChange={handleRefundType}
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Cancellation"
+                        name="refundType"
+                        className="radio-input"
+                        value="Cancellation"
+                        type="radio"
+                        onChange={handleRefundType}
+                      />
+                    )}
+                    {refundType === 'Transfer' ? (
+                      <Form.Check
+                        inline
+                        label="Transfer"
+                        name="refundType"
+                        className="radio-input"
+                        value="Transfer"
+                        type="radio"
+                        onChange={handleRefundType}
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Transfer"
+                        name="refundType"
+                        className="radio-input"
+                        value="Transfer"
+                        type="radio"
+                        onChange={handleRefundType}
+                      />
+                    )}
+                    {refundType === 'other' ? (
+                      <Form.Check
+                        inline
+                        label="Other (Please specify):"
+                        className="radio-input"
+                        name="refundType"
+                        value="other"
+                        type="radio"
+                        onChange={handleRefundType}
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Other (Please specify):"
+                        className="radio-input"
+                        name="refundType"
+                        value="other"
+                        type="radio"
+                        onChange={handleRefundType}
+                      />
+                    )}
                     {refundType === 'other' ? (
                       <Form.Control
                         type="text"
@@ -1326,7 +1457,9 @@ const RefundRequestForm = () => {
                       />
                     ) : null}
                     {radioNull ? (
-                      <p style={{ color: 'red' }}>Required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -1339,35 +1472,76 @@ const RefundRequestForm = () => {
                       This refund amount is:
                       <span className="mandate">*</span>
                     </Form.Label>
-                    <Form.Check
-                      inline
-                      label="Approved"
-                      name="refundAmount"
-                      className="radio-input"
-                      value="Approved"
-                      type="radio"
-                      onChange={handleChange}
-                    />
-                    <Form.Check
-                      inline
-                      label="Denied"
-                      name="refundAmount"
-                      className="radio-input"
-                      value="Denied"
-                      type="radio"
-                      onChange={handleChange}
-                    />
-                    <Form.Check
-                      inline
-                      label="Adjusted to $"
-                      name="refundAmount"
-                      className="radio-input"
-                      value="Adjusted to $"
-                      type="radio"
-                      onChange={handleChange}
-                    />
+                    {formData.refundAmount === 'Approved' ? (
+                      <Form.Check
+                        inline
+                        label="Approved"
+                        name="refundAmount"
+                        className="radio-input"
+                        value="Approved"
+                        type="radio"
+                        onChange={handleChange}
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Approved"
+                        name="refundAmount"
+                        className="radio-input"
+                        value="Approved"
+                        type="radio"
+                        onChange={handleChange}
+                      />
+                    )}
+                    {formData.refundAmount === 'Denied' ? (
+                      <Form.Check
+                        inline
+                        label="Denied"
+                        name="refundAmount"
+                        className="radio-input"
+                        value="Denied"
+                        type="radio"
+                        onChange={handleChange}
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Denied"
+                        name="refundAmount"
+                        className="radio-input"
+                        value="Denied"
+                        type="radio"
+                        onChange={handleChange}
+                      />
+                    )}
+                    {formData.refundAmount === 'Adjusted to $' ? (
+                      <Form.Check
+                        inline
+                        label="Adjusted to $"
+                        name="refundAmount"
+                        className="radio-input"
+                        value="Adjusted to $"
+                        type="radio"
+                        onChange={handleChange}
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Adjusted to $"
+                        name="refundAmount"
+                        className="radio-input"
+                        value="Adjusted to $"
+                        type="radio"
+                        onChange={handleChange}
+                      />
+                    )}
                     {refundAmountNull ? (
-                      <p style={{ color: 'red' }}>Required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -1396,35 +1570,76 @@ const RefundRequestForm = () => {
                       Refund method is:
                       <span className="mandate">*</span>
                     </Form.Label>
-                    <Form.Check
-                      inline
-                      label="EFT / Credit Card"
-                      name="refundMethod"
-                      className="radio-input"
-                      value="EFT / Credit Card"
-                      type="radio"
-                      onChange={handleChange}
-                    />
-                    <Form.Check
-                      inline
-                      label="Cheque"
-                      name="refundMethod"
-                      className="radio-input"
-                      value="Cheque"
-                      type="radio"
-                      onChange={handleChange}
-                    />
-                    <Form.Check
-                      inline
-                      label="Direct Debit"
-                      name="refundMethod"
-                      className="radio-input"
-                      value="Direct Debit"
-                      type="radio"
-                      onChange={handleChange}
-                    />
+                    {formData.refundMethod === 'EFT / Credit Card' ? (
+                      <Form.Check
+                        inline
+                        label="EFT / Credit Card"
+                        name="refundMethod"
+                        className="radio-input"
+                        value="EFT / Credit Card"
+                        type="radio"
+                        onChange={handleChange}
+                        checked={true}
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="EFT / Credit Card"
+                        name="refundMethod"
+                        className="radio-input"
+                        value="EFT / Credit Card"
+                        type="radio"
+                        onChange={handleChange}
+                      />
+                    )}
+                    {formData.refundMethod === 'Cheque' ? (
+                      <Form.Check
+                        inline
+                        label="Cheque"
+                        name="refundMethod"
+                        className="radio-input"
+                        value="Cheque"
+                        type="radio"
+                        onChange={handleChange}
+                        checked
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Cheque"
+                        name="refundMethod"
+                        className="radio-input"
+                        value="Cheque"
+                        type="radio"
+                        onChange={handleChange}
+                      />
+                    )}
+                    {formData.refundMethod === 'Direct Debit' ? (
+                      <Form.Check
+                        inline
+                        label="Direct Debit"
+                        name="refundMethod"
+                        className="radio-input"
+                        value="Direct Debit"
+                        type="radio"
+                        onChange={handleChange}
+                        checked
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Direct Debit"
+                        name="refundMethod"
+                        className="radio-input"
+                        value="Direct Debit"
+                        type="radio"
+                        onChange={handleChange}
+                      />
+                    )}
                     {refundMethodNull ? (
-                      <p style={{ color: 'red' }}>Refund Method is Required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Refund Method is Required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -1446,9 +1661,15 @@ const RefundRequestForm = () => {
                       ref={(data) => setSign1(data)}
                     />
                   </div>
-                  <button onClick={handleGenerate1} className="sign-btn">
-                    Save
-                  </button>
+                  {!url1 ? (
+                    <button onClick={handleGenerate1} className="sign-btn">
+                      Save
+                    </button>
+                  ) : (
+                    <button className="sign-btn saved-btn" disabled={true}>
+                      Saved
+                    </button>
+                  )}
                   <button onClick={handleClear1} className="sign-btn">
                     Clear
                   </button>
@@ -1468,7 +1689,9 @@ const RefundRequestForm = () => {
                     value={formData.position}
                   />
                   {positionNull ? (
-                    <p style={{ color: 'red' }}>Position is Required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Position is Required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -1486,7 +1709,9 @@ const RefundRequestForm = () => {
                     value={formData.printName}
                   />
                   {printNameNull ? (
-                    <p style={{ color: 'red' }}>Print Name is Required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Print Name is Required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -1505,7 +1730,9 @@ const RefundRequestForm = () => {
                   />
                   <p className="input-p">Date</p>
                   {processedDateNull ? (
-                    <p style={{ color: 'red' }}>Processed Date is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Processed Date is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <div className="input-flex">
@@ -1518,26 +1745,54 @@ const RefundRequestForm = () => {
                       <span className="mandate">*</span>
                     </Form.Label>
                     <br />
-                    <Form.Check
-                      inline
-                      label="Yes"
-                      name="refundRegister"
-                      className="radio-input"
-                      value="Yes"
-                      type="radio"
-                      onChange={handleChange}
-                    />
-                    <Form.Check
-                      inline
-                      label="No"
-                      name="refundRegister"
-                      className="radio-input"
-                      value="No"
-                      type="radio"
-                      onChange={handleChange}
-                    />
+                    {formData.refundRegister === 'Yes' ? (
+                      <Form.Check
+                        inline
+                        label="Yes"
+                        name="refundRegister"
+                        className="radio-input"
+                        value="Yes"
+                        type="radio"
+                        onChange={handleChange}
+                        checked
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Yes"
+                        name="refundRegister"
+                        className="radio-input"
+                        value="Yes"
+                        type="radio"
+                        onChange={handleChange}
+                      />
+                    )}
+                    {formData.refundRegister === 'No' ? (
+                      <Form.Check
+                        inline
+                        label="No"
+                        name="refundRegister"
+                        className="radio-input"
+                        value="No"
+                        type="radio"
+                        onChange={handleChange}
+                        checked
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="No"
+                        name="refundRegister"
+                        className="radio-input"
+                        value="No"
+                        type="radio"
+                        onChange={handleChange}
+                      />
+                    )}
                     {refundRegisterNull ? (
-                      <p style={{ color: 'red' }}>Required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Required
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -1556,7 +1811,9 @@ const RefundRequestForm = () => {
                     />
                     <p className="input-p">Date</p>
                     {logDateNull ? (
-                      <p style={{ color: 'red' }}>Date is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Date is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -1575,7 +1832,9 @@ const RefundRequestForm = () => {
                     value={formData.loggedBy}
                   />
                   {loggedNull ? (
-                    <p style={{ color: 'red' }}>Logged By Required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Logged By Required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -1594,16 +1853,25 @@ const RefundRequestForm = () => {
                         className: 'sigCanvas',
                       }}
                       ref={(data) => setSign2(data)}
+                      // dataURL={url2}
                     />
                   </div>
-                  <button onClick={handleGenerate2} className="sign-btn">
-                    Save
-                  </button>
+                  {!url2 ? (
+                    <button onClick={handleGenerate2} className="sign-btn">
+                      Save
+                    </button>
+                  ) : (
+                    <button className="sign-btn saved-btn" disabled={true}>
+                      Saved
+                    </button>
+                  )}
                   <button onClick={handleClear2} className="sign-btn">
                     Clear
                   </button>
                   {signNull2 ? (
-                    <p style={{ color: 'red' }}>Signature is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Signature is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <div className="input-flex">
@@ -1616,26 +1884,54 @@ const RefundRequestForm = () => {
                       <span className="mandate">*</span>
                     </Form.Label>
                     <br />
-                    <Form.Check
-                      inline
-                      label="Yes"
-                      name="formal"
-                      className="radio-input"
-                      value="Yes"
-                      type="radio"
-                      onChange={handleChange}
-                    />
-                    <Form.Check
-                      inline
-                      label="No"
-                      name="formal"
-                      className="radio-input"
-                      value="No"
-                      type="radio"
-                      onChange={handleChange}
-                    />
+                    {formData.formal === 'Yes' ? (
+                      <Form.Check
+                        inline
+                        label="Yes"
+                        name="formal"
+                        className="radio-input"
+                        value="Yes"
+                        type="radio"
+                        onChange={handleChange}
+                        checked
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="Yes"
+                        name="formal"
+                        className="radio-input"
+                        value="Yes"
+                        type="radio"
+                        onChange={handleChange}
+                      />
+                    )}
+                    {formData.formal === 'No' ? (
+                      <Form.Check
+                        inline
+                        label="No"
+                        name="formal"
+                        className="radio-input"
+                        value="No"
+                        type="radio"
+                        onChange={handleChange}
+                        checked
+                      />
+                    ) : (
+                      <Form.Check
+                        inline
+                        label="No"
+                        name="formal"
+                        className="radio-input"
+                        value="No"
+                        type="radio"
+                        onChange={handleChange}
+                      />
+                    )}
                     {formalNull ? (
-                      <p style={{ color: 'red' }}>Required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Required
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -1654,7 +1950,9 @@ const RefundRequestForm = () => {
                     />
                     <p className="input-p">Date</p>
                     {formalDateNull ? (
-                      <p style={{ color: 'red' }}>Date is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Date is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>

@@ -39,6 +39,8 @@ const ApplicationToCancelEnrolment = () => {
     setUrl(sign.getTrimmedCanvas().toDataURL('image/png'));
   };
 
+  
+
   const [signatureFile, setSignatureFile] = useState('');
   const [signatureImage, setSignatureImage] = useState('');
   const [signatureError, setSignatureError] = useState(false);
@@ -69,6 +71,16 @@ const ApplicationToCancelEnrolment = () => {
 
   const [base64Images, setBase64Images] = useState([]);
   const [base64Images1, setBase64Images1] = useState([]);
+
+  const deleteFile = (e) => {
+    const s = base64Images.filter((item, index) => index !== e);
+    setBase64Images(s);
+  };
+
+  const deleteFile1 = (e) => {
+    const s = base64Images1.filter((item, index) => index !== e);
+    setBase64Images1(s);
+  };
 
   const handleImageUpload = (event) => {
     const files = event.target.files;
@@ -535,12 +547,12 @@ const ApplicationToCancelEnrolment = () => {
                       </Form.Group>
                     </div>
                     {nameError ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         First Name and Last Name should contain only alphabets
                       </p>
                     ) : null}
                     {nameNull ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Please enter First Name and Last Name
                       </p>
                     ) : null}
@@ -564,10 +576,14 @@ const ApplicationToCancelEnrolment = () => {
                         value={formData.dob}
                       />
                       {dobError ? (
-                        <p style={{ color: 'red' }}>Select valid DOB</p>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
+                          Select valid DOB
+                        </p>
                       ) : null}
                       {dobNull ? (
-                        <p style={{ color: 'red' }}>Please select DOB</p>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
+                          Please select DOB
+                        </p>
                       ) : null}
                     </Form.Group>
                     <Form.Group
@@ -586,7 +602,9 @@ const ApplicationToCancelEnrolment = () => {
                           name="mobCode"
                           value={formData.mobCode}
                         >
-                          <option>Select</option>
+                          <option selected hidden>
+                            Select
+                          </option>
                           {JsonData.map((value) => {
                             return (
                               <option value={value.dial_code}>
@@ -607,17 +625,19 @@ const ApplicationToCancelEnrolment = () => {
                         />
                       </div>
                       {mobileContryCodeNull ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Please select country dail code
                         </p>
                       ) : null}
                       {mobileError ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Enter valid mobile number
                         </p>
                       ) : null}
                       {mobileNull ? (
-                        <p style={{ color: 'red' }}>Enter your mobile number</p>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
+                          Enter your mobile number
+                        </p>
                       ) : null}
                     </Form.Group>
                   </div>
@@ -640,10 +660,14 @@ const ApplicationToCancelEnrolment = () => {
                       />
                       <p className="input-p">example@example.com</p>
                       {emailError ? (
-                        <p style={{ color: 'red' }}>Enter valid email</p>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
+                          Enter valid email
+                        </p>
                       ) : null}
                       {emailNull ? (
-                        <p style={{ color: 'red' }}>Enter your email</p>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
+                          Enter your email
+                        </p>
                       ) : null}
                     </Form.Group>
                     <Form.Group
@@ -660,7 +684,9 @@ const ApplicationToCancelEnrolment = () => {
                       />
                       <p className="input-p">example@example.com</p>
                       {altEmailError ? (
-                        <p style={{ color: 'red' }}>Enter valid alt email</p>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
+                          Enter valid alt email
+                        </p>
                       ) : null}
                     </Form.Group>
                   </div>
@@ -734,7 +760,9 @@ const ApplicationToCancelEnrolment = () => {
                             className="country-select select-country"
                             value={formData.country}
                           >
-                            <option>Please Select</option>
+                            <option selected hidden>
+                              Please Select
+                            </option>
                             {JsonData.map((value) => {
                               return (
                                 <option key={value.code} value={value.name}>
@@ -747,7 +775,7 @@ const ApplicationToCancelEnrolment = () => {
                         </div>
                       </div>
                       {addressNull ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Enter all fields of Address
                         </p>
                       ) : null}
@@ -772,7 +800,9 @@ const ApplicationToCancelEnrolment = () => {
                         value={formData.courseCode}
                       />
                       {courseCodeNull ? (
-                        <p style={{ color: 'red' }}>Course Code is required</p>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
+                          Course Code is required
+                        </p>
                       ) : null}
                     </Form.Group>
                     <Form.Group
@@ -790,12 +820,14 @@ const ApplicationToCancelEnrolment = () => {
                         value={formData.courseName}
                       />
                       {courseNameError ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Course Name should contain only alphabets
                         </p>
                       ) : null}
                       {courseNameNull ? (
-                        <p style={{ color: 'red' }}>Please enter course name</p>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
+                          Please enter course name
+                        </p>
                       ) : null}
                     </Form.Group>
                   </div>
@@ -821,7 +853,7 @@ const ApplicationToCancelEnrolment = () => {
                           value={formData.qualCode}
                         />
                         {qualeCodeNull ? (
-                          <p style={{ color: 'red' }}>
+                          <p style={{ color: 'red', fontStyle: 'italic' }}>
                             Course Code is required
                           </p>
                         ) : null}
@@ -842,7 +874,7 @@ const ApplicationToCancelEnrolment = () => {
                           value={formData.qualName}
                         />
                         {qualeNameNull ? (
-                          <p style={{ color: 'red' }}>
+                          <p style={{ color: 'red', fontStyle: 'italic' }}>
                             Please enter course name
                           </p>
                         ) : null}
@@ -867,7 +899,9 @@ const ApplicationToCancelEnrolment = () => {
                       value={formData.detail}
                     />
                     {detailsNull ? (
-                      <p style={{ color: 'red' }}>Details is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Details is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -888,7 +922,9 @@ const ApplicationToCancelEnrolment = () => {
                       value={formData.date}
                     />
                     {startDateNull ? (
-                      <p style={{ color: 'red' }}>Date is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Date is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -909,7 +945,9 @@ const ApplicationToCancelEnrolment = () => {
                       value={formData.reason}
                     />
                     {reasonsNull ? (
-                      <p style={{ color: 'red' }}>Reason is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Reason is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -944,25 +982,32 @@ const ApplicationToCancelEnrolment = () => {
                           Image should be less than 2MB
                         </i>
                       </p>
-                      <div>
+                      <div className="prev-img-parent">
                         {base64Images.map((base64, index) => (
-                          <>
+                          <div className="prev-img">
                             <img
                               key={index}
                               src={base64}
                               alt={`Image ${index}`}
                               width={100}
                             />
-                          </>
+                            <button
+                              type="button"
+                              className=""
+                              onClick={() => deleteFile(index)}
+                            >
+                              <i class="fa-solid fa-trash"></i>
+                            </button>
+                          </div>
                         ))}
                       </div>
                       {signatureError ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Image Size should be less than 2MB
                         </p>
                       ) : null}
                       {fileNull ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Supporting Document is required
                         </p>
                       ) : null}
@@ -986,6 +1031,7 @@ const ApplicationToCancelEnrolment = () => {
                       onChange={(e) => {
                         setIntStudent(e.target.value);
                       }}
+                      checked={intStudent === 'Yes' ? true : false}
                     />
                     <Form.Check
                       inline
@@ -997,6 +1043,7 @@ const ApplicationToCancelEnrolment = () => {
                       onChange={(e) => {
                         setIntStudent(e.target.value);
                       }}
+                      checked={intStudent === 'No' ? true : false}
                     />
                   </Form.Group>
                 </div>
@@ -1046,7 +1093,7 @@ const ApplicationToCancelEnrolment = () => {
                       value={formData.reasonsForReleaseRequest}
                     />
                     {explanationOfDecisionNull ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Reasons for Release Request is required
                       </p>
                     ) : null}
@@ -1084,25 +1131,32 @@ const ApplicationToCancelEnrolment = () => {
                           Image should be less than 2MB
                         </i>
                       </p>
-                      <div>
+                      <div className="prev-img-parent">
                         {base64Images1.map((base64, index) => (
-                          <>
+                          <div className="prev-img">
                             <img
                               key={index}
                               src={base64}
                               alt={`Image ${index}`}
                               width={100}
                             />
-                          </>
+                            <button
+                              type="button"
+                              className=""
+                              onClick={() => deleteFile1(index)}
+                            >
+                              <i class="fa-solid fa-trash"></i>
+                            </button>
+                          </div>
                         ))}
                       </div>
                       {intSignatureError ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Image Size should be less than 2MB
                         </p>
                       ) : null}
                       {intFileNull ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Supporting Documents is required
                         </p>
                       ) : null}
@@ -1214,12 +1268,12 @@ const ApplicationToCancelEnrolment = () => {
                       </Form.Group>
                     </div>
                     {intNameError ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         First Name and Last Name should contain only alphabets
                       </p>
                     ) : null}
                     {intNameNull ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Please enter First Name and Last Name
                       </p>
                     ) : null}
@@ -1256,7 +1310,9 @@ const ApplicationToCancelEnrolment = () => {
                     Clear
                   </button>
                   {signNull ? (
-                    <p style={{ color: 'red' }}>Signature is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Signature is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -1274,7 +1330,9 @@ const ApplicationToCancelEnrolment = () => {
                     value={formData.intDate}
                   />
                   {intDateNull ? (
-                    <p style={{ color: 'red' }}>Date is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Date is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <div className="input-flex">

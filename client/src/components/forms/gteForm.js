@@ -146,6 +146,11 @@ const GTEForm = () => {
 
   const [base64Images, setBase64Images] = useState([]);
 
+  const deleteFile = (e) => {
+    const s = base64Images.filter((item, index) => index !== e);
+    setBase64Images(s);
+  };
+
   const handleImageUpload = (event) => {
     const files = event.target.files;
 
@@ -576,7 +581,9 @@ const GTEForm = () => {
                     value={formData.ref}
                   />
                   {refNull ? (
-                    <p style={{ color: 'red' }}>Reference is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Reference is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -642,12 +649,12 @@ const GTEForm = () => {
                     </Form.Group>
                   </div>
                   {nameError ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       First Name and Last Name should contain only alphabets
                     </p>
                   ) : null}
                   {nameNull ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       Please enter First Name and Last Name
                     </p>
                   ) : null}
@@ -668,10 +675,14 @@ const GTEForm = () => {
                       value={formData.dob}
                     />
                     {dobError ? (
-                      <p style={{ color: 'red' }}>Select valid DOB</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Select valid DOB
+                      </p>
                     ) : null}
                     {dobNull ? (
-                      <p style={{ color: 'red' }}>Please select DOB</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Please select DOB
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -688,13 +699,17 @@ const GTEForm = () => {
                       name="gender"
                       value={formData.gender}
                     >
-                      <option>Please Select</option>
+                      <option selected hidden>
+                        Please Select
+                      </option>
                       <option value="M">Male</option>
                       <option value="F">Female</option>
                       <option value="PNTS">Prefer not to say</option>
                     </Form.Select>
                     {genderNull ? (
-                      <p style={{ color: 'red' }}>Please select your gender</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Please select your gender
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -715,7 +730,9 @@ const GTEForm = () => {
                         name="mobCode"
                         value={formData.mobCode}
                       >
-                        <option>Select</option>
+                        <option selected hidden>
+                          Select
+                        </option>
                         {JsonData.map((value) => {
                           return (
                             <option value={value.dial_code}>
@@ -736,15 +753,19 @@ const GTEForm = () => {
                       />
                     </div>
                     {mobileContryCodeNull ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Please select country dail code
                       </p>
                     ) : null}
                     {mobileError ? (
-                      <p style={{ color: 'red' }}>Enter valid mobile number</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter valid mobile number
+                      </p>
                     ) : null}
                     {mobileNull ? (
-                      <p style={{ color: 'red' }}>Enter your mobile number</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter your mobile number
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -764,10 +785,14 @@ const GTEForm = () => {
                     />
                     <p className="input-p">example@example.com</p>
                     {emailError ? (
-                      <p style={{ color: 'red' }}>Enter valid email</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter valid email
+                      </p>
                     ) : null}
                     {emailNull ? (
-                      <p style={{ color: 'red' }}>Enter your email</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter your email
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -821,7 +846,9 @@ const GTEForm = () => {
                       value={formData.choosingNotToStudyInYourHomeCountry}
                     />
                     {choosingNotToStudyInYourHomeCountryNull ? (
-                      <p style={{ color: 'red' }}>This Field is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        This Field is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -843,7 +870,9 @@ const GTEForm = () => {
                       value={formData.whyChoosenToStudyInAustralia}
                     />
                     {whyChoosenToStudyInAustraliaNull ? (
-                      <p style={{ color: 'red' }}>This Field is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        This Field is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -866,7 +895,9 @@ const GTEForm = () => {
                       value={formData.whyChoosenToStudyInSignit}
                     />
                     {whyChoosenToStudyInSignitNull ? (
-                      <p style={{ color: 'red' }}>This Field is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        This Field is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -889,7 +920,9 @@ const GTEForm = () => {
                       value={formData.whatDoYouKnowAboutCourse}
                     />
                     {whatDoYouKnowAboutCourseNull ? (
-                      <p style={{ color: 'red' }}>This Field is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        This Field is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -917,6 +950,7 @@ const GTEForm = () => {
                         onChange={(e) => {
                           setChangingAreaOfStudy(e.target.value);
                         }}
+                        checked={changingAreaOfStudy === 'Yes' ? true : false}
                       />
                       <Form.Check
                         inline
@@ -928,6 +962,7 @@ const GTEForm = () => {
                         onChange={(e) => {
                           setChangingAreaOfStudy(e.target.value);
                         }}
+                        checked={changingAreaOfStudy === 'No' ? true : false}
                       />
                     </Form.Group>
                   </div>
@@ -951,7 +986,9 @@ const GTEForm = () => {
                     </div>
                   )}
                   {explainWhyChoosenToChangeNull ? (
-                    <p style={{ color: 'red' }}>This Field is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      This Field is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <div className="flex-width">
@@ -1026,6 +1063,11 @@ const GTEForm = () => {
                         onChange={(e) => {
                           setProvidedCertifiedCopyOfEvidence(e.target.value);
                         }}
+                        checked={
+                          providedCertifiedCopyOfEvidence === 'Yes'
+                            ? true
+                            : false
+                        }
                       />
                       <Form.Check
                         inline
@@ -1037,6 +1079,11 @@ const GTEForm = () => {
                         onChange={(e) => {
                           setProvidedCertifiedCopyOfEvidence(e.target.value);
                         }}
+                        checked={
+                          providedCertifiedCopyOfEvidence === 'No'
+                            ? true
+                            : false
+                        }
                       />
                     </Form.Group>
                   </div>
@@ -1060,7 +1107,9 @@ const GTEForm = () => {
                     </div>
                   )}
                   {providedCertifiedExplainWhyNull ? (
-                    <p style={{ color: 'red' }}>This Field is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      This Field is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <div className="flex-width">
@@ -1466,7 +1515,9 @@ const GTEForm = () => {
                       value={formData.genuineStudent}
                     />
                     {genuineStudentNull ? (
-                      <p style={{ color: 'red' }}>This Field is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        This Field is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -1495,20 +1546,27 @@ const GTEForm = () => {
                           Image should be less than 2MB
                         </i>
                       </p>
-                      <div>
+                      <div className="prev-img-parent">
                         {base64Images.map((base64, index) => (
-                          <>
+                          <div className="prev-img">
                             <img
                               key={index}
                               src={base64}
                               alt={`Image ${index}`}
                               width={100}
                             />
-                          </>
+                            <button
+                              type="button"
+                              className=""
+                              onClick={() => deleteFile(index)}
+                            >
+                              <i class="fa-solid fa-trash"></i>
+                            </button>
+                          </div>
                         ))}
                       </div>
                       {signatureError ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Image Size should be less than 2MB
                         </p>
                       ) : null}
@@ -1579,12 +1637,12 @@ const GTEForm = () => {
                     </Form.Group>
                   </div>
                   {declarationNameError ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       First Name and Last Name should contain only alphabets
                     </p>
                   ) : null}
                   {declarationNameNull ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       Please enter First Name and Last Name
                     </p>
                   ) : null}
@@ -1620,7 +1678,9 @@ const GTEForm = () => {
                     Clear
                   </button>
                   {signNull ? (
-                    <p style={{ color: 'red' }}>Signature is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Signature is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -1639,7 +1699,9 @@ const GTEForm = () => {
                     value={formData.declarationDate}
                   />
                   {declarationDateNull ? (
-                    <p style={{ color: 'red' }}>Please select DOB</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Please select DOB
+                    </p>
                   ) : null}
                 </Form.Group>
                 <div className="flex-width">

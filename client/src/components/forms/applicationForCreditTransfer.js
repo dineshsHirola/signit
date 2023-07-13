@@ -80,6 +80,16 @@ const ApplicationForCreditTransfer = () => {
   const [base64Images, setBase64Images] = useState([]);
   const [base64Images1, setBase64Images1] = useState([]);
 
+  const deleteFile = (e) => {
+    const s = base64Images.filter((item, index) => index !== e);
+    setBase64Images(s);
+  };
+
+  const deleteFile1 = (e) => {
+    const s = base64Images1.filter((item, index) => index !== e);
+    setBase64Images1(s);
+  };
+
   const handleImageUpload = (event) => {
     const files = event.target.files;
 
@@ -738,12 +748,12 @@ const ApplicationForCreditTransfer = () => {
                     </Form.Group>
                   </div>
                   {nameError ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       First Name and Last Name should contain only alphabets
                     </p>
                   ) : null}
                   {nameNull ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       Please enter First Name and Last Name
                     </p>
                   ) : null}
@@ -764,10 +774,14 @@ const ApplicationForCreditTransfer = () => {
                       value={formData.dob}
                     />
                     {dobError ? (
-                      <p style={{ color: 'red' }}>Select valid DOB</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Select valid DOB
+                      </p>
                     ) : null}
                     {dobNull ? (
-                      <p style={{ color: 'red' }}>Please select DOB</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Please select DOB
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -784,13 +798,17 @@ const ApplicationForCreditTransfer = () => {
                       name="gender"
                       value={formData.gender}
                     >
-                      <option>Please Select</option>
+                      <option selected hidden>
+                        Please Select
+                      </option>
                       <option value="M">Male</option>
                       <option value="F">Female</option>
                       <option value="PNTS">Prefer not to say</option>
                     </Form.Select>
                     {genderNull ? (
-                      <p style={{ color: 'red' }}>Please select your gender</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Please select your gender
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -809,7 +827,9 @@ const ApplicationForCreditTransfer = () => {
                         name="telCode"
                         value={formData.telCode}
                       >
-                        <option>Select</option>
+                        <option selected hidden>
+                          Select
+                        </option>
                         {JsonData.map((value) => {
                           return (
                             <option value={value.dial_code}>
@@ -830,12 +850,14 @@ const ApplicationForCreditTransfer = () => {
                         value={formData.telephone}
                       />
                       {contryCodeNull ? (
-                        <p style={{ color: 'red' }}>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
                           Please select country dail code
                         </p>
                       ) : null}
                       {TelError ? (
-                        <p style={{ color: 'red' }}>Enter valid tel number</p>
+                        <p style={{ color: 'red', fontStyle: 'italic' }}>
+                          Enter valid tel number
+                        </p>
                       ) : null}
                     </div>
                   </Form.Group>
@@ -855,7 +877,9 @@ const ApplicationForCreditTransfer = () => {
                         name="mobCode"
                         value={formData.mobCode}
                       >
-                        <option>Select</option>
+                        <option selected hidden>
+                          Select
+                        </option>
                         {JsonData.map((value) => {
                           return (
                             <option value={value.dial_code}>
@@ -876,15 +900,19 @@ const ApplicationForCreditTransfer = () => {
                       />
                     </div>
                     {mobileContryCodeNull ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Please select country dail code
                       </p>
                     ) : null}
                     {mobileError ? (
-                      <p style={{ color: 'red' }}>Enter valid mobile number</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter valid mobile number
+                      </p>
                     ) : null}
                     {mobileNull ? (
-                      <p style={{ color: 'red' }}>Enter your mobile number</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter your mobile number
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -905,10 +933,14 @@ const ApplicationForCreditTransfer = () => {
                     />
                     <p className="input-p">example@example.com</p>
                     {emailError ? (
-                      <p style={{ color: 'red' }}>Enter valid email</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter valid email
+                      </p>
                     ) : null}
                     {emailNull ? (
-                      <p style={{ color: 'red' }}>Enter your email</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter your email
+                      </p>
                     ) : null}
                   </Form.Group>
                   <Form.Group
@@ -925,7 +957,9 @@ const ApplicationForCreditTransfer = () => {
                     />
                     <p className="input-p">example@example.com</p>
                     {altEmailError ? (
-                      <p style={{ color: 'red' }}>Enter valid alt email</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter valid alt email
+                      </p>
                     ) : null}{' '}
                   </Form.Group>
                 </div>
@@ -947,7 +981,9 @@ const ApplicationForCreditTransfer = () => {
                       value={formData.typeOfId}
                     />
                     {typeIdNull ? (
-                      <p style={{ color: 'red' }}>Enter type of ID</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter type of ID
+                      </p>
                     ) : null}{' '}
                   </Form.Group>
                   <Form.Group
@@ -965,10 +1001,14 @@ const ApplicationForCreditTransfer = () => {
                       value={formData.idNumber}
                     />
                     {idError ? (
-                      <p style={{ color: 'red' }}>Enter valid ID number</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter valid ID number
+                      </p>
                     ) : null}
                     {idNull ? (
-                      <p style={{ color: 'red' }}>Enter your ID number</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        Enter your ID number
+                      </p>
                     ) : null}{' '}
                   </Form.Group>
                 </div>
@@ -1038,7 +1078,9 @@ const ApplicationForCreditTransfer = () => {
                           name="country"
                           value={formData.country}
                         >
-                          <option>Please Select</option>
+                          <option selected hidden>
+                            Please Select
+                          </option>
                           {JsonData.map((value) => {
                             return (
                               <option key={value.code} value={value.name}>
@@ -1051,7 +1093,7 @@ const ApplicationForCreditTransfer = () => {
                       </div>
                     </div>
                     {addressNull ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Enter all fields of Address
                       </p>
                     ) : null}
@@ -1085,6 +1127,12 @@ const ApplicationForCreditTransfer = () => {
                       value="AUR30620 Certificate III in Light Vehicle Mechanical Technology"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'AUR30620 Certificate III in Light Vehicle Mechanical Technology'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1094,6 +1142,12 @@ const ApplicationForCreditTransfer = () => {
                       value="AUR31520 Certificate III in Automotive Diesel Engine Technology"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'AUR31520 Certificate III in Automotive Diesel Engine Technology'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1103,6 +1157,12 @@ const ApplicationForCreditTransfer = () => {
                       value="AUR40216 Certificate IV in AutomotiveMechanical Diagnosis"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'AUR40216 Certificate IV in AutomotiveMechanical Diagnosis'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1112,6 +1172,12 @@ const ApplicationForCreditTransfer = () => {
                       value="BSB50420 Diploma of Leadership and Management"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'BSB50420 Diploma of Leadership and Management'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1121,6 +1187,12 @@ const ApplicationForCreditTransfer = () => {
                       value="BSB60420 Advanced Diploma of Leadership and Management"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'BSB60420 Advanced Diploma of Leadership and Management'
+                          ? true
+                          : false
+                      }
                     />
 
                     <Form.Check
@@ -1131,6 +1203,12 @@ const ApplicationForCreditTransfer = () => {
                       value="BSB80120 Graduate Diploma of Management (Learning)"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'BSB80120 Graduate Diploma of Management (Learning)'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1140,6 +1218,12 @@ const ApplicationForCreditTransfer = () => {
                       value="CHC33015 Certificate III in Individual Support"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'CHC33015 Certificate III in Individual Support'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1149,6 +1233,12 @@ const ApplicationForCreditTransfer = () => {
                       value="CHC43015 Certificate IV in Ageing Support"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'CHC43015 Certificate IV in Ageing Support'
+                          ? true
+                          : false
+                      }
                     />
 
                     <Form.Check
@@ -1159,6 +1249,12 @@ const ApplicationForCreditTransfer = () => {
                       value="CHC43115 Certificate IV in Disability"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'CHC43115 Certificate IV in Disability'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1168,6 +1264,12 @@ const ApplicationForCreditTransfer = () => {
                       value="CHC52015 Diploma of Community Services"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'CHC52015 Diploma of Community Services'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1177,6 +1279,12 @@ const ApplicationForCreditTransfer = () => {
                       value="CHC53315 Diploma of Mental Health"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'CHC53315 Diploma of Mental Health'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1186,6 +1294,12 @@ const ApplicationForCreditTransfer = () => {
                       value="CPC31320 Certificate III in Wall and Floor Tiling"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'CPC31320 Certificate III in Wall and Floor Tiling'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1195,6 +1309,12 @@ const ApplicationForCreditTransfer = () => {
                       value="CPC33020 Certificate III in Bricklaying and Blocklaying"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'CPC33020 Certificate III in Bricklaying and Blocklaying'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1204,6 +1324,12 @@ const ApplicationForCreditTransfer = () => {
                       value="CPC50220 Diploma of Building and Construction (Building)"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'CPC50220 Diploma of Building and Construction (Building)'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1213,6 +1339,12 @@ const ApplicationForCreditTransfer = () => {
                       value="RII60520 Advanced Diploma of Civil Construction Design"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'RII60520 Advanced Diploma of Civil Construction Design'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1222,6 +1354,12 @@ const ApplicationForCreditTransfer = () => {
                       value="HLT37215 Certificate III in Pathology Collection"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'HLT37215 Certificate III in Pathology Collection'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1231,6 +1369,12 @@ const ApplicationForCreditTransfer = () => {
                       value="HLT45021 Certificate IV in Dental Assisting"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'HLT45021 Certificate IV in Dental Assisting'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1240,6 +1384,12 @@ const ApplicationForCreditTransfer = () => {
                       value="HLT51020 Diploma of Emergency Health Care"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'HLT51020 Diploma of Emergency Health Care'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1249,6 +1399,12 @@ const ApplicationForCreditTransfer = () => {
                       value="HLT54115 Diploma of Nursing (Superseded)"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'HLT54115 Diploma of Nursing (Superseded)'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1258,6 +1414,12 @@ const ApplicationForCreditTransfer = () => {
                       value="HLT55118 Diploma of Dental Technology"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'HLT55118 Diploma of Dental Technology'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1267,6 +1429,12 @@ const ApplicationForCreditTransfer = () => {
                       value="English for Academic Purposes 1"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'English for Academic Purposes 1'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1276,6 +1444,12 @@ const ApplicationForCreditTransfer = () => {
                       value="English for Academic Purposes 2"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'English for Academic Purposes 2'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1285,6 +1459,12 @@ const ApplicationForCreditTransfer = () => {
                       value="English for Academic Purposes 3"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'English for Academic Purposes 3'
+                          ? true
+                          : false
+                      }
                     />
                     <Form.Check
                       inline
@@ -1294,9 +1474,17 @@ const ApplicationForCreditTransfer = () => {
                       value="General English (Elementary to Advanced)"
                       type="radio"
                       onChange={handleChange}
+                      checked={
+                        formData.courseCodeTitle ===
+                        'General English (Elementary to Advanced)'
+                          ? true
+                          : false
+                      }
                     />
                     {radioNull ? (
-                      <p style={{ color: 'red' }}>This filed is Required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        This filed is Required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -1316,7 +1504,7 @@ const ApplicationForCreditTransfer = () => {
                     value={formData.statementOfAttenment}
                   />
                   {qualificationNull ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       Qualification/Statement of Attainment is required
                     </p>
                   ) : null}
@@ -1339,6 +1527,7 @@ const ApplicationForCreditTransfer = () => {
                     onChange={(e) => {
                       setOfficialCertificate(e.target.value);
                     }}
+                    checked={officialCertificate === 'Yes' ? true : false}
                   />
                   <Form.Check
                     inline
@@ -1350,6 +1539,7 @@ const ApplicationForCreditTransfer = () => {
                     onChange={(e) => {
                       setOfficialCertificate(e.target.value);
                     }}
+                    checked={officialCertificate === 'No' ? true : false}
                   />
 
                   {officialCertificate === 'Yes' ? (
@@ -1379,25 +1569,32 @@ const ApplicationForCreditTransfer = () => {
                               Image should be less than 2MB
                             </i>
                           </p>
-                          <div>
+                          <div className="prev-img-parent">
                             {base64Images.map((base64, index) => (
-                              <>
+                              <div className="prev-img">
                                 <img
                                   key={index}
                                   src={base64}
                                   alt={`Image ${index}`}
                                   width={100}
                                 />
-                              </>
+                                <button
+                                  type="button"
+                                  className=""
+                                  onClick={() => deleteFile(index)}
+                                >
+                                  <i class="fa-solid fa-trash"></i>
+                                </button>
+                              </div>
                             ))}
                           </div>
                           {signatureError ? (
-                            <p style={{ color: 'red' }}>
+                            <p style={{ color: 'red', fontStyle: 'italic' }}>
                               Image Size should be less than 2MB
                             </p>
                           ) : null}
                           {fileNull ? (
-                            <p style={{ color: 'red' }}>
+                            <p style={{ color: 'red', fontStyle: 'italic' }}>
                               Official Certificate is required
                             </p>
                           ) : null}
@@ -1406,7 +1603,9 @@ const ApplicationForCreditTransfer = () => {
                     </div>
                   ) : null}
                   {officialCertificateNull ? (
-                    <p style={{ color: 'red' }}>This field is Required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      This field is Required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -1427,6 +1626,7 @@ const ApplicationForCreditTransfer = () => {
                     onChange={(e) => {
                       setOfficialTranscript(e.target.value);
                     }}
+                    checked={officialTranscript === 'Yes' ? true : false}
                   />
                   <Form.Check
                     inline
@@ -1438,6 +1638,7 @@ const ApplicationForCreditTransfer = () => {
                     onChange={(e) => {
                       setOfficialTranscript(e.target.value);
                     }}
+                    checked={officialTranscript === 'No' ? true : false}
                   />
 
                   {officialTranscript === 'Yes' ? (
@@ -1467,25 +1668,32 @@ const ApplicationForCreditTransfer = () => {
                               Image should be less than 2MB
                             </i>
                           </p>
-                          <div>
+                          <div className="prev-img-parent">
                             {base64Images1.map((base64, index) => (
-                              <>
+                              <div className="prev-img">
                                 <img
                                   key={index}
                                   src={base64}
                                   alt={`Image ${index}`}
                                   width={100}
                                 />
-                              </>
+                                <button
+                                  type="button"
+                                  className=""
+                                  onClick={() => deleteFile1(index)}
+                                >
+                                  <i class="fa-solid fa-trash"></i>
+                                </button>
+                              </div>
                             ))}
                           </div>
                           {signatureError2 ? (
-                            <p style={{ color: 'red' }}>
+                            <p style={{ color: 'red', fontStyle: 'italic' }}>
                               Image Size should be less than 2MB
                             </p>
                           ) : null}
                           {fileNull2 ? (
-                            <p style={{ color: 'red' }}>
+                            <p style={{ color: 'red', fontStyle: 'italic' }}>
                               Transcript is required
                             </p>
                           ) : null}
@@ -1494,7 +1702,9 @@ const ApplicationForCreditTransfer = () => {
                     </div>
                   ) : null}
                   {officialTranscriptNull ? (
-                    <p style={{ color: 'red' }}>This field is Required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      This field is Required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -1513,6 +1723,11 @@ const ApplicationForCreditTransfer = () => {
                     value="Credit Transfer Approved"
                     type="radio"
                     onChange={handleChange}
+                    checked={
+                      formData.headOfCompliance === 'Credit Transfer Approved'
+                        ? true
+                        : false
+                    }
                   />
                   <Form.Check
                     inline
@@ -1522,9 +1737,17 @@ const ApplicationForCreditTransfer = () => {
                     value="Credit Transfer Not Approved"
                     type="radio"
                     onChange={handleChange}
+                    checked={
+                      formData.headOfCompliance ===
+                      'Credit Transfer Not Approved'
+                        ? true
+                        : false
+                    }
                   />
                   {headOfComplianceNull ? (
-                    <p style={{ color: 'red' }}>This field is Required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      This field is Required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <div className="textarea-div">
@@ -1544,7 +1767,7 @@ const ApplicationForCreditTransfer = () => {
                       value={formData.explanationOfDecision}
                     />
                     {explanationOfDecisionNull ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Explanation Of Decision is required
                       </p>
                     ) : null}
@@ -1581,7 +1804,9 @@ const ApplicationForCreditTransfer = () => {
                     Clear
                   </button>
                   {signNull ? (
-                    <p style={{ color: 'red' }}>Signature is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Signature is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -1599,7 +1824,9 @@ const ApplicationForCreditTransfer = () => {
                     value={formData.courseSectionDate}
                   />
                   {courseSectionDateNull ? (
-                    <p style={{ color: 'red' }}>Date is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Date is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <button onClick={handleback2}>Back</button>
@@ -1769,10 +1996,12 @@ const ApplicationForCreditTransfer = () => {
                     </div>
                   </div>
                   {representativeNull ? (
-                    <p style={{ color: 'red' }}>This field is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      This field is required
+                    </p>
                   ) : null}
                   {repNameError ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       First Name and Last Name should contain only alphabets
                     </p>
                   ) : null}
@@ -1855,7 +2084,9 @@ const ApplicationForCreditTransfer = () => {
                     )}
 
                     {adminRecordsNull ? (
-                      <p style={{ color: 'red' }}>This field is required</p>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
+                        This field is required
+                      </p>
                     ) : null}
                   </Form.Group>
                 </div>
@@ -1873,7 +2104,9 @@ const ApplicationForCreditTransfer = () => {
                     value={formData.initials}
                   />
                   {initialsNull ? (
-                    <p style={{ color: 'red' }}>Initials is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Initials is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -1891,7 +2124,9 @@ const ApplicationForCreditTransfer = () => {
                   />
                   <p className="input-p">Date</p>
                   {initialsDateNull ? (
-                    <p style={{ color: 'red' }}>Date is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      Date is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group
@@ -1920,7 +2155,9 @@ const ApplicationForCreditTransfer = () => {
                     </div>
                   </div>
                   {adminNameNull ? (
-                    <p style={{ color: 'red' }}>This field is required</p>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
+                      This field is required
+                    </p>
                   ) : null}
                 </Form.Group>
                 <Form.Group

@@ -229,10 +229,14 @@ const ComplaintForm = () => {
                   value={formData.studentNumber}
                 />
                 {idError ? (
-                  <p style={{ color: 'red' }}>Enter valid Student number</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Enter valid Student number
+                  </p>
                 ) : null}
                 {idNull ? (
-                  <p style={{ color: 'red' }}>Enter Student number</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Enter Student number
+                  </p>
                 ) : null}
               </Form.Group>
               <Form.Group
@@ -251,7 +255,9 @@ const ComplaintForm = () => {
                     name="mobileCode"
                     value={formData.mobileCode}
                   >
-                    <option>Select</option>
+                    <option selected hidden>
+                      Select
+                    </option>
                     {JsonData.map((value) => {
                       return (
                         <option value={value.dial_code}>
@@ -273,15 +279,19 @@ const ComplaintForm = () => {
                   />
                 </div>
                 {mobileContryCodeNull ? (
-                  <p style={{ color: 'red' }}>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
                     Please select country dail code
                   </p>
                 ) : null}
                 {mobileError ? (
-                  <p style={{ color: 'red' }}>Enter valid mobile number</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Enter valid mobile number
+                  </p>
                 ) : null}
                 {mobileNull ? (
-                  <p style={{ color: 'red' }}>Enter your mobile number</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Enter your mobile number
+                  </p>
                 ) : null}
               </Form.Group>
             </div>
@@ -300,7 +310,7 @@ const ComplaintForm = () => {
                     value={formData.surName}
                   />
                   {surNameError ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       surname should contain only alphabets
                     </p>
                   ) : null}
@@ -317,7 +327,7 @@ const ComplaintForm = () => {
                     value={formData.givenName}
                   />
                   {nameError ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       name should contain only alphabets
                     </p>
                   ) : null}
@@ -342,10 +352,14 @@ const ComplaintForm = () => {
                 />
                 <p className="input-p">example@example.com</p>
                 {emailError ? (
-                  <p style={{ color: 'red' }}>Enter valid email</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Enter valid email
+                  </p>
                 ) : null}
                 {emailNull ? (
-                  <p style={{ color: 'red' }}>Enter your email</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Enter your email
+                  </p>
                 ) : null}
               </Form.Group>
               <Form.Group
@@ -361,7 +375,7 @@ const ComplaintForm = () => {
                   value={formData.courseName}
                 />
                 {courseNameError ? (
-                  <p style={{ color: 'red' }}>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
                     Course Name should contain only alphabets
                   </p>
                 ) : null}
@@ -457,7 +471,7 @@ const ComplaintForm = () => {
                 />
                 <span className="mandate">*</span>
                 {checkError ? (
-                  <p style={{ color: 'red' }}>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
                     Agree all the declarations to submit
                   </p>
                 ) : null}
@@ -491,7 +505,9 @@ const ComplaintForm = () => {
                 Clear
               </button>
               {signNull ? (
-                <p style={{ color: 'red' }}>Signature is required</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Signature is required
+                </p>
               ) : null}
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -506,7 +522,9 @@ const ComplaintForm = () => {
                 value={formData.date}
               />
               {startDateNull ? (
-                <p style={{ color: 'red' }}>Please select start date</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Please select start date
+                </p>
               ) : null}
             </Form.Group>
             <div className="textarea-div">
@@ -525,7 +543,7 @@ const ComplaintForm = () => {
                     value={formData.receivedBy}
                   />
                   {receivedError ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       Received By should be in alphabets{' '}
                     </p>
                   ) : null}
@@ -558,7 +576,7 @@ const ComplaintForm = () => {
                     value={formData.ProcessedBy}
                   />
                   {processedError ? (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: 'red', fontStyle: 'italic' }}>
                       Processed By should be in alphabets{' '}
                     </p>
                   ) : null}

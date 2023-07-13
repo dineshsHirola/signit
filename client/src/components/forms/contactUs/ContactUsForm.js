@@ -13,7 +13,6 @@ const ContactUsForm = () => {
     message: '',
   });
 
-
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitFailed, setSubmitFailed] = useState(false);
 
@@ -110,7 +109,7 @@ const ContactUsForm = () => {
               required
             />
             {mobileError ? (
-              <p style={{ color: 'red' }}>
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
                 Enter valid mobile number with country code
               </p>
             ) : null}
@@ -211,8 +210,12 @@ const ContactUsForm = () => {
             </div>
           </Form.Group>
           <button type="submit">Submit</button>
-          {submitSuccess ? <p className='success'>Form Submitted Successfully</p> : null}
-          {submitFailed ? <p className="failed">Form Submission Failed</p> : null}
+          {submitSuccess ? (
+            <p className="success">Form Submitted Successfully</p>
+          ) : null}
+          {submitFailed ? (
+            <p className="failed">Form Submission Failed</p>
+          ) : null}
         </Form>
       </Container>
     </div>

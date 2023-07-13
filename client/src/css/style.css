@@ -835,6 +835,42 @@ h4 {
   font-weight: 600;
 }
 
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  display: none;
+}
+
+i.fa-solid.fa-trash {
+  color: red;
+}
+
+.prev-img button {
+  background: #fff !important;
+  padding: 2px !important;
+  border-radius: 0 5px 5px 0 !important;
+  padding-right: 4px !important;
+  border: 1px solid !important;
+  width: fit-content !important;
+  height: fit-content !important;
+}
+
+.prev-img {
+  display: flex;
+  align-items: flex-start;
+}
+
+.prev-img-parent{
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.prev-img img {
+  background: #fff !important;
+  padding: 5px;
+  border-radius: 10px 0 10px 10px;
+}
+
 .dashbord-child h4 {
   font-size: 40px;
   font-weight: 600;

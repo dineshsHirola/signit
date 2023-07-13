@@ -265,10 +265,14 @@ const StudentRequestForm = () => {
                 onChange={handleChange}
               />
               {idError ? (
-                <p style={{ color: 'red' }}>Enter valid Student number</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Enter valid Student number
+                </p>
               ) : null}
               {idNull ? (
-                <p style={{ color: 'red' }}>Enter Student number</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Enter Student number
+                </p>
               ) : null}
             </Form.Group>
             <div className="name-div complaint-input">
@@ -305,12 +309,14 @@ const StudentRequestForm = () => {
                 </div>
               </Form.Group>
               {nameError ? (
-                <p style={{ color: 'red' }}>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
                   surname and givenname should contain only alphabets
                 </p>
               ) : null}
               {nameNull ? (
-                <p style={{ color: 'red' }}>Student Name field is required</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Student Name field is required
+                </p>
               ) : null}
             </div>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -318,7 +324,9 @@ const StudentRequestForm = () => {
               <br />
               <Form.Control type="date" name="dob" onChange={handleChange} />
               {dobError ? (
-                <p style={{ color: 'red' }}>Select valid DOB</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Select valid DOB
+                </p>
               ) : null}
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -334,7 +342,9 @@ const StudentRequestForm = () => {
                   name="mobCode"
                   value={formData.mobCode}
                 >
-                  <option>Select</option>
+                  <option selected hidden>
+                    Select
+                  </option>
                   {JsonData.map((value) => {
                     return (
                       <option value={value.dial_code}>
@@ -355,13 +365,19 @@ const StudentRequestForm = () => {
                 />
               </div>
               {mobileContryCodeNull ? (
-                <p style={{ color: 'red' }}>Please select country dail code</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Please select country dail code
+                </p>
               ) : null}
               {mobileError ? (
-                <p style={{ color: 'red' }}>Enter valid mobile number</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Enter valid mobile number
+                </p>
               ) : null}
               {mobileNull ? (
-                <p style={{ color: 'red' }}>Enter your mobile number</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Enter your mobile number
+                </p>
               ) : null}
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -377,10 +393,14 @@ const StudentRequestForm = () => {
               />
               <p className="input-p">example@example.com</p>
               {emailError ? (
-                <p style={{ color: 'red' }}>Enter valid email</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Enter valid email
+                </p>
               ) : null}
               {emailNull ? (
-                <p style={{ color: 'red' }}>Enter your email</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Enter your email
+                </p>
               ) : null}
             </Form.Group>
             <div className="input-flex course-code-flex">
@@ -398,7 +418,9 @@ const StudentRequestForm = () => {
                   onChange={handleChange}
                 />
                 {courseCodeNull ? (
-                  <p style={{ color: 'red' }}>Course Code is required</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Course Code is required
+                  </p>
                 ) : null}
               </Form.Group>
               <Form.Group
@@ -415,12 +437,14 @@ const StudentRequestForm = () => {
                   onChange={handleChange}
                 />
                 {courseError ? (
-                  <p style={{ color: 'red' }}>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
                     Course should containe only alphabets
                   </p>
                 ) : null}
                 {courseNameNull ? (
-                  <p style={{ color: 'red' }}>Course Code is required</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Course Code is required
+                  </p>
                 ) : null}
               </Form.Group>
             </div>
@@ -509,7 +533,7 @@ const StudentRequestForm = () => {
                       className="leave-input"
                     />
                     {leaveError ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Leave Date must be selected
                       </p>
                     ) : null}
@@ -536,14 +560,16 @@ const StudentRequestForm = () => {
                       value={otherInput}
                     />
                     {otherError ? (
-                      <p style={{ color: 'red' }}>
+                      <p style={{ color: 'red', fontStyle: 'italic' }}>
                         Other request field should not be empty
                       </p>
                     ) : null}
                   </Form.Group>
                 ) : null}
                 {reqNull ? (
-                  <p style={{ color: 'red' }}>This field is required</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    This field is required
+                  </p>
                 ) : null}
               </Form.Group>
             </div>
@@ -576,7 +602,9 @@ const StudentRequestForm = () => {
                 Clear
               </button>
               {signNull ? (
-                <p style={{ color: 'red' }}>Signature is required</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  Signature is required
+                </p>
               ) : null}
             </Form.Group>
 
@@ -590,7 +618,9 @@ const StudentRequestForm = () => {
               <br />
               <Form.Control type="date" onChange={handleChange} name="date" />
               {dateNull ? (
-                <p style={{ color: 'red' }}>This field is required</p>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
+                  This field is required
+                </p>
               ) : null}
             </Form.Group>
             <button onClick={handleSubmit}>Submit</button>

@@ -278,7 +278,9 @@ const ChangeOfStudentDetailsForm = () => {
                 />
                 <br />
                 {courseNameError ? (
-                  <p style={{ color: 'red' }}>Both field is required</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Both field is required
+                  </p>
                 ) : null}
               </Form.Group>
             </div>
@@ -394,12 +396,12 @@ const ChangeOfStudentDetailsForm = () => {
                 </div>
               </div>
               {nameError ? (
-                <p style={{ color: 'red' }}>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
                   First Name and Last Name should contain only alphabets
                 </p>
               ) : null}
               {nameNull ? (
-                <p style={{ color: 'red' }}>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
                   Please enter First Name and Last Name
                 </p>
               ) : null}
@@ -427,7 +429,11 @@ const ChangeOfStudentDetailsForm = () => {
                 />
               </Form.Group>
             </div>
-            {dobNull ? <p style={{ color: 'red' }}>Please select DOB</p> : null}
+            {dobNull ? (
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
+                Please select DOB
+              </p>
+            ) : null}
 
             <div className="input-flex change-div">
               <Form.Group
@@ -441,7 +447,9 @@ const ChangeOfStudentDetailsForm = () => {
                   onChange={handleChange}
                   name="gender"
                 >
-                  <option>Please Select</option>
+                  <option selected hidden>
+                    Please Select
+                  </option>
                   <option value="M">Male</option>
                   <option value="F">Female</option>
                   <option value="PNTS">Prefer not to say</option>
@@ -458,7 +466,9 @@ const ChangeOfStudentDetailsForm = () => {
                   onChange={handleChange2}
                   name="genderNew"
                 >
-                  <option>Please Select</option>
+                  <option selected hidden>
+                    Please Select
+                  </option>
                   <option value="M">Male</option>
                   <option value="F">Female</option>
                   <option value="PNTS">Prefer not to say</option>
@@ -466,7 +476,9 @@ const ChangeOfStudentDetailsForm = () => {
               </Form.Group>
             </div>
             {genderNull ? (
-              <p style={{ color: 'red' }}>Please select your gender</p>
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
+                Please select your gender
+              </p>
             ) : null}
 
             <div className="input-flex mobile-flex-div">
@@ -483,7 +495,9 @@ const ChangeOfStudentDetailsForm = () => {
                     onChange={handleChange}
                     name="mobCode"
                   >
-                    <option>Select</option>
+                    <option selected hidden>
+                      Select
+                    </option>
                     {JsonData.map((value) => {
                       return (
                         <option value={value.dial_code}>
@@ -516,7 +530,9 @@ const ChangeOfStudentDetailsForm = () => {
                     onChange={handleChange2}
                     name="mobCodeNew"
                   >
-                    <option>Select</option>
+                    <option selected hidden>
+                      Select
+                    </option>
                     {JsonData.map((value) => {
                       return (
                         <option value={value.dial_code}>
@@ -538,10 +554,12 @@ const ChangeOfStudentDetailsForm = () => {
               </Form.Group>
             </div>
             {mobileError ? (
-              <p style={{ color: 'red' }}>Enter valid mobile number</p>
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
+                Enter valid mobile number
+              </p>
             ) : null}
             {mobileNull ? (
-              <p style={{ color: 'red' }}>
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
                 Mobile Number is required in both the fields
               </p>
             ) : null}
@@ -575,10 +593,14 @@ const ChangeOfStudentDetailsForm = () => {
               </Form.Group>
             </div>
             {emailError ? (
-              <p style={{ color: 'red' }}>Enter valid email</p>
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
+                Enter valid email
+              </p>
             ) : null}
             {emailNull ? (
-              <p style={{ color: 'red' }}>Enter your email</p>
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
+                Enter your email
+              </p>
             ) : null}
 
             <div className="input-flex change-div">
@@ -610,10 +632,14 @@ const ChangeOfStudentDetailsForm = () => {
               </Form.Group>
             </div>
             {altEmailError ? (
-              <p style={{ color: 'red' }}>Enter valid alt email</p>
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
+                Enter valid alt email
+              </p>
             ) : null}
             {altEmailNull ? (
-              <p style={{ color: 'red' }}>Enter your email</p>
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
+                Enter your email
+              </p>
             ) : null}
 
             <div className="input-flex">
@@ -643,7 +669,7 @@ const ChangeOfStudentDetailsForm = () => {
               </Form.Group>
             </div>
             {emergencyError ? (
-              <p style={{ color: 'red' }}>
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
                 Both Emergency Contact Fields are required
               </p>
             ) : null}
@@ -671,7 +697,9 @@ const ChangeOfStudentDetailsForm = () => {
               </Form.Group>
             </div>
             {kinError ? (
-              <p style={{ color: 'red' }}>Both fields are required</p>
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
+                Both fields are required
+              </p>
             ) : null}
 
             <div className="input-flex">
@@ -701,7 +729,9 @@ const ChangeOfStudentDetailsForm = () => {
               </Form.Group>
             </div>
             {employerError ? (
-              <p style={{ color: 'red' }}>Both fields are required</p>
+              <p style={{ color: 'red', fontStyle: 'italic' }}>
+                Both fields are required
+              </p>
             ) : null}
 
             <h5 className="h5">Identification Verified</h5>
@@ -719,7 +749,9 @@ const ChangeOfStudentDetailsForm = () => {
                 />
                 <br />
                 {typeIdNull ? (
-                  <p style={{ color: 'red' }}>Enter type of ID</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Enter type of ID
+                  </p>
                 ) : null}
               </Form.Group>
               <Form.Group
@@ -734,10 +766,14 @@ const ChangeOfStudentDetailsForm = () => {
                   name="idNumber"
                 />
                 {idError ? (
-                  <p style={{ color: 'red' }}>Enter valid ID number</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Enter valid ID number
+                  </p>
                 ) : null}
                 {idNull ? (
-                  <p style={{ color: 'red' }}>Enter your ID number</p>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Enter your ID number
+                  </p>
                 ) : null}
               </Form.Group>
             </div>
@@ -782,7 +818,9 @@ const ChangeOfStudentDetailsForm = () => {
                   onChange={handleChange}
                   name="country"
                 >
-                  <option>Please Select</option>
+                  <option selected hidden>
+                    Please Select
+                  </option>
                   {JsonData.map((value) => {
                     return (
                       <option key={value.code} value={value.name}>
@@ -836,7 +874,9 @@ const ChangeOfStudentDetailsForm = () => {
                   onChange={handleChange2}
                   name="countryNew"
                 >
-                  <option>Please Select</option>
+                  <option selected hidden>
+                    Please Select
+                  </option>
                   {JsonData.map((value) => {
                     return (
                       <option key={value.code} value={value.name}>
@@ -849,7 +889,7 @@ const ChangeOfStudentDetailsForm = () => {
                 {/* </div>
               </div> */}
                 {countryNull ? (
-                  <p style={{ color: 'red' }}>
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
                     Both old and new address fields is required
                   </p>
                 ) : null}
@@ -901,7 +941,9 @@ const ChangeOfStudentDetailsForm = () => {
                   name="overSeasCountry"
                   className="select-country"
                 >
-                  <option>Please Select</option>
+                  <option selected hidden>
+                    Please Select
+                  </option>
                   {JsonData.map((value) => {
                     return (
                       <option key={value.code} value={value.name}>
@@ -956,7 +998,9 @@ const ChangeOfStudentDetailsForm = () => {
                   name="overSeasCountryNew"
                   className="select-country"
                 >
-                  <option>Please Select</option>
+                  <option selected hidden>
+                    Please Select
+                  </option>
                   {JsonData.map((value) => {
                     return (
                       <option key={value.code} value={value.name}>
@@ -970,7 +1014,7 @@ const ChangeOfStudentDetailsForm = () => {
                 </div> */}
               </Form.Group>
               {OverSeasNull ? (
-                <p style={{ color: 'red' }}>
+                <p style={{ color: 'red', fontStyle: 'italic' }}>
                   Both old and new Overseas address fields is required
                 </p>
               ) : null}

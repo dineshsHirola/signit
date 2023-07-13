@@ -27,7 +27,9 @@ const ChangeSM = () => {
             setAuth(true);
             try {
               axios
-                .get(`${process.env.REACT_APP_BACKEND_LINK}/admin/csdf/${slugURL}`)
+                .get(
+                  `${process.env.REACT_APP_BACKEND_LINK}/admin/csdf/${slugURL}`
+                )
                 .then((result) => {
                   if (result.data.Status === 'Success') {
                     if (result.data.result === null) {
@@ -75,7 +77,7 @@ const ChangeSM = () => {
               <div className="main-div">
                 <Container>
                   <div className="headflex">
-                    <h1 className="heading">Change Of Student Details</h1>
+                    <h1 className="heading">Change Of Student Details Form</h1>
                   </div>
                   <Table
                     aria-label="Example table with static content"

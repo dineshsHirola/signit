@@ -93,7 +93,7 @@ const ChangeOfStudentDetailsFormData = () => {
                 <Container>
                   <div className="headflex">
                     <h1 className="heading">
-                      Change Of Student Details Form Data
+                      Change Of Student Details Form
                     </h1>
                     <input
                       type="search"

@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 import { ImageLinkModal2 } from '../common/modal';
 import { IconButton } from '../common/IconButton';
 import { EyeIcon } from '../common/EyeIcon';
+import { PopModal, PopModal2 } from '../common/modal';
 
 const CreditSM = () => {
   const slug = useParams();
@@ -22,6 +23,7 @@ const CreditSM = () => {
 
   const [modalShow, setModalShow] = useState(false);
   const [modalShow2, setModalShow2] = useState(false);
+  const [modalShow1, setModalShow1] = useState(false);
 
   axios.defaults.withCredentials = true;
 
@@ -92,7 +94,9 @@ const CreditSM = () => {
               <div className="main-div">
                 <Container>
                   <div className="headflex">
-                    <h1 className="heading">Credit Transfer Application</h1>
+                    <h1 className="heading">
+                      Application For Credit Transfer Form
+                    </h1>
                   </div>
                   <Table
                     aria-label="Example table with static content"
@@ -287,7 +291,16 @@ const CreditSM = () => {
                           EXPLANATION OF DECISION
                         </Table.Cell>
                         <Table.Cell>
-                          {userData.explanationOfDecision}
+                          {/* {userData.explanationOfDecision} */}
+                          <IconButton onClick={() => setModalShow1(true)}>
+                            <EyeIcon size={20} fill="#979797" />
+                          </IconButton>
+                          <PopModal
+                            show={modalShow1}
+                            title={'EXPLANATION OF DECISION'}
+                            reason={userData.explanationOfDecision}
+                            onHide={() => setModalShow1(false)}
+                          />
                         </Table.Cell>
                       </Table.Row>
                       <Table.Row>

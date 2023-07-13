@@ -82,7 +82,7 @@ const GteSM = () => {
               <div className="main-div">
                 <Container>
                   <div className="headflex">
-                    <h1 className="heading">GTE Form Data</h1>
+                    <h1 className="heading">GTE Form</h1>
                   </div>
                   <Table
                     aria-label="Example table with static content"

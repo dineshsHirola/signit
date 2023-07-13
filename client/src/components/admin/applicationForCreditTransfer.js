@@ -93,7 +93,7 @@ const ApplicationForCreditTransferData = () => {
                 <Container>
                   <div className="headflex">
                     <h1 className="heading">
-                      Application For Credit Transfer Data
+                      Application For Credit Transfer Form
                     </h1>
                     <input
                       type="search"

@@ -93,7 +93,7 @@ const ApplicationToCancelEnrolmentData = () => {
                 <Container>
                   <div className="headflex">
                     <h1 className="heading">
-                      Application To Cancel Enrolment Data
+                      Application To Cancel Enrolment Form
                     </h1>
                     <input
                       type="search"

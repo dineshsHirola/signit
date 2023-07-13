@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 import { IconButton } from '../common/IconButton';
 import { EyeIcon } from '../common/EyeIcon';
 import { ImageLinkModal2 } from '../common/modal';
+import { PopModal, PopModal2 } from '../common/modal';
 
 const RefundSM = () => {
   const slug = useParams();
@@ -19,6 +20,9 @@ const RefundSM = () => {
   const [userData, setUserData] = useState();
 
   const [modalShow, setModalShow] = useState(false);
+
+  const [modalShow1, setModalShow1] = useState(false);
+  const [modalShow2, setModalShow2] = useState(false);
 
   axios.defaults.withCredentials = true;
 
@@ -279,7 +283,18 @@ const RefundSM = () => {
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BANK
                           ADDRESS
                         </Table.Cell>
-                        <Table.Cell>{userData.bankAddress}</Table.Cell>
+                        <Table.Cell>
+                          {/* {userData.bankAddress} */}
+                          <IconButton onClick={() => setModalShow2(true)}>
+                            <EyeIcon size={20} fill="#979797" />
+                          </IconButton>
+                          <PopModal
+                            show={modalShow2}
+                            title={'BANK ADDRESS'}
+                            reason={userData.bankAddress}
+                            onHide={() => setModalShow2(false)}
+                          />
+                        </Table.Cell>
                       </Table.Row>
                       <Table.Row>
                         <Table.Cell className="table-gold-p">
@@ -332,7 +347,20 @@ const RefundSM = () => {
                           Comments/ Reason for decision / Calculations of
                           refund:
                         </Table.Cell>
-                        <Table.Cell>{userData.comments}</Table.Cell>
+                        <Table.Cell>
+                          {/* {userData.comments} */}
+                          <IconButton onClick={() => setModalShow1(true)}>
+                            <EyeIcon size={20} fill="#979797" />
+                          </IconButton>
+                          <PopModal
+                            show={modalShow1}
+                            title={
+                              'Comments/ Reason for decision / Calculations of'
+                            }
+                            reason={userData.comments}
+                            onHide={() => setModalShow1(false)}
+                          />
+                        </Table.Cell>
                       </Table.Row>
                       <Table.Row>
                         <Table.Cell className="table-gold-p">

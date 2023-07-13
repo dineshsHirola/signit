@@ -85,7 +85,7 @@ const CancelSM = () => {
                 <Container>
                   <div className="headflex">
                     <h1 className="heading">
-                      Application To Cancel Enrolment Data
+                      Application To Cancel Enrolment Form
                     </h1>
                   </div>
                   <Table
@@ -220,6 +220,7 @@ const CancelSM = () => {
                           </IconButton>
                           <PopModal
                             show={modalShow}
+                            title={'DETAILS OF WHEN TO CANCEL ENROLLMENT'}
                             reason={userData.detail}
                             onHide={() => setModalShow(false)}
                           />
@@ -237,6 +238,7 @@ const CancelSM = () => {
                           </IconButton>
                           <PopModal2
                             show={modalShow2}
+                            title={'REASONS FOR REQUEST'}
                             reason={userData.reason}
                             onHide={() => setModalShow2(false)}
                           />

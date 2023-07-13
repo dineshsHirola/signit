@@ -92,7 +92,7 @@ const GteFormData = () => {
               <div className="main-div">
                 <Container>
                   <div className="headflex">
-                    <h1 className="heading">GTE Form Data</h1>
+                    <h1 className="heading">GTE Form</h1>
                     <input
                       type="search"
                       placeholder="Search by First Name"

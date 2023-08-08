@@ -8,9 +8,7 @@ require('dotenv').config();
 
 const app = require('express')();
 
-const allowedOrigins = [
-  'http://localhost:3000',
-];
+const allowedOrigins = ['http://localhost:3000'];
 
 app.use(
   cors({
@@ -37,6 +35,10 @@ mongoose
   .catch(() => {
     console.log('DB Connection failed');
   });
+
+app.get('/', (req, res) => {
+  res.send('Hello');
+});
 
 app.use('/forms', forms);
 app.use('/admin', admin);

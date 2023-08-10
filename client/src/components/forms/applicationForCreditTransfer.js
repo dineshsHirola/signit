@@ -603,6 +603,30 @@ const ApplicationForCreditTransfer = () => {
       setInitialsDateNull
     );
 
+    console.log(
+      nameVer,
+      dbVer,
+      genderVer,
+      telVer,
+      mobVer,
+      emailVer,
+      altEmailVer,
+      typeOfIdVer,
+      idVer,
+      addressVer,
+      courseCodeTitleVer,
+      qualificationVer,
+      certificateVer,
+      transcriptVer,
+      headOfComplianceVer,
+      explanationOfDecisionVer,
+      courseSectionDateVer,
+      representativeVer,
+      adminCheckVer,
+      initialsVer,
+      initialsDateVer
+    );
+
     if (
       nameVer &&
       dbVer &&
@@ -664,6 +688,8 @@ const ApplicationForCreditTransfer = () => {
         .catch((e) => {
           console.log('Axios error', e);
         });
+    } else {
+      alert('Not filled');
     }
   };
 
@@ -1864,7 +1890,7 @@ const ApplicationForCreditTransfer = () => {
                         type="text"
                         onChange={handleInputAddChange}
                         name="unitTitle1"
-                        value={inputArr.unitCode1}
+                        value={inputArr.unitTitle1}
                       />
                     </div>
                   </div>

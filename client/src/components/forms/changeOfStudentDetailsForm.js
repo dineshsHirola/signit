@@ -8,8 +8,10 @@ import {
   ChangeIdValidation,
   ChangetypeOfIdValidation,
   changeCourse,
+  changeCourseOld,
   changeDob,
   handleEmail,
+  handleEmailOld,
   handleMob,
   handleName,
 } from '../errors/errorFun';
@@ -126,7 +128,7 @@ const ChangeOfStudentDetailsForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const courseVer = changeCourse(
+    const courseVer = changeCourseOld(
       formData1.courseEnrolledFile,
       formData2.courseEnrolledFileNew,
       setCourseNameError
@@ -153,7 +155,7 @@ const ChangeOfStudentDetailsForm = () => {
       setMobileNUll,
       setMobileError
     );
-    const emailVer = handleEmail(
+    const emailVer = handleEmailOld(
       formData1.email,
       formData2.emailNew,
       setEmailNull,
@@ -263,6 +265,11 @@ const ChangeOfStudentDetailsForm = () => {
                   onChange={handleChange}
                   name="courseEnrolledFile"
                 />
+                {courseNameError ? (
+                  <p style={{ color: 'red', fontStyle: 'italic' }}>
+                    Both field is required
+                  </p>
+                ) : null}
               </Form.Group>
               <br />
               <Form.Group
@@ -277,11 +284,7 @@ const ChangeOfStudentDetailsForm = () => {
                   name="courseEnrolledFileNew"
                 />
                 <br />
-                {courseNameError ? (
-                  <p style={{ color: 'red', fontStyle: 'italic' }}>
-                    Both field is required
-                  </p>
-                ) : null}
+                
               </Form.Group>
             </div>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">

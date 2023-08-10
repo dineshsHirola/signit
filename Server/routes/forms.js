@@ -17,14 +17,14 @@ router.use(
     extended: true,
   })
 );
-router.use(
-  cors({
-    origin: ['http://localhost:3000'],
-    methods: ['POST', 'GET', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type'],
-    exposedHeaders: ['Content-Type'],
-  })
-);
+// router.use(
+//   cors({
+//     origin: ['http://localhost:3000'],
+//     methods: ['POST', 'GET', 'PUT', 'DELETE'],
+//     allowedHeaders: ['Content-Type'],
+//     exposedHeaders: ['Content-Type'],
+//   })
+// );
 
 router.post('/rrf', rrfControll);
 router.post('/cf', cfControll);

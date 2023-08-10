@@ -598,6 +598,21 @@ export const OtherRequestCheck = (leave, inputs, setLeaveError) => {
   }
 };
 
+export const changeCourseOld = (oldData, newData, setError) => {
+  if (!oldData || !newData) {
+    setError(true);
+    return false;
+  } else {
+    if (oldData && newData) {
+      setError(false);
+      return true;
+    } else {
+      setError(true);
+      return false;
+    }
+  }
+};
+
 export const changeCourse = (oldData, newData, setError) => {
   if (!oldData && !newData) {
     setError(false);
@@ -622,10 +637,10 @@ export const handleName = (
   setNameError
 ) => {
   var exp1 = /^[A-Za-z ]+$/;
-  if (fname === '' && lname === '' && fname2 === '' && lname2 === '') {
-    setNameNull(false);
+  if (fname === '' || lname === '' || fname2 === '' || lname2 === '') {
+    setNameNull(true);
     setNameError(false);
-    return true;
+    return false;
   } else {
     if (fname && lname) {
       if (fname2 && lname2) {
@@ -713,6 +728,30 @@ export const handleMob = (
       setNameError(false);
       setNameNull(false);
       return true;
+    }
+  }
+};
+
+export const handleEmailOld = (fname, lname, setNameNull, setNameError) => {
+  var exp1 =
+    /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  if (fname === '' || lname === '') {
+    setNameNull(true);
+    setNameError(false);
+    return false;
+  } else {
+    if (fname === '' || lname === '') {
+      setNameNull(true);
+      return false;
+    } else {
+      setNameNull(false);
+      if (!exp1.test(fname) || !exp1.test(lname)) {
+        setNameError(true);
+        return false;
+      } else {
+        setNameError(false);
+        return true;
+      }
     }
   }
 };
@@ -821,11 +860,11 @@ export const CredittelValidation = (
   // setTelNUll
 ) => {
   const exp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
-  if (!code) {
+  if (!code && !num) {
     // setTelNUll(false);
     setTelError(false);
     setCountryCodeNull(false);
-    return false;
+    return true;
   } else {
     // setTelNUll(false);
     setTelError(false);

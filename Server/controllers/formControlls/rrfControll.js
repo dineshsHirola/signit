@@ -1,7 +1,10 @@
+const { checkOutReq } = require('../../emailTemplate');
 const rrf_collection = require('../../models/rrf');
 require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 const _ = require('lodash');
+const sendMail = require('../../utils/sendMail');
+const puppeteer = require('puppeteer');
 
 module.exports = async (req, res) => {
   const {
@@ -181,10 +184,169 @@ module.exports = async (req, res) => {
                 signatureImage: arrayImages,
                 sign: arrayImages2,
               });
+              const obj = {
+                courseName: courseName,
+                courseStartDate: courseStartDate,
+                name: {
+                  prefix: prefix,
+                  firstName: firstName,
+                  middleName: middleName,
+                  lastName: lastName,
+                },
+                dob: dob,
+                gender: gender,
+                tel: {
+                  telCode: telCode,
+                  telephone: telephone,
+                },
+                mob: {
+                  mobCode: mobCode,
+                  mobile: mobile,
+                },
+                email: email,
+                altEmail: altEmail,
+                typeOfId: typeOfId,
+                idNumber: idNumber,
+                address: {
+                  buildingName: buildingName,
+                  street: street,
+                  town: town,
+                  state: state,
+                  postCode: postCode,
+                  country: country,
+                },
+                invoiceNumber,
+                reason,
+                'Supporting Documentation': arrayImages,
+                bankName,
+                accNumber,
+                accName,
+                bsb,
+                bankAddress,
+                swiftCode,
+                bankDate,
+                'Bank Signature': arrayImages2[0],
+                refundAmount,
+                comments,
+                refundMethod,
+                'Refund Signature': arrayImages2[1],
+                position,
+                printName,
+                dateProcessed,
+                refundRegister,
+                logDate,
+                loggedBy,
+                'Logged By Signature': arrayImages2[2],
+                formal,
+                formalDate,
+                refundType,
+                otherRefundInput,
+                // sign: arrayImages2,
+              };
               rrf_collection
                 .insertMany(newrrf)
-                .then((result) => {
-                  res.send({ Status: 'Success', result: result });
+                .then(async (result) => {
+                  // Generate PDF
+                  const browser = await puppeteer.launch({ headless: 'new' });
+                  const page = await browser.newPage();
+
+                  let contentHTML = '';
+
+                  let link = process.env.CLOUDINARY_IMAGE_URL;
+
+                  for (let key in obj) {
+                    if (obj.hasOwnProperty(key)) {
+                      if (typeof obj[key] === 'object') {
+                        console.log(`${key}:`);
+                        contentHTML += `<strong>${key}:</strong><br>`; // Use <br> for line breaks in HTML
+                        for (let subKey in obj[key]) {
+                          if (obj[key].hasOwnProperty(subKey)) {
+                            if (
+                              key === 'Bank Signature' ||
+                              key === 'Refund Signature' ||
+                              key === 'Logged By Signature' ||
+                              key === 'Supporting Documentation'
+                            ) {
+                              console.log(obj[key][subKey], 'Hello');
+                              contentHTML += `&nbsp;&nbsp;<img width="100px" src=${link}${obj[key][subKey]} alt="image"/><br>`;
+                            } else {
+                              if (key === 'unitCode' || key === 'unitTitle') {
+                                console.log(obj[key][subKey]);
+                                contentHTML += `&nbsp;&nbsp;${obj[key][subKey]}<br>`;
+                              } else {
+                                console.log(
+                                  `  ${subKey}: ${obj[key][subKey]},Hello`
+                                );
+                                contentHTML += `&nbsp;&nbsp;${subKey}: ${obj[key][subKey]}<br>`;
+                              }
+                            }
+                          }
+                        }
+                      } else {
+                        if (
+                          key === 'Bank Signature' ||
+                          key === 'Refund Signature' ||
+                          key === 'Logged By Signature' 
+                        ) {
+                          console.log(`${key}: ${obj[key]}`, 'Hello');
+                          contentHTML += `<strong>${key}:</strong> <img width="100px" src=${link}${obj[key]} alt="image"/><br>`;
+                        } else {
+                          console.log(`${key}: ${obj[key]}`);
+                          contentHTML += `<strong>${key}:</strong> ${obj[key]}<br>`;
+                        }
+                      }
+                    }
+                  }
+
+                  await page.setContent(contentHTML);
+
+                  const pdfBuffer = await page.pdf();
+                  await browser.close();
+
+                  const newMobile = mobCode + ' ' + mobile;
+                  const newName = firstName + ' ' + lastName;
+                  const options = {
+                    email: 'dineshs25201@gmail.com',
+                    subject: 'New Refund Request Form Received',
+                    html: checkOutReq(
+                      'Refund Request',
+                      newName,
+                      email,
+                      newMobile,
+                      country
+                    ),
+                    pdfBuffer: pdfBuffer,
+                  };
+
+                  const options2 = {
+                    email: email,
+                    subject: 'Refund Request Form Submitted Successfully',
+                    html: `<p><b>Dear ${newName}</b></p><br/>
+<p>Thank You For Submitting Refund Request Form</p>
+<p>Our Team Will Contact You</p><br/>
+<p><b>Thank you</b></p>
+<p><b>Signet institute</b></p>
+<p>dineshs25201@gmail.com</p>`,
+                  };
+
+                  sendMail(options)
+                    .then((result2) => {
+                      sendMail(options2)
+                        .then((result3) => {
+                          res.send({
+                            Status: 'Success',
+                            result: result,
+                          });
+                        })
+                        .catch((e) => {
+                          console.log(e);
+                        });
+                    })
+                    .catch((e) => {
+                      console.log(e);
+                    });
+
+                  // res.send({ Status: 'Success', result: result });
                 })
                 .catch((e) => {
                   console.log('Serverside error', e);

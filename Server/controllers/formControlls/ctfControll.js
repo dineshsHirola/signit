@@ -2,6 +2,9 @@ const ctf_collection = require('../../models/ctf');
 require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 const _ = require('lodash');
+const sendMail = require('../../utils/sendMail');
+const { checkOutReq } = require('../../emailTemplate');
+const puppeteer = require('puppeteer');
 
 module.exports = async (req, res) => {
   const {
@@ -341,16 +344,173 @@ module.exports = async (req, res) => {
                           sign: arrayImages3,
                           adminSign: arrayImages4,
                         });
+                        const obj = {
+                          name: {
+                            prefix: prefix,
+                            firstName: firstName,
+                            middleName: middleName,
+                            lastName: lastName,
+                          },
+                          dob: dob,
+                          gender: gender,
+                          tel: {
+                            telCode: telCode,
+                            telephone: telephone,
+                          },
+                          mob: {
+                            mobCode: mobCode,
+                            mobile: mobile,
+                          },
+                          email: email,
+                          altEmail: altEmail,
+                          typeOfId: typeOfId,
+                          idNumber: idNumber,
+                          address: {
+                            buildingName: buildingName,
+                            street: street,
+                            town: town,
+                            state: state,
+                            postCode: postCode,
+                            country: country,
+                          },
+                          courseCodeTitle,
+                          statementOfAttenment,
+                          headOfCompliance,
+                          explanationOfDecision,
+                          courseSectionDate,
+                          repFirstName,
+                          repLastName,
+                          unitsDate,
+                          initials,
+                          initialsDate,
+                          adminFirstName,
+                          adminLastName,
+                          adminDate,
+                          managerFirstName,
+                          managerLastName,
+                          managerDate,
+                          studentAdvisedInWriting: declaration1,
+                          ctRecordedInSms: declaration2,
+                          applicationClosed: declaration3,
+                          unitCode: unitCode,
+                          unitTitle: unitTitle,
+                          officialCertificate,
+                          officialTranscript,
+                          'Official Certificate Attachments': arrayImages,
+                          'Official Transcript Attachments': arrayImages2,
+                          sign: arrayImages3,
+                          adminSign: arrayImages4,
+                        };
                         ctf_collection
                           .insertMany(newctf)
-                          .then((result) => {
-                            res.send({ Status: 'Success', result: result });
+                          .then(async (result) => {
+                            res.send({
+                              Status: 'Success',
+                              result: result,
+                            });
+                            // Generate PDF
+                            const browser = await puppeteer.launch();
+                            const page = await browser.newPage();
+
+                            let contentHTML =
+                              '<div style="display:flex; justify-content:center; padding-top:10px;"><img src="https://digitalmarketingcompanybangalore.in/logo.png" width="200px" alt="Logo"/></div>';
+
+                            let link = process.env.CLOUDINARY_IMAGE_URL;
+
+                            for (let key in obj) {
+                              if (obj.hasOwnProperty(key)) {
+                                if (typeof obj[key] === 'object') {
+                                  console.log(`${key}:`);
+                                  contentHTML += `<strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong><br>`; // Use <br> for line breaks in HTML
+                                  for (let subKey in obj[key]) {
+                                    if (obj[key].hasOwnProperty(subKey)) {
+                                      if (
+                                        key ===
+                                          'Official Certificate Attachments' ||
+                                        key ===
+                                          'Official Transcript Attachments' ||
+                                        key === 'sign' ||
+                                        key === 'adminSign' ||
+                                        key === 'campusSign'
+                                      ) {
+                                        console.log(obj[key][subKey], 'Hello');
+                                        contentHTML += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="padding-top:15px; padding-left:25px;" width="100px" src=${link}${obj[key][subKey]} alt="image"/><br>`;
+                                      } else {
+                                        if (
+                                          key === 'unitCode' ||
+                                          key === 'unitTitle'
+                                        ) {
+                                          console.log(obj[key][subKey]);
+                                          contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${obj[key][subKey]}</p>`;
+                                        } else {
+                                          console.log(
+                                            `  ${subKey}: ${obj[key][subKey]},Hello`
+                                          );
+                                          contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${subKey}: ${obj[key][subKey]}</p>`;
+                                        }
+                                      }
+                                    }
+                                  }
+                                } else {
+                                  console.log(`${key}: ${obj[key]}`);
+                                  contentHTML += `<p><strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong> <span style="font-size:20px;">${obj[key]}</span></p>`;
+                                }
+                              }
+                            }
+
+                            await page.setContent(contentHTML);
+
+                            const pdfBuffer = await page.pdf();
+                            await browser.close();
+
+                            const newMobile = mobCode + ' ' + mobile;
+                            const newName = firstName + ' ' + lastName;
+
+                            const options = {
+                              email: process.env.CREDIT_TRANSFER_MAIL,
+                              subject:
+                                'New Application For Credit Transfer Form Received',
+                              html: checkOutReq(
+                                'Application For Credit Transfer',
+                                newName,
+                                email,
+                                newMobile,
+                                country
+                              ),
+                              pdfBuffer: pdfBuffer,
+                            };
+
+                            const options2 = {
+                              email: email,
+                              subject:
+                                'Application For Credit Transfer Form Submitted Successfully',
+                              html: `<img src="https://digitalmarketingcompanybangalore.in/logo.png" width="200px" alt="Logo"/><br/><p><b>Dear ${newName}</b></p><br/>
+        <p>Thank You For Submitting Application For Credit Transfer Form</p>
+        <p>Our Team Will Contact You</p><br/>
+        <p><b>Thank you</b></p>
+        <p><b>Signet institute</b></p>
+        <p>${process.env.CREDIT_TRANSFER_MAIL}</p>`,
+                            };
+
+                            sendMail(options)
+                              .then((result2) => {
+                                sendMail(options2)
+                                  .then((result3) => {})
+                                  .catch((e) => {
+                                    console.log(e);
+                                  });
+                              })
+                              .catch((error) => {
+                                console.log(error);
+                              });
                           })
                           .catch((e) => {
                             res.send({ Status: 'Failed' });
+                            console.log(e);
                           });
                       } catch (e) {
                         res.send({ Status: 'Failed' });
+                        console.log(e);
                       }
                     })
                     .catch((e) => {
@@ -422,16 +582,177 @@ module.exports = async (req, res) => {
                           sign: arrayImages3,
                           campusSign: arrayImages5,
                         });
+
+                        const obj = {
+                          name: {
+                            prefix: prefix,
+                            firstName: firstName,
+                            middleName: middleName,
+                            lastName: lastName,
+                          },
+                          dob: dob,
+                          gender: gender,
+                          tel: {
+                            telCode: telCode,
+                            telephone: telephone,
+                          },
+                          mob: {
+                            mobCode: mobCode,
+                            mobile: mobile,
+                          },
+                          email: email,
+                          altEmail: altEmail,
+                          typeOfId: typeOfId,
+                          idNumber: idNumber,
+                          address: {
+                            buildingName: buildingName,
+                            street: street,
+                            town: town,
+                            state: state,
+                            postCode: postCode,
+                            country: country,
+                          },
+                          courseCodeTitle,
+                          statementOfAttenment,
+                          headOfCompliance,
+                          explanationOfDecision,
+                          courseSectionDate,
+                          repFirstName,
+                          repLastName,
+                          unitsDate,
+                          initials,
+                          initialsDate,
+                          adminFirstName,
+                          adminLastName,
+                          adminDate,
+                          managerFirstName,
+                          managerLastName,
+                          managerDate,
+                          studentAdvisedInWriting: declaration1,
+                          ctRecordedInSms: declaration2,
+                          applicationClosed: declaration3,
+                          unitCode: unitCode,
+                          unitTitle: unitTitle,
+                          officialCertificate,
+                          officialTranscript,
+                          'Official Certificate Attachments': arrayImages,
+                          'Official Transcript Attachments': arrayImages2,
+                          sign: arrayImages3,
+                          campusSign: arrayImages5,
+                        };
+
                         ctf_collection
                           .insertMany(newctf)
-                          .then((result) => {
-                            res.send({ Status: 'Success', result: result });
+                          .then(async (result) => {
+                            res.send({
+                              Status: 'Success',
+                              result: result,
+                            });
+                            // Generate PDF
+                            const browser = await puppeteer.launch();
+                            const page = await browser.newPage();
+
+                            let contentHTML =
+                              '<div style="display:flex; justify-content:center; padding-top:10px;"><img src="https://digitalmarketingcompanybangalore.in/logo.png" width="200px" alt="Logo"/></div>';
+
+                            let link = process.env.CLOUDINARY_IMAGE_URL;
+
+                            for (let key in obj) {
+                              if (obj.hasOwnProperty(key)) {
+                                if (typeof obj[key] === 'object') {
+                                  console.log(`${key}:`);
+                                  contentHTML += `<strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong><br>`; // Use <br> for line breaks in HTML
+                                  for (let subKey in obj[key]) {
+                                    if (obj[key].hasOwnProperty(subKey)) {
+                                      if (
+                                        key ===
+                                          'Official Certificate Attachments' ||
+                                        key ===
+                                          'Official Transcript Attachments' ||
+                                        key === 'sign' ||
+                                        key === 'adminSign' ||
+                                        key === 'campusSign'
+                                      ) {
+                                        console.log(obj[key][subKey], 'Hello');
+                                        contentHTML += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="padding-top:15px; padding-left:25px;" width="100px" src=${link}${obj[key][subKey]} alt="image"/><br>`;
+                                      } else {
+                                        if (
+                                          key === 'unitCode' ||
+                                          key === 'unitTitle'
+                                        ) {
+                                          console.log(obj[key][subKey]);
+                                          contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${obj[key][subKey]}</p>`;
+                                        } else {
+                                          console.log(
+                                            `  ${subKey}: ${obj[key][subKey]},Hello`
+                                          );
+                                          contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${subKey}: ${obj[key][subKey]}</p>`;
+                                        }
+                                      }
+                                    }
+                                  }
+                                } else {
+                                  console.log(`${key}: ${obj[key]}`);
+                                  contentHTML += `<p><strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong> <span style="font-size:20px;">${key}:</strong> <span style="font-size:20px;">${obj[key]}</span></p>`;
+                                }
+                              }
+                            }
+
+                            await page.setContent(contentHTML);
+
+                            const pdfBuffer = await page.pdf();
+                            await browser.close();
+
+                            const newMobile = mobCode + ' ' + mobile;
+                            const newName = firstName + ' ' + lastName;
+
+                            const options = {
+                              email: process.env.CREDIT_TRANSFER_MAIL,
+                              subject:
+                                'New Application For Credit Transfer Form Received',
+                              html: checkOutReq(
+                                'Application For Credit Transfer',
+                                newName,
+                                email,
+                                newMobile,
+                                country
+                              ),
+                              pdfBuffer: pdfBuffer,
+                            };
+
+                            const options2 = {
+                              email: email,
+                              subject:
+                                'Application For Credit Transfer Form Submitted Successfully',
+                              html: `<img src="https://digitalmarketingcompanybangalore.in/logo.png" width="200px" alt="Logo"/><br/><p><b>Dear ${newName}</b></p><br/>
+        <p>Thank You For Submitting Application For Credit Transfer Form</p>
+        <p>Our Team Will Contact You</p><br/>
+        <p><b>Thank you</b></p>
+        <p><b>Signet institute</b></p>
+        <p>${process.env.CREDIT_TRANSFER_MAIL}</p>`,
+                            };
+
+                            sendMail(options)
+                              .then((result2) => {
+                                sendMail(options2)
+                                  .then((result3) => {})
+                                  .catch((e) => {
+                                    console.log(e);
+                                  });
+                              })
+                              .catch((e) => {
+                                console.log(e);
+                              });
+
+                            // res.send({ Status: 'Success', result: result });
                           })
                           .catch((e) => {
                             res.send({ Status: 'Failed' });
+                            console.log(e);
                           });
                       } catch (e) {
                         res.send({ Status: 'Failed' });
+                        console.log(e);
                       }
                     })
                     .catch((e) => {
@@ -495,16 +816,174 @@ module.exports = async (req, res) => {
                       signatureImage2: arrayImages2,
                       sign: arrayImages3,
                     });
+
+                    const obj = {
+                      name: {
+                        prefix: prefix,
+                        firstName: firstName,
+                        middleName: middleName,
+                        lastName: lastName,
+                      },
+                      dob: dob,
+                      gender: gender,
+                      tel: {
+                        telCode: telCode,
+                        telephone: telephone,
+                      },
+                      mob: {
+                        mobCode: mobCode,
+                        mobile: mobile,
+                      },
+                      email: email,
+                      altEmail: altEmail,
+                      typeOfId: typeOfId,
+                      idNumber: idNumber,
+                      address: {
+                        buildingName: buildingName,
+                        street: street,
+                        town: town,
+                        state: state,
+                        postCode: postCode,
+                        country: country,
+                      },
+                      courseCodeTitle,
+                      statementOfAttenment,
+                      headOfCompliance,
+                      explanationOfDecision,
+                      courseSectionDate,
+                      repFirstName,
+                      repLastName,
+                      unitsDate,
+                      initials,
+                      initialsDate,
+                      adminFirstName,
+                      adminLastName,
+                      adminDate,
+                      managerFirstName,
+                      managerLastName,
+                      managerDate,
+                      studentAdvisedInWriting: declaration1,
+                      ctRecordedInSms: declaration2,
+                      applicationClosed: declaration3,
+                      unitCode: unitCode,
+                      unitTitle: unitTitle,
+                      officialCertificate,
+                      officialTranscript,
+                      'Official Certificate Attachments': arrayImages,
+                      'Official Transcript Attachments': arrayImages2,
+                      sign: arrayImages3,
+                    };
+
                     ctf_collection
                       .insertMany(newctf)
-                      .then((result) => {
-                        res.send({ Status: 'Success', result: result });
+                      .then(async (result) => {
+                        res.send({
+                          Status: 'Success',
+                          result: result,
+                        });
+                        // Generate PDF
+                        const browser = await puppeteer.launch();
+                        const page = await browser.newPage();
+
+                        let contentHTML =
+                          '<div style="display:flex; justify-content:center; padding-top:10px;"><img src="https://digitalmarketingcompanybangalore.in/logo.png" width="200px" alt="Logo"/></div>';
+
+                        let link = process.env.CLOUDINARY_IMAGE_URL;
+
+                        for (let key in obj) {
+                          if (obj.hasOwnProperty(key)) {
+                            if (typeof obj[key] === 'object') {
+                              console.log(`${key}:`);
+                              contentHTML += `<strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong><br>`; // Use <br> for line breaks in HTML
+                              for (let subKey in obj[key]) {
+                                if (obj[key].hasOwnProperty(subKey)) {
+                                  if (
+                                    key ===
+                                      'Official Certificate Attachments' ||
+                                    key === 'Official Transcript Attachments' ||
+                                    key === 'sign' ||
+                                    key === 'adminSign' ||
+                                    key === 'campusSign'
+                                  ) {
+                                    console.log(obj[key][subKey], 'Hello');
+                                    contentHTML += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="padding-top:15px; padding-left:25px;" width="100px" src=${link}${obj[key][subKey]} alt="image"/><br>`;
+                                  } else {
+                                    if (
+                                      key === 'unitCode' ||
+                                      key === 'unitTitle'
+                                    ) {
+                                      console.log(obj[key][subKey]);
+                                      contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${obj[key][subKey]}</p>`;
+                                    } else {
+                                      console.log(
+                                        `  ${subKey}: ${obj[key][subKey]},Hello`
+                                      );
+                                      contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${subKey}: ${obj[key][subKey]}</p>`;
+                                    }
+                                  }
+                                }
+                              }
+                            } else {
+                              console.log(`${key}: ${obj[key]}`);
+                              contentHTML += `<p><strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong> <span style="font-size:20px;">${obj[key]}</span></p>`;
+                            }
+                          }
+                        }
+
+                        await page.setContent(contentHTML);
+
+                        const pdfBuffer = await page.pdf();
+                        await browser.close();
+
+                        const newMobile = mobCode + ' ' + mobile;
+                        const newName = firstName + ' ' + lastName;
+
+                        const options = {
+                          email: process.env.CREDIT_TRANSFER_MAIL,
+                          subject:
+                            'New Application For Credit Transfer Form Received',
+                          html: checkOutReq(
+                            'Application For Credit Transfer',
+                            newName,
+                            email,
+                            newMobile,
+                            country
+                          ),
+                          pdfBuffer: pdfBuffer,
+                        };
+
+                        const options2 = {
+                          email: email,
+                          subject:
+                            'Application For Credit Transfer Form Submitted Successfully',
+                          html: `<img src="https://digitalmarketingcompanybangalore.in/logo.png" width="200px" alt="Logo"/><br/><p><b>Dear ${newName}</b></p><br/>
+        <p>Thank You For Submitting Application For Credit Transfer Form</p>
+        <p>Our Team Will Contact You</p><br/>
+        <p><b>Thank you</b></p>
+        <p><b>Signet institute</b></p>
+        <p>${process.env.CREDIT_TRANSFER_MAIL}</p>`,
+                        };
+
+                        sendMail(options)
+                          .then((result2) => {
+                            sendMail(options2)
+                              .then((result3) => {})
+                              .catch((e) => {
+                                console.log(e);
+                              });
+                          })
+                          .catch((e) => {
+                            console.log(e);
+                          });
+                        // res.send({ Status: 'Success', result: result });
                       })
                       .catch((e) => {
                         res.send({ Status: 'Failed' });
+                        console.log(e);
                       });
                   } catch (e) {
                     res.send({ Status: 'Failed' });
+                    console.log(e);
                   }
                 } else {
                   const upload4 = arr1.map(image4);
@@ -581,40 +1060,211 @@ module.exports = async (req, res) => {
                               adminSign: arrayImages4,
                               campusSign: arrayImages5,
                             });
+
+                            const obj = {
+                              name: {
+                                prefix: prefix,
+                                firstName: firstName,
+                                middleName: middleName,
+                                lastName: lastName,
+                              },
+                              dob: dob,
+                              gender: gender,
+                              tel: {
+                                telCode: telCode,
+                                telephone: telephone,
+                              },
+                              mob: {
+                                mobCode: mobCode,
+                                mobile: mobile,
+                              },
+                              email: email,
+                              altEmail: altEmail,
+                              typeOfId: typeOfId,
+                              idNumber: idNumber,
+                              address: {
+                                buildingName: buildingName,
+                                street: street,
+                                town: town,
+                                state: state,
+                                postCode: postCode,
+                                country: country,
+                              },
+                              courseCodeTitle,
+                              statementOfAttenment,
+                              headOfCompliance,
+                              explanationOfDecision,
+                              courseSectionDate,
+                              repFirstName,
+                              repLastName,
+                              unitsDate,
+                              initials,
+                              initialsDate,
+                              adminFirstName,
+                              adminLastName,
+                              adminDate,
+                              managerFirstName,
+                              managerLastName,
+                              managerDate,
+                              studentAdvisedInWriting: declaration1,
+                              ctRecordedInSms: declaration2,
+                              applicationClosed: declaration3,
+                              unitCode: unitCode,
+                              unitTitle: unitTitle,
+                              officialCertificate,
+                              officialTranscript,
+                              'Official Certificate Attachments': arrayImages,
+                              'Official Transcript Attachments': arrayImages2,
+                              sign: arrayImages3,
+                              adminSign: arrayImages4,
+                              campusSign: arrayImages5,
+                            };
+
                             ctf_collection
                               .insertMany(newctf)
-                              .then((result) => {
-                                res.send({ Status: 'Success', result: result });
+                              .then(async (result) => {
+                                res.send({
+                                  Status: 'Success',
+                                  result: result,
+                                });
+                                // Generate PDF
+                                const browser = await puppeteer.launch();
+                                const page = await browser.newPage();
+
+                                let contentHTML =
+                                  '<div style="display:flex; justify-content:center; padding-top:10px;"><img src="https://digitalmarketingcompanybangalore.in/logo.png" width="200px" alt="Logo"/></div>';
+
+                                let link = process.env.CLOUDINARY_IMAGE_URL;
+
+                                for (let key in obj) {
+                                  if (obj.hasOwnProperty(key)) {
+                                    if (typeof obj[key] === 'object') {
+                                      console.log(`${key}:`);
+                                      contentHTML += `<strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong><br>`; // Use <br> for line breaks in HTML
+                                      for (let subKey in obj[key]) {
+                                        if (obj[key].hasOwnProperty(subKey)) {
+                                          if (
+                                            key ===
+                                              'Official Certificate Attachments' ||
+                                            key ===
+                                              'Official Transcript Attachments' ||
+                                            key === 'sign' ||
+                                            key === 'adminSign' ||
+                                            key === 'campusSign'
+                                          ) {
+                                            console.log(
+                                              obj[key][subKey],
+                                              'Hello'
+                                            );
+                                            contentHTML += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="padding-top:15px; padding-left:25px;" width="100px" src=${link}${obj[key][subKey]} alt="image"/><br>`;
+                                          } else {
+                                            if (
+                                              key === 'unitCode' ||
+                                              key === 'unitTitle'
+                                            ) {
+                                              console.log(obj[key][subKey]);
+                                              contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${obj[key][subKey]}</p>`;
+                                            } else {
+                                              console.log(
+                                                `  ${subKey}: ${obj[key][subKey]},Hello`
+                                              );
+                                              contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${subKey}: ${obj[key][subKey]}</p>`;
+                                            }
+                                          }
+                                        }
+                                      }
+                                    } else {
+                                      console.log(`${key}: ${obj[key]}`);
+                                      contentHTML += `<p><strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong> <span style="font-size:20px;">${obj[key]}</span></p>`;
+                                    }
+                                  }
+                                }
+
+                                await page.setContent(contentHTML);
+
+                                const pdfBuffer = await page.pdf();
+                                await browser.close();
+
+                                const newMobile = mobCode + ' ' + mobile;
+                                const newName = firstName + ' ' + lastName;
+
+                                const options = {
+                                  email: process.env.CREDIT_TRANSFER_MAIL,
+                                  subject:
+                                    'New Application For Credit Transfer Form Received',
+                                  html: checkOutReq(
+                                    'Application For Credit Transfer',
+                                    newName,
+                                    email,
+                                    newMobile,
+                                    country
+                                  ),
+                                  pdfBuffer: pdfBuffer,
+                                };
+
+                                const options2 = {
+                                  email: email,
+                                  subject:
+                                    'Application For Credit Transfer Form Submitted Successfully',
+                                  html: `<img src="https://digitalmarketingcompanybangalore.in/logo.png" width="200px" alt="Logo"/><br/><p><b>Dear ${newName}</b></p><br/>
+            <p>Thank You For Submitting Application For Credit Transfer Form</p>
+            <p>Our Team Will Contact You</p><br/>
+            <p><b>Thank you</b></p>
+            <p><b>Signet institute</b></p>
+            <p>${process.env.CREDIT_TRANSFER_MAIL}</p>`,
+                                };
+
+                                sendMail(options)
+                                  .then((result2) => {
+                                    sendMail(options2)
+                                      .then((result3) => {})
+                                      .catch((e) => {
+                                        console.log(e);
+                                      });
+                                  })
+                                  .catch((e) => {
+                                    console.log(e);
+                                  });
+
+                                // res.send({ Status: 'Success', result: result });
                               })
                               .catch((e) => {
                                 res.send({ Status: 'Failed' });
+                                console.log(e);
                               });
                           } catch (e) {
                             res.send({ Status: 'Failed' });
+                            console.log(e);
                           }
                         })
                         .catch((e) => {
                           res.send({ Status: 'Failed' });
+                          console.log(e);
                         });
                     })
                     .catch((e) => {
-                      res.send({ Status: 'Filed' });
+                      res.send({ Status: 'Failed' });
+                      console.log(e);
                     });
                 }
               })
               .catch((e) => {
                 res.send({ Status: 'Failed' });
+                console.log(e);
               });
           })
           .catch((e) => {
             res.send({ Status: 'Failed' });
+            console.log(e);
           });
       })
       .catch((e) => {
         res.send({ Status: 'Failed' });
+        console.log(e);
       });
   } catch (e) {
     res.send({ Status: 'Failed' });
+    console.log(e);
   }
 };
 

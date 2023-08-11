@@ -246,11 +246,16 @@ module.exports = async (req, res) => {
               rrf_collection
                 .insertMany(newrrf)
                 .then(async (result) => {
+                  res.send({
+                    Status: 'Success',
+                    result: result,
+                  });
                   // Generate PDF
                   const browser = await puppeteer.launch({ headless: 'new' });
                   const page = await browser.newPage();
 
-                  let contentHTML = '';
+                  let contentHTML =
+                    '<div style="display:flex; justify-content:center; padding-top:10px;"><img src="https://digitalmarketingcompanybangalore.in/logo.png" width="200px" alt="Logo"/></div>';
 
                   let link = process.env.CLOUDINARY_IMAGE_URL;
 
@@ -258,7 +263,7 @@ module.exports = async (req, res) => {
                     if (obj.hasOwnProperty(key)) {
                       if (typeof obj[key] === 'object') {
                         console.log(`${key}:`);
-                        contentHTML += `<strong>${key}:</strong><br>`; // Use <br> for line breaks in HTML
+                        contentHTML += `<strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong><br>`; // Use <br> for line breaks in HTML
                         for (let subKey in obj[key]) {
                           if (obj[key].hasOwnProperty(subKey)) {
                             if (
@@ -268,16 +273,16 @@ module.exports = async (req, res) => {
                               key === 'Supporting Documentation'
                             ) {
                               console.log(obj[key][subKey], 'Hello');
-                              contentHTML += `&nbsp;&nbsp;<img width="100px" src=${link}${obj[key][subKey]} alt="image"/><br>`;
+                              contentHTML += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="padding-top:15px; padding-left:25px;" width="100px" src=${link}${obj[key][subKey]} alt="image"/><br>`;
                             } else {
                               if (key === 'unitCode' || key === 'unitTitle') {
                                 console.log(obj[key][subKey]);
-                                contentHTML += `&nbsp;&nbsp;${obj[key][subKey]}<br>`;
+                                contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${obj[key][subKey]}</p>`;
                               } else {
                                 console.log(
                                   `  ${subKey}: ${obj[key][subKey]},Hello`
                                 );
-                                contentHTML += `&nbsp;&nbsp;${subKey}: ${obj[key][subKey]}<br>`;
+                                contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${subKey}: ${obj[key][subKey]}</p>`;
                               }
                             }
                           }
@@ -286,13 +291,13 @@ module.exports = async (req, res) => {
                         if (
                           key === 'Bank Signature' ||
                           key === 'Refund Signature' ||
-                          key === 'Logged By Signature' 
+                          key === 'Logged By Signature'
                         ) {
                           console.log(`${key}: ${obj[key]}`, 'Hello');
-                          contentHTML += `<strong>${key}:</strong> <img width="100px" src=${link}${obj[key]} alt="image"/><br>`;
+                          contentHTML += `<p><strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong> <span style="font-size:20px;"><img width="100px" src=${link}${obj[key]} alt="image"/></span></p>`;
                         } else {
                           console.log(`${key}: ${obj[key]}`);
-                          contentHTML += `<strong>${key}:</strong> ${obj[key]}<br>`;
+                          contentHTML += `<p><strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong> <span style="font-size:20px;">${obj[key]}</span></p>`;
                         }
                       }
                     }
@@ -306,7 +311,7 @@ module.exports = async (req, res) => {
                   const newMobile = mobCode + ' ' + mobile;
                   const newName = firstName + ' ' + lastName;
                   const options = {
-                    email: 'dineshs25201@gmail.com',
+                    email: process.env.REFUND_MAIL,
                     subject: 'New Refund Request Form Received',
                     html: checkOutReq(
                       'Refund Request',
@@ -321,23 +326,18 @@ module.exports = async (req, res) => {
                   const options2 = {
                     email: email,
                     subject: 'Refund Request Form Submitted Successfully',
-                    html: `<p><b>Dear ${newName}</b></p><br/>
+                    html: `<img src="https://digitalmarketingcompanybangalore.in/logo.png" width="200px" alt="Logo"/><br/><p><b>Dear ${newName}</b></p><br/>
 <p>Thank You For Submitting Refund Request Form</p>
 <p>Our Team Will Contact You</p><br/>
 <p><b>Thank you</b></p>
 <p><b>Signet institute</b></p>
-<p>dineshs25201@gmail.com</p>`,
+<p>${process.env.REFUND_MAIL}</p>`,
                   };
 
                   sendMail(options)
                     .then((result2) => {
                       sendMail(options2)
-                        .then((result3) => {
-                          res.send({
-                            Status: 'Success',
-                            result: result,
-                          });
-                        })
+                        .then((result3) => {})
                         .catch((e) => {
                           console.log(e);
                         });

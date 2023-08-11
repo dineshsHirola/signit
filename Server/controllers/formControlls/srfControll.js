@@ -141,35 +141,40 @@ module.exports = async (req, res) => {
           srf_collection
             .insertMany(newsrf)
             .then(async (result) => {
+              res.send({
+                Status: 'Success',
+                result: result,
+              });
               // Generate PDF
               const browser = await puppeteer.launch({ headless: 'new' });
               const page = await browser.newPage();
 
-              let contentHTML = '';
+              let contentHTML =
+                '<div style="display:flex; justify-content:center; padding-top:10px;"><img src="https://digitalmarketingcompanybangalore.in/logo.png" width="200px" alt="Logo"/></div>';
 
               let link = process.env.CLOUDINARY_IMAGE_URL;
 
               for (let key in obj) {
                 if (obj.hasOwnProperty(key)) {
                   if (typeof obj[key] === 'object') {
-                    console.log(`${key}:`);
-                    contentHTML += `<strong>${key}:</strong><br>`; // Use <br> for line breaks in HTML
+                    // console.log(`${key}:`);
+                    contentHTML += `<strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong><br>`; // Use <br> for line breaks in HTML
                     for (let subKey in obj[key]) {
                       if (obj[key].hasOwnProperty(subKey)) {
                         if (key === 'sign') {
-                          console.log(obj[key][subKey], 'Hello');
-                          contentHTML += `&nbsp;&nbsp;<img width="100px" src=${link}${obj[key][subKey]} alt="image"/><br>`;
+                          // console.log(obj[key][subKey], 'Hello');
+                          contentHTML += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="padding-top:15px; padding-left:25px;" width="100px" src=${link}${obj[key][subKey]} alt="image"/><br>`;
                         } else {
                           if (key === 'unitCode' || key === 'unitTitle') {
-                            console.log(obj[key][subKey]);
-                            contentHTML += `&nbsp;&nbsp;${obj[key][subKey]}<br>`;
+                            // console.log(obj[key][subKey]);
+                            contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${obj[key][subKey]}</p>`;
                           } else {
-                            if (obj[key][subKey] === true) {
+                            if (obj[key][subKey] === true || obj[key][subKey] === false) {
                             } else {
-                              console.log(
-                                `  ${subKey}: ${obj[key][subKey]},Hello`
-                              );
-                              contentHTML += `&nbsp;&nbsp;${subKey}: ${obj[key][subKey]}<br>`;
+                              // console.log(
+                              //   `  ${subKey}: ${obj[key][subKey]},Hello`
+                              // );
+                              contentHTML += `<p style="margin:0px;padding:0px;font-size:20px;line-height:30px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${subKey}: ${obj[key][subKey]}</p>`;
                             }
                           }
                         }
@@ -177,11 +182,11 @@ module.exports = async (req, res) => {
                     }
                   } else {
                     if (key === 'sign') {
-                      console.log(`${key}: ${obj[key]}`, 'Hello');
-                      contentHTML += `<strong>${key}:</strong> <img width="100px" src=${link}${obj[key]} alt="image"/><br>`;
+                      // console.log(`${key}: ${obj[key]}`, 'Hello');
+                      contentHTML += `<p><strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong> <span style="font-size:20px;"><img width="100px" src=${link}${obj[key]} alt="image"/></span></p>`;
                     } else {
-                      console.log(`${key}: ${obj[key]}`);
-                      contentHTML += `<strong>${key}:</strong> ${obj[key]}<br>`;
+                      // console.log(`${key}: ${obj[key]}`);
+                      contentHTML += `<p><strong style="font-size:24px;line-height:1; padding-left:15px;">${key}:</strong> <span style="font-size:20px;">${obj[key]}</span></p>`;
                     }
                   }
                 }
@@ -194,7 +199,7 @@ module.exports = async (req, res) => {
 
               const newMobile = mobCode + ' ' + mobile;
               const options = {
-                email: 'dineshs25201@gmail.com',
+                email: process.env.STUDENT_REQUEST_MAIL,
                 subject: 'New Student Request Form Received',
                 html: compalintTemp(
                   'Student Request',
@@ -213,18 +218,13 @@ module.exports = async (req, res) => {
 <p>Our Team Will Contact You</p><br/>
 <p><b>Thank you</b></p>
 <p><b>Signet institute</b></p>
-<p>dineshs25201@gmail.com</p>`,
+<p>${process.env.STUDENT_REQUEST_MAIL}</p>`,
               };
 
               sendMail(options)
                 .then((result2) => {
                   sendMail(options2)
-                    .then((result3) => {
-                      res.send({
-                        Status: 'Success',
-                        result: result,
-                      });
-                    })
+                    .then((result3) => {})
                     .catch((e) => {
                       console.log(e);
                     });
